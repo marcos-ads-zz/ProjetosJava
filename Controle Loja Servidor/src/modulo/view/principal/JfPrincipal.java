@@ -54,6 +54,7 @@ import modulo.ajuda.JifAjuda;
 import modulo.atualizacao.JifAjusteParaAtualizacao;
 import modulo.campanhas.meta.JifCadastroMetasCampanhas;
 import modulo.campanhas.cadastro.JifCadastroDescricaoCampanhas;
+import modulo.campanhas.venda.JifCampanhaRelatorio;
 import modulo.dashboard.Dashboard;
 import modulo.metodos.Funcao;
 import modulo.seguranca.JifSeguranca;
@@ -121,6 +122,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
     private JifCadastroDescricaoCampanhas jfCampanhasCadProd = null;
     private JifCadastroMetasCampanhas jfCampanhasMetas = null;
     private JifCadastroCampanhaDia jfCampanhasVendaDia = null;
+    private JifCampanhaRelatorio jfCampanhaRelatorio = null;
 
     public JfPrincipal() {
         initComponents();
@@ -665,6 +667,11 @@ public final class JfPrincipal extends javax.swing.JFrame {
         jmCampanhas.add(jmRegistrodeVendasCampanhas);
 
         jMenuItem1.setText("Relatórios");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
         jmCampanhas.add(jMenuItem1);
 
         jMenuBar1.add(jmCampanhas);
@@ -1575,6 +1582,23 @@ public final class JfPrincipal extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Janela ja esta aberta!");
         }
     }//GEN-LAST:event_jmRegistrodeVendasCampanhasActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        // TODO add your handling code here:
+        if (jfCampanhaRelatorio == null) {
+            jfCampanhaRelatorio = new JifCampanhaRelatorio();
+            jDesktopPrincipal.add(jfCampanhaRelatorio);
+            jfCampanhaRelatorio.setVisible(true);
+            jfCampanhaRelatorio.setPosicao();
+        } else if (!jfCampanhaRelatorio.isVisible()) {
+            jfCampanhaRelatorio = new JifCampanhaRelatorio();
+            jDesktopPrincipal.add(jfCampanhaRelatorio);
+            jfCampanhaRelatorio.setVisible(true);
+            jfCampanhaRelatorio.setPosicao();
+        } else {
+            JOptionPane.showMessageDialog(this, "Janela ja esta aberta!");
+        }
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JDesktopPane jDesktopPrincipal;

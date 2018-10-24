@@ -1,4 +1,4 @@
-package modulo.desenvolvimento.frames;
+package modulo.campanhas.venda;
 
 import modulo.versao.Versao;
 import java.awt.Dimension;
@@ -7,12 +7,13 @@ import java.awt.Dimension;
  *
  * @author Marcos Junior
  */
-public final class JifBackup extends javax.swing.JInternalFrame {
+public final class JifCampanhaRelatorio extends javax.swing.JInternalFrame {
 
-    private Versao ver = new Versao();
+    private Versao ver;
 
-    public JifBackup() {
+    public JifCampanhaRelatorio() {
         initComponents();
+        ver = new Versao();
         setTitle("Backup Sistema: " + ver.getVersao());
     }
 
@@ -26,16 +27,18 @@ public final class JifBackup extends javax.swing.JInternalFrame {
     private void initComponents() {
 
         setClosable(true);
+        setIconifiable(true);
+        setResizable(true);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 394, Short.MAX_VALUE)
+            .addGap(0, 656, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 274, Short.MAX_VALUE)
+            .addGap(0, 448, Short.MAX_VALUE)
         );
 
         pack();
