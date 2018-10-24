@@ -154,12 +154,16 @@ public final class JfPrincipal extends javax.swing.JFrame {
                 jtCod_Interno.setText("");
                 jtDescricaoItem.setText("");
                 jtQTD_Perdida.setText("");
+                jtDataDoRegistro.setText(formatoDIA.format(new Date()));
                 break;
             }
             case 1: {
                 //Campanhas
+                jtMatriculaCampanha.setText("");
+                jtNomeUsuarioCampanha.setText("");
                 jtQtdProdutoCampanha.setText("");
                 jcCampanhaObs.setSelectedIndex(0);
+                jtDataDoRegistroCampanha.setText(formatoDIA.format(new Date()));
                 break;
             }
             case 2: {
@@ -174,6 +178,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
                 jfVooVenda3.setText("");
                 jfVooVenda4.setText("");
                 jfVooCliTotal.setText("");
+                jtDataDoRegistroVoo.setText(formatoDIA.format(new Date()));
                 break;
             }
             default:
@@ -952,6 +957,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
         jtDataDoRegistro.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jtDataDoRegistro.setDisabledTextColor(new java.awt.Color(255, 153, 51));
 
+        jtLoja.setEditable(false);
         jtLoja.setBackground(new java.awt.Color(255, 153, 102));
         jtLoja.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
         jtLoja.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -1067,6 +1073,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
             }
         });
 
+        jtNomeUsuarioCampanha.setEditable(false);
         jtNomeUsuarioCampanha.setBackground(new java.awt.Color(102, 255, 153));
         jtNomeUsuarioCampanha.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
         jtNomeUsuarioCampanha.setForeground(new java.awt.Color(255, 0, 0));
@@ -1115,6 +1122,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
             }
         });
 
+        jtLoja1Campanha.setEditable(false);
         jtLoja1Campanha.setBackground(new java.awt.Color(255, 153, 102));
         jtLoja1Campanha.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
         jtLoja1Campanha.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -1220,6 +1228,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
         jlTituloPlanoDeVoo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jlTituloPlanoDeVoo.setText("Título");
 
+        jtNomeUsuarioV.setEditable(false);
         jtNomeUsuarioV.setBackground(new java.awt.Color(102, 255, 153));
         jtNomeUsuarioV.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
         jtNomeUsuarioV.setForeground(new java.awt.Color(255, 0, 0));
@@ -1275,6 +1284,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
             }
         });
 
+        jtLoja5.setEditable(false);
         jtLoja5.setBackground(new java.awt.Color(255, 153, 102));
         jtLoja5.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
         jtLoja5.setHorizontalAlignment(javax.swing.JTextField.CENTER);

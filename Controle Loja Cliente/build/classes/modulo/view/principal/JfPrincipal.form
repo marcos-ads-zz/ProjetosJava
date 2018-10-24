@@ -366,6 +366,7 @@
                 </Component>
                 <Component class="javax.swing.JTextField" name="jtLoja">
                   <Properties>
+                    <Property name="editable" type="boolean" value="false"/>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="66" green="99" red="ff" type="rgb"/>
                     </Property>
@@ -551,6 +552,7 @@
                 </Component>
                 <Component class="javax.swing.JTextField" name="jtNomeUsuarioCampanha">
                   <Properties>
+                    <Property name="editable" type="boolean" value="false"/>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="99" green="ff" red="66" type="rgb"/>
                     </Property>
@@ -636,6 +638,7 @@
                 </Component>
                 <Component class="javax.swing.JTextField" name="jtLoja1Campanha">
                   <Properties>
+                    <Property name="editable" type="boolean" value="false"/>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="66" green="99" red="ff" type="rgb"/>
                     </Property>
@@ -854,6 +857,7 @@
                 </Component>
                 <Component class="javax.swing.JTextField" name="jtNomeUsuarioV">
                   <Properties>
+                    <Property name="editable" type="boolean" value="false"/>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="99" green="ff" red="66" type="rgb"/>
                     </Property>
@@ -940,6 +944,7 @@
                 </Component>
                 <Component class="javax.swing.JTextField" name="jtLoja5">
                   <Properties>
+                    <Property name="editable" type="boolean" value="false"/>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="66" green="99" red="ff" type="rgb"/>
                     </Property>
