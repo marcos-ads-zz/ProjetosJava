@@ -381,6 +381,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
         jmCampanhasCadProdutos = new javax.swing.JMenuItem();
         jmCampanhasMetasProd = new javax.swing.JMenuItem();
         jmRegistrodeVendasCampanhas = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
         jmpTransacoes = new javax.swing.JMenu();
         jmRegistrarTrocas = new javax.swing.JMenuItem();
         jmAvariasKibom = new javax.swing.JMenuItem();
@@ -662,6 +663,9 @@ public final class JfPrincipal extends javax.swing.JFrame {
             }
         });
         jmCampanhas.add(jmRegistrodeVendasCampanhas);
+
+        jMenuItem1.setText("Relatórios");
+        jmCampanhas.add(jMenuItem1);
 
         jMenuBar1.add(jmCampanhas);
 
@@ -1575,6 +1579,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JDesktopPane jDesktopPrincipal;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel jlHoraAtual;
     private javax.swing.JLabel jlInformacao;
