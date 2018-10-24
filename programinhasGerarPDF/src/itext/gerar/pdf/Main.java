@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package programinhasgerarpdf;
+package itext.gerar.pdf;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
