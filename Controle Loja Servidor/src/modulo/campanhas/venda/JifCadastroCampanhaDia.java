@@ -53,6 +53,7 @@ public class JifCadastroCampanhaDia extends javax.swing.JInternalFrame {
         try {
             listaCampanhasAtivas();
             PreencheTabelaDaView();
+            jListCampanhas.setSelectedIndex(0);
             painelGraficoRuptura(jListCampanhas.getSelectedValue().toUpperCase());
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao Carregar Lista: " + ex.getMessage());
@@ -89,7 +90,7 @@ public class JifCadastroCampanhaDia extends javax.swing.JInternalFrame {
 
     public void painelGraficoRuptura(String campanha) throws PropertyVetoException, Exception {
         jPanelGrafico.removeAll();
-        jPanelGrafico.add(new ChartPanel(dg.painelGraficoCampanha(fun.primeiroDiaMesAtual(), fun.atualDateSQL(), campanha)), BorderLayout.CENTER);
+        jPanelGrafico.add(new ChartPanel(dg.painelGraficoCampanhaQT(fun.primeiroDiaMesAtual(), fun.atualDateSQL(), campanha)), BorderLayout.CENTER);
         jPanelGrafico.validate();
     }
 
@@ -909,7 +910,7 @@ public class JifCadastroCampanhaDia extends javax.swing.JInternalFrame {
 
     private void jbPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbPesquisarActionPerformed
         try {
-            CAMPDIA_DAO.PesquisaNomeGrafico(fun.atualDateSQL(), fun.atualDateSQL(), "BALANCE").forEach((p) -> {
+            CAMPDIA_DAO.PesquisaNomeGraficoCampanha(fun.atualDateSQL(), fun.atualDateSQL(), "BALANCE").forEach((p) -> {
                 System.out.println("Teste " + p.getDesc_campanha() + " " + p.getQuantidade());
                 
             });

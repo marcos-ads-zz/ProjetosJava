@@ -518,10 +518,34 @@ public class DadosGraficos {
         DefaultCategoryDataset caty = new DefaultCategoryDataset();
         CadastroCampanhaDiaDAO DAO = new CadastroCampanhaDiaDAO();
         List<CadastroCampanhaDia> camp;
-        camp = DAO.PesquisaNomeGrafico(dataInicio, dataFim, campanha);
+        camp = DAO.PesquisaNomeGraficoCampanha(dataInicio, dataFim, campanha);
         camp.forEach((result) -> {
             try {
                 caty.setValue(result.getQuantidade(), dataFim, "(" + result.getQuantidade() + ")");
+            } catch (Exception ex) {
+                Logger.getLogger(DadosGraficos.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        JFreeChart grafico = ChartFactory.createLineChart3D("Acompanhamento de Campanhas",
+                campanha, "Quantidade",
+                caty, PlotOrientation.VERTICAL,
+                true,
+                true,
+                true);
+        System.out.println("Positivo");
+
+        return grafico;
+    }
+
+    public JFreeChart painelGraficoCampanhaQT(Date dataInicio, Date dataFim, String campanha) throws PropertyVetoException, Exception {
+        DefaultCategoryDataset caty = new DefaultCategoryDataset();
+        CadastroCampanhaDiaDAO DAO = new CadastroCampanhaDiaDAO();
+        List<CadastroCampanhaDia> camp;
+        camp = DAO.PesquisaNomeGraficoCampanha(dataInicio, dataFim, campanha);
+        //int campQT = DAO.PesquisaNomeGraficoCampanhaQT(dataFim, campanha);
+        camp.forEach((result) -> {
+            try {
+                caty.setValue(DAO.PesquisaNomeGraficoCampanhaQT(dataFim, campanha), dataFim, "(" + DAO.PesquisaNomeGraficoCampanhaQT(dataFim, campanha) + ")");
             } catch (Exception ex) {
                 Logger.getLogger(DadosGraficos.class.getName()).log(Level.SEVERE, null, ex);
             }
