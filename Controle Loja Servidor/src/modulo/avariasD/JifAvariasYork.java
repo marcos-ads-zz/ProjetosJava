@@ -1,4 +1,4 @@
-package modulo.desenvolvimento.frames;
+package modulo.avariasD;
 
 import modulo.versao.Versao;
 import java.awt.Dimension;

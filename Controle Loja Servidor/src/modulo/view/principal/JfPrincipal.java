@@ -16,12 +16,12 @@ import modulo.loja.JifLoja;
 import modulo.produtos.JifProdutos;
 import javax.swing.JOptionPane;
 import modulo.desenvolvimento.frames.JifAniversariantes;
-import modulo.campanhas.venda.JifCadastroCampanhaDia;
+import modulo.campanhas.vendaD.JifCadastroCampanhaDia;
 import modulo.planodevoo.JifCampanhasCaixa;
-import modulo.desenvolvimento.frames.JifEmail;
-import modulo.desenvolvimento.frames.JifAvariasKibom;
-import modulo.desenvolvimento.frames.JifAvariasYork;
-import modulo.controle.devolucao.cd.JifControleVasilhames;
+import modulo.emailD.JifEmail;
+import modulo.avariasD.JifAvariasKibom;
+import modulo.avariasD.JifAvariasYork;
+import modulo.vasilhames.JifControleVasilhames;
 import modulo.indisponiveis.JifControleIndisponiveis;
 import modulo.clientes.JifClientes;
 import modulo.ctf.JifCTF;
@@ -54,8 +54,8 @@ import modulo.ajuda.JifAjuda;
 import modulo.atualizacao.JifAjusteParaAtualizacao;
 import modulo.campanhas.meta.JifCadastroMetasCampanhas;
 import modulo.campanhas.cadastro.JifCadastroDescricaoCampanhas;
-import modulo.campanhas.venda.JifCampanhaRelatorio;
-import modulo.dashboard.Dashboard;
+import modulo.campanhas.vendaD.JifCampanhaRelatorio;
+import modulo.dashboardD.Dashboard;
 import modulo.metodos.Funcao;
 import modulo.seguranca.JifSeguranca;
 import modulo.usuarios.CargosDAO;
@@ -214,7 +214,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
             jmAguaELuz.setEnabled(g);// 9 A 7
             jmAvariasKibom.setEnabled(g);//9 A 7
             jmAvariasYork.setEnabled(g);//9 A 7
-            jmDevolucaoVasilhames.setEnabled(g);//9 A 7
+            jmVasilhames.setEnabled(g);//9 A 7
             jmCampanhasCadProdutos.setEnabled(g);//9 A 7
             jmCampanhasMetasProd.setEnabled(g);//9 A 7
             jmRegistrodeVendasCampanhas.setEnabled(g);//9 A 7
@@ -376,23 +376,23 @@ public final class JfPrincipal extends javax.swing.JFrame {
         jmAguaELuz = new javax.swing.JMenuItem();
         jmInventario = new javax.swing.JMenuItem();
         jmIndisponiveis = new javax.swing.JMenuItem();
-        jmpReforco = new javax.swing.JMenu();
-        jmRegistrarFaltas = new javax.swing.JMenuItem();
-        jmRelatorioDeFaltas = new javax.swing.JMenuItem();
-        jmCampanhas = new javax.swing.JMenu();
-        jmCampanhasCadProdutos = new javax.swing.JMenuItem();
-        jmCampanhasMetasProd = new javax.swing.JMenuItem();
-        jmRegistrodeVendasCampanhas = new javax.swing.JMenuItem();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        jmVasilhames = new javax.swing.JMenuItem();
         jmpTransacoes = new javax.swing.JMenu();
         jmRegistrarTrocas = new javax.swing.JMenuItem();
         jmAvariasKibom = new javax.swing.JMenuItem();
         jmAvariasYork = new javax.swing.JMenuItem();
-        jmDevolucaoVasilhames = new javax.swing.JMenuItem();
         jmDevolucaoIndisponiveis = new javax.swing.JMenuItem();
+        jmpReforco = new javax.swing.JMenu();
+        jmRegistrarFaltas = new javax.swing.JMenuItem();
+        jmRelatorioDeFaltas = new javax.swing.JMenuItem();
+        jmCampanhas = new javax.swing.JMenu();
+        jmPlanoDeVoo = new javax.swing.JMenuItem();
+        jmCampanhasCadProdutos = new javax.swing.JMenuItem();
+        jmCampanhasMetasProd = new javax.swing.JMenuItem();
+        jmRegistrodeVendasCampanhas = new javax.swing.JMenuItem();
+        jmRelatoriosDeCampanhas = new javax.swing.JMenuItem();
         jmpFaturamento = new javax.swing.JMenu();
         jmFaturamentoCaixa = new javax.swing.JMenuItem();
-        jmPlanoDeVoo = new javax.swing.JMenuItem();
         jmMetas = new javax.swing.JMenuItem();
         jmCancelamentos = new javax.swing.JMenuItem();
         jmPendenciaCTF = new javax.swing.JMenuItem();
@@ -611,70 +611,14 @@ public final class JfPrincipal extends javax.swing.JFrame {
         });
         jmpControleLoja.add(jmIndisponiveis);
 
-        jMenuBar1.add(jmpControleLoja);
-
-        jmpReforco.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/shield_add.png"))); // NOI18N
-        jmpReforco.setText("Reforço");
-
-        jmRegistrarFaltas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/wand.png"))); // NOI18N
-        jmRegistrarFaltas.setText("Registrar Falta");
-        jmRegistrarFaltas.addActionListener(new java.awt.event.ActionListener() {
+        jmVasilhames.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/bricks.png"))); // NOI18N
+        jmVasilhames.setText("Vasilhames");
+        jmVasilhames.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmRegistrarFaltasActionPerformed(evt);
+                jmVasilhamesActionPerformed(evt);
             }
         });
-        jmpReforco.add(jmRegistrarFaltas);
-
-        jmRelatorioDeFaltas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/layout.png"))); // NOI18N
-        jmRelatorioDeFaltas.setText("Relatório de Faltas");
-        jmRelatorioDeFaltas.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmRelatorioDeFaltasActionPerformed(evt);
-            }
-        });
-        jmpReforco.add(jmRelatorioDeFaltas);
-
-        jMenuBar1.add(jmpReforco);
-
-        jmCampanhas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/editar.png"))); // NOI18N
-        jmCampanhas.setText("Campanhas");
-
-        jmCampanhasCadProdutos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/brick_go.png"))); // NOI18N
-        jmCampanhasCadProdutos.setText("Cadastrar Produto de Campanha");
-        jmCampanhasCadProdutos.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmCampanhasCadProdutosActionPerformed(evt);
-            }
-        });
-        jmCampanhas.add(jmCampanhasCadProdutos);
-
-        jmCampanhasMetasProd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/brick_go.png"))); // NOI18N
-        jmCampanhasMetasProd.setText("Cadastar Meta dos Produtos");
-        jmCampanhasMetasProd.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmCampanhasMetasProdActionPerformed(evt);
-            }
-        });
-        jmCampanhas.add(jmCampanhasMetasProd);
-
-        jmRegistrodeVendasCampanhas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/chart_line_edit.png"))); // NOI18N
-        jmRegistrodeVendasCampanhas.setText("Registros de Vendas");
-        jmRegistrodeVendasCampanhas.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmRegistrodeVendasCampanhasActionPerformed(evt);
-            }
-        });
-        jmCampanhas.add(jmRegistrodeVendasCampanhas);
-
-        jMenuItem1.setText("Relatórios");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
-            }
-        });
-        jmCampanhas.add(jMenuItem1);
-
-        jMenuBar1.add(jmCampanhas);
+        jmpControleLoja.add(jmVasilhames);
 
         jmpTransacoes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/cog_go.png"))); // NOI18N
         jmpTransacoes.setText("Transações");
@@ -706,15 +650,6 @@ public final class JfPrincipal extends javax.swing.JFrame {
         });
         jmpTransacoes.add(jmAvariasYork);
 
-        jmDevolucaoVasilhames.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/arrow_refresh.png"))); // NOI18N
-        jmDevolucaoVasilhames.setText("Devolução de Vasilhames");
-        jmDevolucaoVasilhames.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmDevolucaoVasilhamesActionPerformed(evt);
-            }
-        });
-        jmpTransacoes.add(jmDevolucaoVasilhames);
-
         jmDevolucaoIndisponiveis.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/arrow_refresh.png"))); // NOI18N
         jmDevolucaoIndisponiveis.setText("Devolução de Indisponíveis");
         jmDevolucaoIndisponiveis.addActionListener(new java.awt.event.ActionListener() {
@@ -724,7 +659,81 @@ public final class JfPrincipal extends javax.swing.JFrame {
         });
         jmpTransacoes.add(jmDevolucaoIndisponiveis);
 
-        jMenuBar1.add(jmpTransacoes);
+        jmpControleLoja.add(jmpTransacoes);
+
+        jMenuBar1.add(jmpControleLoja);
+
+        jmpReforco.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/shield_add.png"))); // NOI18N
+        jmpReforco.setText("Reforço");
+
+        jmRegistrarFaltas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/wand.png"))); // NOI18N
+        jmRegistrarFaltas.setText("Registrar Falta");
+        jmRegistrarFaltas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmRegistrarFaltasActionPerformed(evt);
+            }
+        });
+        jmpReforco.add(jmRegistrarFaltas);
+
+        jmRelatorioDeFaltas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/layout.png"))); // NOI18N
+        jmRelatorioDeFaltas.setText("Relatório de Faltas");
+        jmRelatorioDeFaltas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmRelatorioDeFaltasActionPerformed(evt);
+            }
+        });
+        jmpReforco.add(jmRelatorioDeFaltas);
+
+        jMenuBar1.add(jmpReforco);
+
+        jmCampanhas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/editar.png"))); // NOI18N
+        jmCampanhas.setText("Campanhas");
+
+        jmPlanoDeVoo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/money_add.png"))); // NOI18N
+        jmPlanoDeVoo.setText("Plano de Voo");
+        jmPlanoDeVoo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmPlanoDeVooActionPerformed(evt);
+            }
+        });
+        jmCampanhas.add(jmPlanoDeVoo);
+
+        jmCampanhasCadProdutos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/brick_go.png"))); // NOI18N
+        jmCampanhasCadProdutos.setText("Cadastrar Produto de Campanha");
+        jmCampanhasCadProdutos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmCampanhasCadProdutosActionPerformed(evt);
+            }
+        });
+        jmCampanhas.add(jmCampanhasCadProdutos);
+
+        jmCampanhasMetasProd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/brick_go.png"))); // NOI18N
+        jmCampanhasMetasProd.setText("Cadastar Meta dos Produtos");
+        jmCampanhasMetasProd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmCampanhasMetasProdActionPerformed(evt);
+            }
+        });
+        jmCampanhas.add(jmCampanhasMetasProd);
+
+        jmRegistrodeVendasCampanhas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/chart_line_edit.png"))); // NOI18N
+        jmRegistrodeVendasCampanhas.setText("Registros de Vendas");
+        jmRegistrodeVendasCampanhas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmRegistrodeVendasCampanhasActionPerformed(evt);
+            }
+        });
+        jmCampanhas.add(jmRegistrodeVendasCampanhas);
+
+        jmRelatoriosDeCampanhas.setText("Relatórios de Campanhas");
+        jmRelatoriosDeCampanhas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmRelatoriosDeCampanhasActionPerformed(evt);
+            }
+        });
+        jmCampanhas.add(jmRelatoriosDeCampanhas);
+
+        jMenuBar1.add(jmCampanhas);
 
         jmpFaturamento.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/money.png"))); // NOI18N
         jmpFaturamento.setText("Faturamento");
@@ -737,15 +746,6 @@ public final class JfPrincipal extends javax.swing.JFrame {
             }
         });
         jmpFaturamento.add(jmFaturamentoCaixa);
-
-        jmPlanoDeVoo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/money_add.png"))); // NOI18N
-        jmPlanoDeVoo.setText("Plano de Voo");
-        jmPlanoDeVoo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmPlanoDeVooActionPerformed(evt);
-            }
-        });
-        jmpFaturamento.add(jmPlanoDeVoo);
 
         jmMetas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/chart_line_edit.png"))); // NOI18N
         jmMetas.setText("Metas");
@@ -1213,7 +1213,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jmAvariasYorkActionPerformed
 
-    private void jmDevolucaoVasilhamesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmDevolucaoVasilhamesActionPerformed
+    private void jmVasilhamesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmVasilhamesActionPerformed
         if (jfControlVasi == null) {
             jfControlVasi = new JifControleVasilhames();
             jDesktopPrincipal.add(jfControlVasi);
@@ -1227,7 +1227,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
         } else {
             JOptionPane.showMessageDialog(this, "Janela ja esta aberta!");
         }
-    }//GEN-LAST:event_jmDevolucaoVasilhamesActionPerformed
+    }//GEN-LAST:event_jmVasilhamesActionPerformed
 
     private void jmDevolucaoIndisponiveisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmDevolucaoIndisponiveisActionPerformed
         if (jfControlIndisponiveis == null) {
@@ -1583,8 +1583,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jmRegistrodeVendasCampanhasActionPerformed
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        // TODO add your handling code here:
+    private void jmRelatoriosDeCampanhasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmRelatoriosDeCampanhasActionPerformed
         if (jfCampanhaRelatorio == null) {
             jfCampanhaRelatorio = new JifCampanhaRelatorio();
             jDesktopPrincipal.add(jfCampanhaRelatorio);
@@ -1598,12 +1597,11 @@ public final class JfPrincipal extends javax.swing.JFrame {
         } else {
             JOptionPane.showMessageDialog(this, "Janela ja esta aberta!");
         }
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    }//GEN-LAST:event_jmRelatoriosDeCampanhasActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JDesktopPane jDesktopPrincipal;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel jlHoraAtual;
     private javax.swing.JLabel jlInformacao;
@@ -1622,7 +1620,6 @@ public final class JfPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmConfiguracoes;
     private javax.swing.JMenuItem jmDashboardMenu;
     private javax.swing.JMenuItem jmDevolucaoIndisponiveis;
-    private javax.swing.JMenuItem jmDevolucaoVasilhames;
     private javax.swing.JMenuItem jmEnviaEmail;
     private javax.swing.JMenuItem jmFaturamentoCaixa;
     private javax.swing.JMenuItem jmIndisponiveis;
@@ -1646,8 +1643,10 @@ public final class JfPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmRelatorioLoja;
     private javax.swing.JMenuItem jmRelatorioProdutos;
     private javax.swing.JMenuItem jmRelatorioUsuarios;
+    private javax.swing.JMenuItem jmRelatoriosDeCampanhas;
     private javax.swing.JMenuItem jmSobre;
     private javax.swing.JMenuItem jmUsuarios;
+    private javax.swing.JMenuItem jmVasilhames;
     private javax.swing.JMenu jmpAjuda;
     private javax.swing.JMenu jmpAtalhos;
     private javax.swing.JMenu jmpControleLoja;

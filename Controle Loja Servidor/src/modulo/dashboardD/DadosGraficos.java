@@ -1,4 +1,4 @@
-package modulo.dashboard;
+package modulo.dashboardD;
 
 import java.beans.PropertyVetoException;
 import java.sql.Date;
@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import modulo.campanhas.venda.CadastroCampanhaDia;
-import modulo.campanhas.venda.CadastroCampanhaDiaDAO;
+import modulo.campanhas.vendaD.CadastroCampanhaDia;
+import modulo.campanhas.vendaD.CadastroCampanhaDiaDAO;
 import modulo.contas.Agua;
 import modulo.contas.Energia;
 import modulo.faceamento.ListaDeRupturaDAO;

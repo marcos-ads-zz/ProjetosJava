@@ -1,4 +1,4 @@
-package modulo.campanhas.venda;
+package modulo.campanhas.vendaD;
 
 import java.awt.BorderLayout;
 import modulo.versao.Versao;
@@ -15,7 +15,7 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import modulo.campanhas.meta.CadastroMetasCampanhas;
 import modulo.campanhas.meta.CadastroMetasCampanhasDAO;
-import modulo.dashboard.DadosGraficos;
+import modulo.dashboardD.DadosGraficos;
 import modulo.metodos.Funcao;
 import modulo.usuarios.Usuario;
 import modulo.usuarios.UsuarioDAO;

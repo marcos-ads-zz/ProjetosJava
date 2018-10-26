@@ -96,7 +96,7 @@ public final class JfLoginUi extends javax.swing.JFrame {
         }
     }
 
-    public void PassDireto() {
+    private void PassDireto() {
         loader.show();
         loginP.hide();
         new java.util.Timer().schedule(new TimerTask() {

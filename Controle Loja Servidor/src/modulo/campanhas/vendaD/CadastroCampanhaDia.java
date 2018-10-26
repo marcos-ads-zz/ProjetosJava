@@ -1,4 +1,4 @@
-package modulo.campanhas.venda;
+package modulo.campanhas.vendaD;
 
 import java.sql.Date;
 

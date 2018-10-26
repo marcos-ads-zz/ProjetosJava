@@ -1,4 +1,4 @@
-package modulo.dashboard;
+package modulo.dashboardD;
 
 /**
  *
