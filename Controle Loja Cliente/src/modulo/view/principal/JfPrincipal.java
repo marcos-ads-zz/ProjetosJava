@@ -58,7 +58,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
     private DateFormat formatoHora;
     private DateFormat formatoDIA;
     private Versao ver;
-    private int numeroLoja = 340;
+    private int numeroLoja = 782;
     private boolean tipo = true;
     private String Aviso = "Atenção";
 
@@ -128,6 +128,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
     }
 
     private void carregaLoja() {
+        
         try {
             Loja f = DAOLOJA.PesquisaNumeroLoja(numeroLoja);
             String nl = Integer.toString(f.getNumero_loja());
