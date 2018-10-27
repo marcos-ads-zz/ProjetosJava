@@ -34,6 +34,7 @@ import modulo.campanhas.CadastroMetasCampanhas;
 import modulo.entidades.CampanhasPlanoDeVoo;
 import modulo.metodos.Funcao;
 import modulo.configuracoes.JfConfig;
+import modulo.imprimePDF.JTelaPrintPDF;
 import modulo.metodos.ConvertMD5;
 import modulo.metodos.SegurancaFuncoes;
 import modulo.view.painel.JfEducaFarma;
@@ -128,16 +129,16 @@ public final class JfPrincipal extends javax.swing.JFrame {
     }
 
     private void carregaLoja() {
-        
+
         try {
             Loja f = DAOLOJA.PesquisaNumeroLoja(numeroLoja);
             String nl = Integer.toString(f.getNumero_loja());
             jtLoja.setText(nl);
             jtLoja1Campanha.setText(nl);
             jtLoja5.setText(nl);
-            jlTituloRuptura.setText("Lista de Ruptura");
-            jlTituloCampanha.setText("Campanhas");
-            jlTituloPlanoDeVoo.setText("Plano de Voo");
+            jlTituloRuptura.setText("Lista de Ruptura!");
+            jlTituloCampanha.setText("Campanhas Ativas!");
+            jlTituloPlanoDeVoo.setText("Plano de Voo!");
 
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao Carregar Dados Loja. " + ex.getMessage());
@@ -160,8 +161,6 @@ public final class JfPrincipal extends javax.swing.JFrame {
             }
             case 1: {
                 //Campanhas
-                jtMatriculaCampanha.setText("");
-                jtNomeUsuarioCampanha.setText("");
                 jtQtdProdutoCampanha.setText("");
                 jcCampanhaObs.setSelectedIndex(0);
                 jtDataDoRegistroCampanha.setText(formatoDIA.format(new Date()));
@@ -819,6 +818,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
         jbSobre = new javax.swing.JButton();
         jbPopular = new javax.swing.JButton();
         jbEditarPlanoDeVoo = new javax.swing.JButton();
+        jbImprimePDF = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setAlwaysOnTop(true);
@@ -1524,7 +1524,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
 
         jPanel4Utilidades.setBackground(new java.awt.Color(153, 255, 0));
 
-        jbGraficos.setBackground(new java.awt.Color(51, 255, 204));
+        jbGraficos.setBackground(new java.awt.Color(0, 153, 153));
         jbGraficos.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
         jbGraficos.setForeground(new java.awt.Color(0, 0, 102));
         jbGraficos.setText("Gráficos");
@@ -1574,7 +1574,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
             }
         });
 
-        jbSobre.setBackground(new java.awt.Color(51, 255, 204));
+        jbSobre.setBackground(new java.awt.Color(255, 255, 102));
         jbSobre.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
         jbSobre.setForeground(new java.awt.Color(0, 0, 102));
         jbSobre.setText("Sobre");
@@ -1604,6 +1604,16 @@ public final class JfPrincipal extends javax.swing.JFrame {
             }
         });
 
+        jbImprimePDF.setBackground(new java.awt.Color(102, 102, 255));
+        jbImprimePDF.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
+        jbImprimePDF.setForeground(new java.awt.Color(0, 0, 102));
+        jbImprimePDF.setText("Imprime Docs");
+        jbImprimePDF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbImprimePDFActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4UtilidadesLayout = new javax.swing.GroupLayout(jPanel4Utilidades);
         jPanel4Utilidades.setLayout(jPanel4UtilidadesLayout);
         jPanel4UtilidadesLayout.setHorizontalGroup(
@@ -1611,20 +1621,25 @@ public final class JfPrincipal extends javax.swing.JFrame {
             .addGroup(jPanel4UtilidadesLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4UtilidadesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jbEducaFarma, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel4UtilidadesLayout.createSequentialGroup()
                         .addGroup(jPanel4UtilidadesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jbGraficos, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jbPopular, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jbPopular, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jbPlanogramas, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
                         .addGroup(jPanel4UtilidadesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jbEditarPlanoDeVoo, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jbDetalhamento, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
-                        .addGroup(jPanel4UtilidadesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jbConfigurar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jbSobre, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jbPlanogramas, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jbEducaFarma, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel4UtilidadesLayout.createSequentialGroup()
+                                .addComponent(jbImprimePDF, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(jPanel4UtilidadesLayout.createSequentialGroup()
+                                .addGroup(jPanel4UtilidadesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jbEditarPlanoDeVoo, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jbDetalhamento, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                                .addGroup(jPanel4UtilidadesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jbConfigurar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jbSobre, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                 .addContainerGap())
         );
         jPanel4UtilidadesLayout.setVerticalGroup(
@@ -1641,7 +1656,9 @@ public final class JfPrincipal extends javax.swing.JFrame {
                     .addComponent(jbSobre, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jbEditarPlanoDeVoo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jbPlanogramas)
+                .addGroup(jPanel4UtilidadesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jbPlanogramas)
+                    .addComponent(jbImprimePDF, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jbEducaFarma)
                 .addContainerGap(7, Short.MAX_VALUE))
@@ -1970,6 +1987,22 @@ public final class JfPrincipal extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jbEditarPlanoDeVooActionPerformed
 
+    private void jbImprimePDFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbImprimePDFActionPerformed
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(JTelaPrintPDF.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        java.awt.EventQueue.invokeLater(() -> {
+            new JTelaPrintPDF().setVisible(true);
+        });
+    }//GEN-LAST:event_jbImprimePDFActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel5;
@@ -1989,6 +2022,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
     private javax.swing.JButton jbEditarPlanoDeVoo;
     private javax.swing.JButton jbEducaFarma;
     private javax.swing.JButton jbGraficos;
+    private javax.swing.JButton jbImprimePDF;
     private javax.swing.JButton jbPlanogramas;
     private javax.swing.JButton jbPopular;
     private javax.swing.JButton jbSalvarCampanha;
