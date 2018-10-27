@@ -8,8 +8,6 @@ package modulo.loja;
 import ConexaoData.Conexao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -31,17 +29,18 @@ public class LojaDAO {
         return p;
     }
 
-    public Loja PesquisaNumeroLoja(int numero_loja) throws Exception {
+    public Loja PesquisaNumeroLoja(int id) throws Exception {
         con = new Conexao();
         Loja objFun = null;
-        String SQL = "select * from relatorios.relatorio.loja where numero_loja = ?";
+        String SQL = "select * from relatorios.relatorio.loja where idloja = ?";
         PreparedStatement ps = con.getCONEXAO().prepareStatement(SQL);
-        ps.setInt(1, numero_loja);
+        ps.setInt(1, id);
         ResultSet rs = ps.executeQuery();
         while (rs.next()) {
             objFun = new Loja();
             objFun.setId(rs.getInt("idloja"));
             objFun.setNome_loja(rs.getString("nome_loja"));
+            objFun.setNumero_loja(rs.getInt("numero_loja"));
             objFun.setGerente_loja(rs.getString("gerente"));
         }
         con.getCONEXAO().close();
@@ -61,79 +60,12 @@ public class LojaDAO {
         return p;
     }
 
-    public boolean Delete(int numero_loja) throws Exception {
-        con = new Conexao();
-        String SQL = "DELETE from relatorios.relatorio.loja where numero_loja = ?";
-        PreparedStatement ps = con.getCONEXAO().prepareStatement(SQL);
-        ps.setInt(1, numero_loja);
-        return ps.executeUpdate() > 0;
-    }
-
-    public List<Loja> TabelaPesquisa() throws Exception {
-        con = new Conexao();
-        Loja objFun = null;
-        List<Loja> loja = new ArrayList<>();
-        String SQL = "select * from relatorios.relatorio.loja";
-        PreparedStatement ps = con.getCONEXAO().prepareStatement(SQL);
-        ResultSet rs = ps.executeQuery();
-        while (rs.next()) {
-            objFun = new Loja();
-            objFun.setId(rs.getInt("idloja"));
-            objFun.setNome_loja(rs.getString("nome_loja"));
-            objFun.setNumero_loja(rs.getInt("numero_loja"));
-            objFun.setGerente_loja(rs.getString("gerente"));
-            loja.add(objFun);
-        }
-        con.getCONEXAO().close();
-        return loja;
-    }
-
-    public ResultSet Select() throws Exception {
-        con = new Conexao();
-        Loja objFun = null;
-        List<Loja> loja = new ArrayList<>();
-        String SQL = "select * from relatorios.relatorio.loja";
-        PreparedStatement ps = con.getCONEXAO().prepareStatement(SQL);
-        ResultSet rs = ps.executeQuery();
-        while (rs.next()) {
-            objFun = new Loja();
-            objFun.setId(rs.getInt("idloja"));
-            objFun.setNome_loja(rs.getString("nome_loja"));
-            objFun.setNumero_loja(rs.getInt("numero_loja"));
-            objFun.setGerente_loja(rs.getString("gerente"));
-            loja.add(objFun);
-        }
-        con.getCONEXAO().close();
-        return rs;
-
-    }
-
-    public List<Loja> TabelaPesquisa2(int numero_loja) throws Exception {
-        con = new Conexao();
-        Loja objFun = null;
-        List<Loja> loja = new ArrayList<>();
-        String SQL = "select * from relatorios.relatorio.loja where numero_loja = ?";
-        PreparedStatement ps = con.getCONEXAO().prepareStatement(SQL);
-        ps.setInt(1, numero_loja);
-        ResultSet rs = ps.executeQuery();
-        while (rs.next()) {
-            objFun = new Loja();
-            objFun.setId(rs.getInt("idloja"));
-            objFun.setNome_loja(rs.getString("nome_loja"));
-            objFun.setNumero_loja(rs.getInt("numero_loja"));
-            objFun.setGerente_loja(rs.getString("gerente"));
-            loja.add(objFun);
-        }
-        con.getCONEXAO().close();
-        return loja;
-    }
-
-    public boolean CheckSelect(int numero_loja) throws Exception {
+    public boolean CheckSelect(int id) throws Exception {
         con = new Conexao();
         boolean check = false;
-        String SQL = "select * from relatorios.relatorio.loja where numero_loja = ?";
+        String SQL = "select * from relatorios.relatorio.loja where idloja = ?";
         PreparedStatement ps = con.getCONEXAO().prepareStatement(SQL);
-        ps.setInt(1, numero_loja);
+        ps.setInt(1, id);
         ResultSet rs = ps.executeQuery();
         if (rs.next()) {
             check = true;

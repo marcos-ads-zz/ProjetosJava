@@ -12,6 +12,8 @@ import modulo.produtos.Produto;
 import modulo.jasper.JasperDAO;
 import java.awt.Dimension;
 import java.util.List;
+import modulo.loja.Loja;
+import modulo.loja.LojaDAO;
 import modulo.metodos.Funcao;
 import modulo.versao.Versao;
 import modulo.view.principal.JfPrincipal;
@@ -35,7 +37,9 @@ public final class JifRelatorioFaltas extends javax.swing.JInternalFrame {
     DateFormat formatoDIA;
     private JifCarregamento jfC = null;
     private Versao ver;
-    private int acao, numeroLoja = 340;
+    private LojaDAO DAO;
+    private Loja objFun;
+    private int numLoja;
 
     public JifRelatorioFaltas() {
         initComponents();
@@ -45,6 +49,7 @@ public final class JifRelatorioFaltas extends javax.swing.JInternalFrame {
         fun = new Funcao();
         ver = new Versao();
         rl = new JasperDAO();
+        DAO = new LojaDAO();
         this.formatoHora = new SimpleDateFormat("HH:mm:ss");
         this.formatoDIA = new SimpleDateFormat("dd/MM/yyyy");
         Thread relogioThred = new Thread(new JifRelatorioFaltas.clsDataHora());
@@ -69,54 +74,61 @@ public final class JifRelatorioFaltas extends javax.swing.JInternalFrame {
 
     public void CarregaLoja() {
         try {
-            jtLoja.setText(Integer.toString(numeroLoja));
+            numLoja = DAO.PesquisaNumeroLoja(1).getNumero_loja();
+            jtLoja.setText(Integer.toString(numLoja));
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "Erro ao Iniciar readTable Matricula." + ex.getMessage());
+            JOptionPane.showMessageDialog(null, "Erro ao Iniciar Loja!! \n Não Cadastrada.\n" + ex.getMessage());
         }
     }
 
     public int validarCampoNovoRelatorio() {
         String opcao = GrupoDeRadioButoes.getSelection().getActionCommand();
         int chek = 0;
-        if ("matricula".equals(opcao)) {
-            jtMatricula.setEnabled(true);
-            jtCod_Interno.setEnabled(false);
-            jtDescricaoItem.setEnabled(false);
-            jtObservacao.setEnabled(false);
-            //jtMatricula.requestFocus();
-            chek = 1;
-        }
-        if ("interno".equals(opcao)) {
-            jtMatricula.setEnabled(false);
-            jtCod_Interno.setEnabled(true);
-            jtDescricaoItem.setEnabled(false);
-            jtObservacao.setEnabled(false);
-            //jtCod_Interno.requestFocus();
-            chek = 2;
-        }
-        if ("descricao".equals(opcao)) {
-            jtMatricula.setEnabled(false);
-            jtCod_Interno.setEnabled(false);
-            jtDescricaoItem.setEnabled(true);
-            jtObservacao.setEnabled(false);
-            //jtDescricaoItem.requestFocus();
-            chek = 3;
-        }
-        if ("observacao".equals(opcao)) {
-            jtMatricula.setEnabled(false);
-            jtCod_Interno.setEnabled(false);
-            jtDescricaoItem.setEnabled(false);
-            jtObservacao.setEnabled(true);
-            //jtObservacao.requestFocus();
-            chek = 4;
-        }
-        if ("data".equals(opcao)) {
-            jtMatricula.setEnabled(false);
-            jtCod_Interno.setEnabled(false);
-            jtDescricaoItem.setEnabled(false);
-            jtObservacao.setEnabled(false);
-            //jdDataPesquisaInicio.requestFocus();
-            chek = 5;
+        if (null != opcao) {
+            switch (opcao) {
+                case "matricula":
+                    jtMatricula.setEnabled(true);
+                    jtCod_Interno.setEnabled(false);
+                    jtDescricaoItem.setEnabled(false);
+                    jtObservacao.setEnabled(false);
+                    //jtMatricula.requestFocus();
+                    chek = 1;
+                    break;
+                case "interno":
+                    jtMatricula.setEnabled(false);
+                    jtCod_Interno.setEnabled(true);
+                    jtDescricaoItem.setEnabled(false);
+                    jtObservacao.setEnabled(false);
+                    //jtCod_Interno.requestFocus();
+                    chek = 2;
+                    break;
+                case "descricao":
+                    jtMatricula.setEnabled(false);
+                    jtCod_Interno.setEnabled(false);
+                    jtDescricaoItem.setEnabled(true);
+                    jtObservacao.setEnabled(false);
+                    //jtDescricaoItem.requestFocus();
+                    chek = 3;
+                    break;
+                case "observacao":
+                    jtMatricula.setEnabled(false);
+                    jtCod_Interno.setEnabled(false);
+                    jtDescricaoItem.setEnabled(false);
+                    jtObservacao.setEnabled(true);
+                    //jtObservacao.requestFocus();
+                    chek = 4;
+                    break;
+                case "data":
+                    jtMatricula.setEnabled(false);
+                    jtCod_Interno.setEnabled(false);
+                    jtDescricaoItem.setEnabled(false);
+                    jtObservacao.setEnabled(false);
+                    //jdDataPesquisaInicio.requestFocus();
+                    chek = 5;
+                    break;
+                default:
+                    break;
+            }
         }
         return chek;
     }
@@ -207,34 +219,34 @@ public final class JifRelatorioFaltas extends javax.swing.JInternalFrame {
         Date data1 = jdDataPesquisaInicio.getDate();
         Date data2 = jdDataPesquisaFim.getDate();
         int mat = Integer.parseInt(jtMatricula.getText());
-        rl.RelatorioMatricula(mat, numeroLoja, fun.convertDateToDateSql(data1), fun.convertDateToDateSql(data2));
+        rl.RelatorioMatricula(mat, numLoja, fun.convertDateToDateSql(data1), fun.convertDateToDateSql(data2));
     }
 
     public void RelatorioCodigoInterno() {
         Date data1 = jdDataPesquisaInicio.getDate();
         Date data2 = jdDataPesquisaFim.getDate();
         int cod = Integer.parseInt(jtCod_Interno.getText());
-        rl.RelatorioCodigoInterno(cod, numeroLoja, fun.convertDateToDateSql(data1), fun.convertDateToDateSql(data2));
+        rl.RelatorioCodigoInterno(cod, numLoja, fun.convertDateToDateSql(data1), fun.convertDateToDateSql(data2));
     }
 
     public void RelatorioDescicao() {
         Date data1 = jdDataPesquisaInicio.getDate();
         Date data2 = jdDataPesquisaFim.getDate();
         String descri = jtDescricaoItem.getText().toUpperCase();
-        rl.RelatorioDescricao(descri, numeroLoja, fun.convertDateToDateSql(data1), fun.convertDateToDateSql(data2));
+        rl.RelatorioDescricao(descri, numLoja, fun.convertDateToDateSql(data1), fun.convertDateToDateSql(data2));
     }
 
     public void RelatorioObservacao() {
         Date data1 = jdDataPesquisaInicio.getDate();
         Date data2 = jdDataPesquisaFim.getDate();
         String obs = jtObservacao.getSelectedItem().toString().toUpperCase();
-        rl.RelatorioObservacao(obs, numeroLoja, fun.convertDateToDateSql(data1), fun.convertDateToDateSql(data2));
+        rl.RelatorioObservacao(obs, numLoja, fun.convertDateToDateSql(data1), fun.convertDateToDateSql(data2));
     }
 
     public void RelatorioData() {
         Date data1 = jdDataPesquisaInicio.getDate();
         Date data2 = jdDataPesquisaFim.getDate();
-        rl.RelatorioData(fun.convertDateToDateSql(data1), fun.convertDateToDateSql(data2), numeroLoja);
+        rl.RelatorioData(fun.convertDateToDateSql(data1), fun.convertDateToDateSql(data2), numLoja);
     }
 
     public void RelatorioDataReforco() {
@@ -246,7 +258,7 @@ public final class JifRelatorioFaltas extends javax.swing.JInternalFrame {
     public void RelatorioDataEnvio() {
         Date data1 = jdDataPesquisaInicio.getDate();
         Date data2 = jdDataPesquisaFim.getDate();
-        rl.RelatorioDataEnvio(fun.convertDateToDateSql(data1), fun.convertDateToDateSql(data2), numeroLoja);
+        rl.RelatorioDataEnvio(fun.convertDateToDateSql(data1), fun.convertDateToDateSql(data2), numLoja);
     }
 
     class clsDataHora implements Runnable {
@@ -628,7 +640,6 @@ public final class JifRelatorioFaltas extends javax.swing.JInternalFrame {
         jbPesquisar.setEnabled(true);
         jbPesquisar.setEnabled(true);
         jbCancelar.setEnabled(true);
-        acao = 0;
     }//GEN-LAST:event_jbCancelarActionPerformed
 
     private void jbPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbPesquisarActionPerformed
@@ -716,6 +727,8 @@ public final class JifRelatorioFaltas extends javax.swing.JInternalFrame {
             public void run() {
                 if (validarCampoNovoRelatorio() == 5) {
                     RelatorioDataEnvio();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Selecione a pesquisa por data para emitir o relatório.");
                 }
                 fechaCarregamento();
             }

@@ -156,7 +156,6 @@ public class CadastroCampanhaDiaDAO {
         }
         con.getCONEXAO().close();
         return camp;
-
     }
 
     public List<CadastroCampanhaDia> PesquisaNome(String nome) throws Exception {
@@ -178,7 +177,6 @@ public class CadastroCampanhaDiaDAO {
         }
         con.getCONEXAO().close();
         return camp;
-
     }
 
     public List<CadastroCampanhaDia> PesquisaNomeGraficoCampanha(Date dataInicio, Date dataFim, String nome) throws Exception {
@@ -206,7 +204,6 @@ public class CadastroCampanhaDiaDAO {
         }
         con.getCONEXAO().close();
         return camp;
-
     }
 
     public int PesquisaNomeGraficoCampanhaQT(Date data, String nome) throws Exception {
@@ -230,6 +227,7 @@ public class CadastroCampanhaDiaDAO {
         con.getCONEXAO().close();
         return objCamp;
     }
+
 //SELECT 
 //SUM(quantidade) AS total 
 //FROM relatorio.campanha 
@@ -237,7 +235,6 @@ public class CadastroCampanhaDiaDAO {
 //between '2018-10-18' 
 //and '2018-10-18' 
 //and desc_campanha = 'BALANCE';
-
 //SELECT * FROM relatorio.campanha where data_registro between ? and ? AND desc_campanha = ?;
     public boolean CheckSelect(String nome) throws Exception {
         con = new Conexao();
