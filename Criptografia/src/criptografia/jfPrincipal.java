@@ -22,23 +22,24 @@ public class jfPrincipal extends javax.swing.JFrame {
     private void limpar() {
         jlInfo.setText("Selecione um tipo de Cifra");
         jComboBoxTipoCripto.setSelectedIndex(0);
-        jtAreaRecebidoJoao.setText("");
-        jTextAreaInterceptJoao.setText("");
-        jtAreaEnviadoJoao.setText("");
-        jtAreaRecebidoMaria.setText("");
-        jTextAreaInterceptMaria.setText("");
-        jtAreaEnviadoMaria.setText("");
+        jtAreaRecebidoDeDeJoao.setText("");
+        jTextAreaInterceptDeJoao.setText("");
+        jtAreaEnviadoDeJoao.setText("");
+        jtAreaRecebidoDeMaria.setText("");
+        jTextAreaInterceptDeMaria.setText("");
+        jtAreaEnviadoDeMaria.setText("");
         jtChave.setText("");
     }
 
     //------------------------------------Java Cifra de Cesar-----------------------
     private String getTextoJoaoEncry() {
-        return fun.encriptar(Integer.parseInt(jtChave.getText()), jtAreaEnviadoJoao.getText());
+        return fun.encriptar(Integer.parseInt(jtChave.getText()), jtAreaEnviadoDeJoao.getText());
     }
 
     private String getTextoMariaEncry() {
-        return fun.encriptar(Integer.parseInt(jtChave.getText()), jtAreaEnviadoMaria.getText());
+        return fun.encriptar(Integer.parseInt(jtChave.getText()), jtAreaEnviadoDeMaria.getText());
     }
+//---------------------------------------------------------------------------------------------------
 
     private String getTextoJoaoDcry() {
         return fun.decriptar(Integer.parseInt(jtChave.getText()), getTextoJoaoEncry());
@@ -54,14 +55,17 @@ public class jfPrincipal extends javax.swing.JFrame {
         switch (v) {
             case 1:
                 if (!jtChave.getText().equals("")) {
-                    if (!jtAreaEnviadoMaria.getText().equals("") & jtChave.getText().equals("")) {
-                        jtAreaRecebidoJoao.insert(getTextoMariaDcry(), jtAreaRecebidoJoao.getCaretPosition());
-                        jtAreaRecebidoJoao.append("\n");
 
-                        jTextAreaInterceptJoao.insert(getTextoMariaEncry(), jTextAreaInterceptJoao.getCaretPosition());
-                        jTextAreaInterceptJoao.append("\n");
+                    if (!jtAreaEnviadoDeMaria.getText().equals("")) {
+                        jtAreaRecebidoDeDeJoao.insert(getTextoMariaDcry(), jtAreaRecebidoDeDeJoao.getCaretPosition());
+                        jtAreaRecebidoDeDeJoao.append("\n");
 
-                        jtAreaEnviadoMaria.setText("");
+                        jTextAreaInterceptDeJoao.insert(getTextoMariaEncry(), jTextAreaInterceptDeJoao.getCaretPosition());
+                        jTextAreaInterceptDeJoao.append("\n");
+
+                        jtAreaEnviadoDeMaria.setText("");
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Informe uma Cifra.");
                     }
                 } else {
                     JOptionPane.showMessageDialog(this, "Informe uma chave.");
@@ -82,14 +86,15 @@ public class jfPrincipal extends javax.swing.JFrame {
         switch (v) {
             case 1:
                 if (!jtChave.getText().equals("")) {
-                    if (!jtAreaEnviadoJoao.getText().equals("")) {
-                        jtAreaRecebidoMaria.insert(getTextoJoaoDcry(), jtAreaRecebidoMaria.getCaretPosition());
-                        jtAreaRecebidoMaria.append("\n");
+                    if (!jtAreaEnviadoDeJoao.getText().equals("")) {
+                        jTextAreaInterceptDeMaria.insert(getTextoJoaoEncry(), jTextAreaInterceptDeMaria.getCaretPosition());
+                        jTextAreaInterceptDeMaria.append("\n");
 
-                        jTextAreaInterceptMaria.insert(getTextoJoaoEncry(), jTextAreaInterceptMaria.getCaretPosition());
-                        jTextAreaInterceptMaria.append("\n");
-
-                        jtAreaEnviadoJoao.setText("");
+                        jtAreaRecebidoDeMaria.insert(getTextoJoaoDcry(), jtAreaRecebidoDeMaria.getCaretPosition());
+                        jtAreaRecebidoDeMaria.append("\n");
+                        jtAreaEnviadoDeJoao.setText("");
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Informe uma Cifra.");
                     }
                 } else {
                     JOptionPane.showMessageDialog(this, "Informe uma chave.");
@@ -118,25 +123,25 @@ public class jfPrincipal extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jtAreaRecebidoJoao = new javax.swing.JTextArea();
+        jtAreaRecebidoDeDeJoao = new javax.swing.JTextArea();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jtAreaEnviadoMaria = new javax.swing.JTextArea();
+        jtAreaEnviadoDeMaria = new javax.swing.JTextArea();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jtAreaEnviadoJoao = new javax.swing.JTextArea();
+        jtAreaEnviadoDeJoao = new javax.swing.JTextArea();
         jbEnviarPorMaria = new javax.swing.JButton();
         jbEnviarPorJoao = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jtAreaRecebidoMaria = new javax.swing.JTextArea();
+        jtAreaRecebidoDeMaria = new javax.swing.JTextArea();
         jLabel6 = new javax.swing.JLabel();
         jScrollPane5 = new javax.swing.JScrollPane();
-        jTextAreaInterceptJoao = new javax.swing.JTextArea();
+        jTextAreaInterceptDeJoao = new javax.swing.JTextArea();
         jComboBoxTipoCripto = new javax.swing.JComboBox<>();
         jButton1 = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane6 = new javax.swing.JScrollPane();
-        jTextAreaInterceptMaria = new javax.swing.JTextArea();
+        jTextAreaInterceptDeMaria = new javax.swing.JTextArea();
         jlInfo = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jtChave = new javax.swing.JTextField();
@@ -156,19 +161,19 @@ public class jfPrincipal extends javax.swing.JFrame {
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("Texto interceptado");
 
-        jtAreaRecebidoJoao.setEditable(false);
-        jtAreaRecebidoJoao.setBackground(new java.awt.Color(255, 255, 153));
-        jtAreaRecebidoJoao.setColumns(20);
-        jtAreaRecebidoJoao.setRows(5);
-        jScrollPane1.setViewportView(jtAreaRecebidoJoao);
+        jtAreaRecebidoDeDeJoao.setEditable(false);
+        jtAreaRecebidoDeDeJoao.setBackground(new java.awt.Color(255, 255, 153));
+        jtAreaRecebidoDeDeJoao.setColumns(20);
+        jtAreaRecebidoDeDeJoao.setRows(5);
+        jScrollPane1.setViewportView(jtAreaRecebidoDeDeJoao);
 
-        jtAreaEnviadoMaria.setColumns(20);
-        jtAreaEnviadoMaria.setRows(5);
-        jScrollPane2.setViewportView(jtAreaEnviadoMaria);
+        jtAreaEnviadoDeMaria.setColumns(20);
+        jtAreaEnviadoDeMaria.setRows(5);
+        jScrollPane2.setViewportView(jtAreaEnviadoDeMaria);
 
-        jtAreaEnviadoJoao.setColumns(20);
-        jtAreaEnviadoJoao.setRows(5);
-        jScrollPane3.setViewportView(jtAreaEnviadoJoao);
+        jtAreaEnviadoDeJoao.setColumns(20);
+        jtAreaEnviadoDeJoao.setRows(5);
+        jScrollPane3.setViewportView(jtAreaEnviadoDeJoao);
 
         jbEnviarPorMaria.setText("Enviar \"Maria\"");
         jbEnviarPorMaria.addActionListener(new java.awt.event.ActionListener() {
@@ -192,21 +197,21 @@ public class jfPrincipal extends javax.swing.JFrame {
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel5.setText("Messagem de João");
 
-        jtAreaRecebidoMaria.setEditable(false);
-        jtAreaRecebidoMaria.setBackground(new java.awt.Color(255, 255, 153));
-        jtAreaRecebidoMaria.setColumns(20);
-        jtAreaRecebidoMaria.setRows(5);
-        jScrollPane4.setViewportView(jtAreaRecebidoMaria);
+        jtAreaRecebidoDeMaria.setEditable(false);
+        jtAreaRecebidoDeMaria.setBackground(new java.awt.Color(255, 255, 153));
+        jtAreaRecebidoDeMaria.setColumns(20);
+        jtAreaRecebidoDeMaria.setRows(5);
+        jScrollPane4.setViewportView(jtAreaRecebidoDeMaria);
 
         jLabel6.setFont(new java.awt.Font("sansserif", 3, 14)); // NOI18N
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel6.setText("Messagem Digitada por Maria");
 
-        jTextAreaInterceptJoao.setEditable(false);
-        jTextAreaInterceptJoao.setBackground(new java.awt.Color(51, 102, 255));
-        jTextAreaInterceptJoao.setColumns(20);
-        jTextAreaInterceptJoao.setRows(5);
-        jScrollPane5.setViewportView(jTextAreaInterceptJoao);
+        jTextAreaInterceptDeJoao.setEditable(false);
+        jTextAreaInterceptDeJoao.setBackground(new java.awt.Color(51, 102, 255));
+        jTextAreaInterceptDeJoao.setColumns(20);
+        jTextAreaInterceptDeJoao.setRows(5);
+        jScrollPane5.setViewportView(jTextAreaInterceptDeJoao);
 
         jComboBoxTipoCripto.setFont(new java.awt.Font("sansserif", 3, 14)); // NOI18N
         jComboBoxTipoCripto.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione o Tipo de Criptografia", "Java Cifra de Cesar", "Java Monoalfabética", "Java Polialfabética", "Base64", "AES", "MD5", "Blowfish" }));
@@ -229,11 +234,11 @@ public class jfPrincipal extends javax.swing.JFrame {
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText("Texto interceptado");
 
-        jTextAreaInterceptMaria.setEditable(false);
-        jTextAreaInterceptMaria.setBackground(new java.awt.Color(51, 102, 255));
-        jTextAreaInterceptMaria.setColumns(20);
-        jTextAreaInterceptMaria.setRows(5);
-        jScrollPane6.setViewportView(jTextAreaInterceptMaria);
+        jTextAreaInterceptDeMaria.setEditable(false);
+        jTextAreaInterceptDeMaria.setBackground(new java.awt.Color(51, 102, 255));
+        jTextAreaInterceptDeMaria.setColumns(20);
+        jTextAreaInterceptDeMaria.setRows(5);
+        jScrollPane6.setViewportView(jTextAreaInterceptDeMaria);
 
         jlInfo.setFont(new java.awt.Font("sansserif", 3, 36)); // NOI18N
         jlInfo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -393,15 +398,15 @@ public class jfPrincipal extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
-    private javax.swing.JTextArea jTextAreaInterceptJoao;
-    private javax.swing.JTextArea jTextAreaInterceptMaria;
+    private javax.swing.JTextArea jTextAreaInterceptDeJoao;
+    private javax.swing.JTextArea jTextAreaInterceptDeMaria;
     private javax.swing.JButton jbEnviarPorJoao;
     private javax.swing.JButton jbEnviarPorMaria;
     private javax.swing.JLabel jlInfo;
-    private javax.swing.JTextArea jtAreaEnviadoJoao;
-    private javax.swing.JTextArea jtAreaEnviadoMaria;
-    private javax.swing.JTextArea jtAreaRecebidoJoao;
-    private javax.swing.JTextArea jtAreaRecebidoMaria;
+    private javax.swing.JTextArea jtAreaEnviadoDeJoao;
+    private javax.swing.JTextArea jtAreaEnviadoDeMaria;
+    private javax.swing.JTextArea jtAreaRecebidoDeDeJoao;
+    private javax.swing.JTextArea jtAreaRecebidoDeMaria;
     private javax.swing.JTextField jtChave;
     // End of variables declaration//GEN-END:variables
 }
