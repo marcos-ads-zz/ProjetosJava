@@ -819,6 +819,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
         jbPopular = new javax.swing.JButton();
         jbEditarPlanoDeVoo = new javax.swing.JButton();
         jbImprimePDF = new javax.swing.JButton();
+        jbParcialCampanhas = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setAlwaysOnTop(true);
@@ -1544,30 +1545,33 @@ public final class JfPrincipal extends javax.swing.JFrame {
             }
         });
 
-        jbDetalhamento.setBackground(new java.awt.Color(51, 255, 204));
+        jbDetalhamento.setBackground(new java.awt.Color(0, 153, 153));
         jbDetalhamento.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
         jbDetalhamento.setForeground(new java.awt.Color(0, 0, 102));
         jbDetalhamento.setText("Detalhamento");
+        jbDetalhamento.setEnabled(false);
         jbDetalhamento.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jbDetalhamentoActionPerformed(evt);
             }
         });
 
-        jbPlanogramas.setBackground(new java.awt.Color(51, 255, 204));
+        jbPlanogramas.setBackground(new java.awt.Color(0, 153, 153));
         jbPlanogramas.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
         jbPlanogramas.setForeground(new java.awt.Color(0, 0, 102));
         jbPlanogramas.setText("Planogramas");
+        jbPlanogramas.setEnabled(false);
         jbPlanogramas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jbPlanogramasActionPerformed(evt);
             }
         });
 
-        jbEducaFarma.setBackground(new java.awt.Color(51, 255, 204));
+        jbEducaFarma.setBackground(new java.awt.Color(0, 153, 153));
         jbEducaFarma.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
         jbEducaFarma.setForeground(new java.awt.Color(0, 0, 102));
         jbEducaFarma.setText("EducaFarma");
+        jbEducaFarma.setEnabled(false);
         jbEducaFarma.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jbEducaFarmaActionPerformed(evt);
@@ -1584,33 +1588,46 @@ public final class JfPrincipal extends javax.swing.JFrame {
             }
         });
 
-        jbPopular.setBackground(new java.awt.Color(51, 255, 204));
+        jbPopular.setBackground(new java.awt.Color(0, 153, 153));
         jbPopular.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
         jbPopular.setForeground(new java.awt.Color(0, 0, 102));
         jbPopular.setText("Popular");
+        jbPopular.setEnabled(false);
         jbPopular.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jbPopularActionPerformed(evt);
             }
         });
 
-        jbEditarPlanoDeVoo.setBackground(new java.awt.Color(51, 255, 204));
+        jbEditarPlanoDeVoo.setBackground(new java.awt.Color(0, 153, 153));
         jbEditarPlanoDeVoo.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
         jbEditarPlanoDeVoo.setForeground(new java.awt.Color(0, 0, 102));
         jbEditarPlanoDeVoo.setText("Plano de Voo");
+        jbEditarPlanoDeVoo.setEnabled(false);
         jbEditarPlanoDeVoo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jbEditarPlanoDeVooActionPerformed(evt);
             }
         });
 
-        jbImprimePDF.setBackground(new java.awt.Color(102, 102, 255));
+        jbImprimePDF.setBackground(new java.awt.Color(0, 153, 153));
         jbImprimePDF.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
         jbImprimePDF.setForeground(new java.awt.Color(0, 0, 102));
         jbImprimePDF.setText("Imprime Docs");
         jbImprimePDF.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jbImprimePDFActionPerformed(evt);
+            }
+        });
+
+        jbParcialCampanhas.setBackground(new java.awt.Color(0, 153, 153));
+        jbParcialCampanhas.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
+        jbParcialCampanhas.setForeground(new java.awt.Color(0, 0, 102));
+        jbParcialCampanhas.setText("Parcial Camp.");
+        jbParcialCampanhas.setEnabled(false);
+        jbParcialCampanhas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbParcialCampanhasActionPerformed(evt);
             }
         });
 
@@ -1621,25 +1638,25 @@ public final class JfPrincipal extends javax.swing.JFrame {
             .addGroup(jPanel4UtilidadesLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4UtilidadesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jbEducaFarma, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jbGraficos, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jbPopular, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jbPlanogramas, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jbEducaFarma, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                .addGroup(jPanel4UtilidadesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4UtilidadesLayout.createSequentialGroup()
                         .addGroup(jPanel4UtilidadesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jbGraficos, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jbPopular, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jbPlanogramas, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jbEditarPlanoDeVoo, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jbDetalhamento, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
                         .addGroup(jPanel4UtilidadesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel4UtilidadesLayout.createSequentialGroup()
-                                .addComponent(jbImprimePDF, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(jPanel4UtilidadesLayout.createSequentialGroup()
-                                .addGroup(jPanel4UtilidadesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jbEditarPlanoDeVoo, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jbDetalhamento, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
-                                .addGroup(jPanel4UtilidadesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jbConfigurar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jbSobre, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                            .addComponent(jbConfigurar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jbSobre, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel4UtilidadesLayout.createSequentialGroup()
+                        .addGroup(jPanel4UtilidadesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jbParcialCampanhas, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jbImprimePDF, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel4UtilidadesLayout.setVerticalGroup(
@@ -1660,7 +1677,9 @@ public final class JfPrincipal extends javax.swing.JFrame {
                     .addComponent(jbPlanogramas)
                     .addComponent(jbImprimePDF, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jbEducaFarma)
+                .addGroup(jPanel4UtilidadesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jbEducaFarma)
+                    .addComponent(jbParcialCampanhas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(7, Short.MAX_VALUE))
         );
 
@@ -2003,6 +2022,10 @@ public final class JfPrincipal extends javax.swing.JFrame {
         });
     }//GEN-LAST:event_jbImprimePDFActionPerformed
 
+    private void jbParcialCampanhasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbParcialCampanhasActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jbParcialCampanhasActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel5;
@@ -2023,6 +2046,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
     private javax.swing.JButton jbEducaFarma;
     private javax.swing.JButton jbGraficos;
     private javax.swing.JButton jbImprimePDF;
+    private javax.swing.JButton jbParcialCampanhas;
     private javax.swing.JButton jbPlanogramas;
     private javax.swing.JButton jbPopular;
     private javax.swing.JButton jbSalvarCampanha;

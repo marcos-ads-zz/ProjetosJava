@@ -12,6 +12,8 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import javax.swing.ImageIcon;
+import modulo.versao.Versao;
+import modulo.view.painel.jfCarregando;
 
 /**
  *
@@ -19,24 +21,151 @@ import javax.swing.ImageIcon;
  */
 public final class JTelaPrintPDF extends javax.swing.JFrame {
 
-    String impressora = null;
-    String impressoraLocal = "SWEDA SI-300S";
-    String Arquivo = null;
-    String opcao;
-    boolean chek;
-    String Pasta = "C:\\PmenosF\\ArquivosPDF";
-    int quantidade = 0;
-    int cont = 0, cont2 = 0, reg = 0;
+    private String impressora = null;
+    //private String impressoraLocal = "SWEDA SI-300S";
+    private String Arquivo = null;
+    private String opcao;
+    private Versao ver = new Versao();
+    //private boolean chek;
+    private String Pasta = "C:\\PmenosF\\ArquivosPDF";
+    private int quantidade = 0;
+    private int cont = 0, cont2 = 0, reg = 0;
 
     public JTelaPrintPDF() {
         initComponents();
+        setTitle("Sistema de Impressão Simples: " + ver.getVersao());
         DefaultTableModel modelo = (DefaultTableModel) jTableArquivos.getModel();
         jTableArquivos.setRowSorter(new TableRowSorter(modelo));
         DefaultTableModel modelo2 = (DefaultTableModel) jTableImpressora.getModel();
         jTableImpressora.setRowSorter(new TableRowSorter(modelo2));
         QuantidadedeImpressoes();
-        jLStatus.setText("Sistema Pronto");
+        jLStatus.setText("Sistema Pronto!!");
         ClockRunnable();
+    }
+
+    private void QuantidadedeImpressoes() {
+        new Thread() {
+            @Override
+            public void run() {
+                ListaArquivos();
+                listarImpressorasDisponíveis();
+                try {
+                    sleep(5000);
+                } catch (InterruptedException ex) {
+                    jLStatus.setText("Erro no Sleep: " + ex.getMessage());
+                }
+            }
+        }.start();
+    }
+
+    private void Imprimir() throws InterruptedException {
+        if (jTquantidade.getText() == null || jTquantidade.getText().trim().equals("")) {
+        } else {
+            quantidade = Integer.parseInt(jTquantidade.getText());
+        }
+
+        if (quantidade == 0) {
+            if (jTImpressoraSelecionada.getText() == null || jTImpressoraSelecionada.getText().trim().equals("")) {
+                JOptionPane.showMessageDialog(this, "Selecione Uma Impressora.");
+            } else if (jTArquivoSelecionado.getText() == null || jTArquivoSelecionado.getText().trim().equals("")) {
+                JOptionPane.showMessageDialog(this, "Selecione Um Arquivo");
+            } else {
+                try {
+                    Carregar();
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(this, "Erro: " + ex.getMessage());
+                }
+            }
+        } else {
+            if (jTImpressoraSelecionada.getText() == null || jTImpressoraSelecionada.getText().trim().equals("")) {
+                JOptionPane.showMessageDialog(this, "Selecione Uma Impressora.");
+            } else if (jTArquivoSelecionado.getText() == null || jTArquivoSelecionado.getText().trim().equals("")) {
+                JOptionPane.showMessageDialog(this, "Selecione Um Arquivo");
+            } else {
+                for (int i = 1; i <= quantidade; i++) {
+                    try {
+                        jLReg.setText(Integer.toString(quantidade - i));
+                        sleep(1000);
+                        Carregar();
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(this, "Erro: " + ex.getMessage());
+                    } catch (InterruptedException ex) {
+                        JOptionPane.showMessageDialog(this, "Erro Sleep: " + ex.getMessage());
+                    }
+                }
+            }
+        }
+        jLStatus.setText("Processo Finalizado.");
+        jLStatus.setForeground(Color.green);
+    }
+
+    private void ListaArquivos() {
+        File file = new File(Pasta);
+        String local = file.getPath();
+        DefaultTableModel modelo = (DefaultTableModel) jTableArquivos.getModel();
+        modelo.setNumRows(0);
+        if (file.exists()) {
+            for (String p : file.list()) {
+                cont++;
+                modelo.addRow(new String[]{
+                    Integer.toString(cont), local.concat("\\" + p)
+                });
+            }
+        } else {
+            jTArquivoSelecionado.setText("Sem Arquivos Disponíveis!");
+        }
+
+    }
+
+    private void listarImpressorasDisponíveis() {
+        PrintService[] pservices = PrinterJob.lookupPrintServices();
+        DefaultTableModel modelo = (DefaultTableModel) jTableImpressora.getModel();
+        modelo.setNumRows(0);
+        if (pservices.length > 0) {
+            for (PrintService ps : pservices) {
+                cont2++;
+                modelo.addRow(new String[]{
+                    Integer.toString(cont2), ps.getName()
+                });
+            }
+        } else {
+            jTImpressoraSelecionada.setText("Sem Impreessoras Disponíveis!");
+        }
+    }
+
+    private void Carregar() throws IOException {
+        try {
+            PrintPdf.PrintPDF(impressora, Arquivo, Arquivo, opcao);
+        } catch (PrinterException ex) {
+            JOptionPane.showMessageDialog(this, "Erro: " + ex.getMessage());
+        }
+    }
+
+    private void ClockRunnable() {
+        new Thread() {
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        EventQueue.invokeLater(() -> {
+                        });
+                        sleep(100);
+                        opcao = buttonGrupo.getSelection().getActionCommand();
+                        jtPapel.setText(opcao);
+                    } catch (InterruptedException ex) {
+                        JOptionPane.showMessageDialog(null, "Erro no Sleep: " + ex.getMessage());
+                    }
+                    if (reg >= 0) {
+                        int t = reg--;
+                        String k = Integer.toString(t);
+                        jLReg.setText(k);
+                        if (t == 0) {
+                            jLStatus.setText("Sistema Pronto!!");
+                        }
+                    }
+                }
+            }
+        }.start();
     }
 
     @SuppressWarnings("unchecked")
@@ -54,8 +183,9 @@ public final class JTelaPrintPDF extends javax.swing.JFrame {
         jrPapelTermico = new javax.swing.JRadioButton();
         jrPapelA4 = new javax.swing.JRadioButton();
         jtPapel = new javax.swing.JTextField();
-        jBSair = new javax.swing.JButton();
         jTquantidade = new javax.swing.JFormattedTextField();
+        jbAtualizar = new javax.swing.JButton();
+        jbSair = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableArquivos = new javax.swing.JTable();
@@ -65,7 +195,6 @@ public final class JTelaPrintPDF extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Sistema de Impressão Simples v 1.0.0");
         setAlwaysOnTop(true);
         setFocusable(false);
         setIconImage(new ImageIcon(getClass().getResource("/icons/asterisk_orange.png")).getImage());
@@ -73,12 +202,18 @@ public final class JTelaPrintPDF extends javax.swing.JFrame {
 
         jTImpressoraSelecionada.setEditable(false);
         jTImpressoraSelecionada.setBackground(new java.awt.Color(153, 153, 153));
+        jTImpressoraSelecionada.setFont(new java.awt.Font("sansserif", 1, 12)); // NOI18N
         jTImpressoraSelecionada.setForeground(new java.awt.Color(255, 255, 0));
 
+        jLabel1.setFont(new java.awt.Font("sansserif", 1, 12)); // NOI18N
         jLabel1.setText("Impressora Selecionada");
 
+        jPanel1.setBackground(new java.awt.Color(204, 255, 204));
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createMatteBorder(2, 2, 2, 2, new java.awt.Color(0, 204, 0)), "Relatório Disponíveris", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 3, 14), new java.awt.Color(0, 0, 204))); // NOI18N
 
+        jBImprimir.setBackground(new java.awt.Color(51, 51, 255));
+        jBImprimir.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
+        jBImprimir.setForeground(new java.awt.Color(0, 204, 153));
         jBImprimir.setText("Imprimir");
         jBImprimir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -86,88 +221,118 @@ public final class JTelaPrintPDF extends javax.swing.JFrame {
             }
         });
 
+        jLabel3.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
         jLabel3.setText("Quantidade De Impressões");
+
+        jLStatus.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
+        jLStatus.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLStatus.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
 
         jLReg.setBackground(new java.awt.Color(255, 255, 102));
         jLReg.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
         jLReg.setForeground(new java.awt.Color(0, 0, 204));
         jLReg.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLReg.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
 
         buttonGrupo.add(jrPapelTermico);
+        jrPapelTermico.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
         jrPapelTermico.setSelected(true);
         jrPapelTermico.setText("Papel Termico");
         jrPapelTermico.setActionCommand("Termico");
 
         buttonGrupo.add(jrPapelA4);
+        jrPapelA4.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
         jrPapelA4.setText("Papel A4");
         jrPapelA4.setActionCommand("A4");
 
+        jtPapel.setBackground(new java.awt.Color(204, 204, 204));
+        jtPapel.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
+        jtPapel.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jtPapel.setEnabled(false);
 
-        jBSair.setText("Sair");
-        jBSair.addActionListener(new java.awt.event.ActionListener() {
+        jTquantidade.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
+        jTquantidade.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
+
+        jbAtualizar.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
+        jbAtualizar.setText("Atualizar Arquivos");
+        jbAtualizar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBSairActionPerformed(evt);
+                jbAtualizarActionPerformed(evt);
             }
         });
 
-        jTquantidade.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
+        jbSair.setBackground(new java.awt.Color(204, 255, 204));
+        jbSair.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
+        jbSair.setForeground(new java.awt.Color(51, 0, 255));
+        jbSair.setText("Sair");
+        jbSair.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbSairActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(64, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jrPapelTermico)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jrPapelA4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jtPapel, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTquantidade, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addComponent(jTquantidade, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
                         .addComponent(jBImprimir)
                         .addGap(18, 18, 18)
-                        .addComponent(jBSair)
+                        .addComponent(jbAtualizar)
                         .addGap(18, 18, 18)
-                        .addComponent(jLReg, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jbSair)
+                        .addGap(0, 16, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jrPapelTermico)
-                        .addGap(18, 18, 18)
-                        .addComponent(jrPapelA4)
-                        .addGap(18, 18, 18)
-                        .addComponent(jtPapel, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(jLStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLReg, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(17, 17, 17))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLStatus, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jrPapelTermico)
                         .addComponent(jrPapelA4)
-                        .addComponent(jtPapel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jtPapel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLReg, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel3)
-                        .addComponent(jBImprimir)
-                        .addComponent(jBSair)
-                        .addComponent(jTquantidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLReg, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(jBImprimir)
+                    .addComponent(jTquantidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jbAtualizar)
+                    .addComponent(jbSair))
                 .addContainerGap())
         );
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createMatteBorder(2, 2, 2, 2, new java.awt.Color(255, 102, 0)), "Selecione a Impressora e o Arquivo", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 3, 14), new java.awt.Color(0, 204, 102))); // NOI18N
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createMatteBorder(2, 2, 2, 2, new java.awt.Color(255, 102, 0)), "Selecione uma Impressora e um Arquivo para Impressão!", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 18), new java.awt.Color(0, 204, 102))); // NOI18N
 
         jTableArquivos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Nº", "Descrição"
+                "Nº", "Descrição dos Arquivos na Pasta ArquivosPDF"
             }
         ));
         jTableArquivos.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -185,9 +350,17 @@ public final class JTelaPrintPDF extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Nº", "Descrição"
+                "Nº", "Descrição das Impressoras Instaladas"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jTableImpressora.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jTableImpressoraMouseClicked(evt);
@@ -214,13 +387,15 @@ public final class JTelaPrintPDF extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE))
         );
 
         jTArquivoSelecionado.setEditable(false);
         jTArquivoSelecionado.setBackground(new java.awt.Color(153, 153, 153));
+        jTArquivoSelecionado.setFont(new java.awt.Font("sansserif", 1, 12)); // NOI18N
         jTArquivoSelecionado.setForeground(new java.awt.Color(255, 255, 0));
 
+        jLabel2.setFont(new java.awt.Font("sansserif", 1, 12)); // NOI18N
         jLabel2.setText("Arquivo Selecionado");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -264,10 +439,6 @@ public final class JTelaPrintPDF extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jBSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBSairActionPerformed
-        this.dispose();
-    }//GEN-LAST:event_jBSairActionPerformed
-
     private void jTableImpressoraMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableImpressoraMouseClicked
         if (jTableImpressora.getSelectedRow() != -1) {
             Object nome1;
@@ -305,11 +476,11 @@ public final class JTelaPrintPDF extends javax.swing.JFrame {
                         } else {
                             switch (opcao) {
                                 case "Termico":
-                                    chek = true;
+                                    //chek = true;
                                     Imprimir();
                                     break;
                                 case "A4":
-                                    chek = false;
+                                    //chek = false;
                                     Imprimir();
                                     break;
                                 default:
@@ -332,129 +503,23 @@ public final class JTelaPrintPDF extends javax.swing.JFrame {
         t.start();
     }//GEN-LAST:event_jBImprimirActionPerformed
 
-    public void QuantidadedeImpressoes() {
-        new Thread() {
-            @Override
-            public void run() {
-                ListaArquivos();
-                listarImpressorasDisponíveis();
-                try {
-                    sleep(5000);
-                } catch (InterruptedException ex) {
-                    jLStatus.setText("Erro no Sleep: " + ex.getMessage());
-                }
-            }
-        }.start();
-    }
-
-    public void Imprimir() throws InterruptedException {
-        if (jTquantidade.getText() == null || jTquantidade.getText().trim().equals("")) {
+    private void jbAtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbAtualizarActionPerformed
+        if (cont <= 0 || cont2 <= 0) {
+            QuantidadedeImpressoes();
         } else {
-            quantidade = Integer.parseInt(jTquantidade.getText());
+            cont = 0;
+            cont2 = 0;
+            QuantidadedeImpressoes();
         }
+    }//GEN-LAST:event_jbAtualizarActionPerformed
 
-        if (quantidade == 0) {
-            if (jTImpressoraSelecionada.getText() == null || jTImpressoraSelecionada.getText().trim().equals("")) {
-                JOptionPane.showMessageDialog(this, "Selecione Uma Impressora.");
-            } else if (jTArquivoSelecionado.getText() == null || jTArquivoSelecionado.getText().trim().equals("")) {
-                JOptionPane.showMessageDialog(this, "Selecione Um Arquivo");
-            } else {
-                try {
-                    Carregar();
-                } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(this, "Erro: " + ex.getMessage());
-                }
-            }
-        } else {
-            if (jTImpressoraSelecionada.getText() == null || jTImpressoraSelecionada.getText().trim().equals("")) {
-                JOptionPane.showMessageDialog(this, "Selecione Uma Impressora.");
-            } else if (jTArquivoSelecionado.getText() == null || jTArquivoSelecionado.getText().trim().equals("")) {
-                JOptionPane.showMessageDialog(this, "Selecione Um Arquivo");
-            } else {
-                for (int i = 0; i < quantidade; i++) {
-                    try {
-                        sleep(1000);
-                        Carregar();
-                    } catch (IOException ex) {
-                        JOptionPane.showMessageDialog(this, "Erro: " + ex.getMessage());
-                    } catch (InterruptedException ex) {
-                        JOptionPane.showMessageDialog(this, "Erro Sleep: " + ex.getMessage());
-                    }
-                }
-            }
-        }
-        jLStatus.setText("Processo Finalizado.");
-        jLStatus.setForeground(Color.green);
-    }
-
-    public void ListaArquivos() {
-        File file = new File(Pasta);
-        String local = file.getPath();
-        DefaultTableModel modelo = (DefaultTableModel) jTableArquivos.getModel();
-        modelo.setNumRows(0);
-        for (String p : file.list()) {
-            cont++;
-            modelo.addRow(new String[]{
-                Integer.toString(cont), local.concat("\\" + p)
-            });
-        }
-    }
-
-    public void listarImpressorasDisponíveis() {
-        PrintService[] pservices = PrinterJob.lookupPrintServices();
-        String nome = "";
-        DefaultTableModel modelo = (DefaultTableModel) jTableImpressora.getModel();
-        modelo.setNumRows(0);
-        if (pservices.length > 0) {
-            for (PrintService ps : pservices) {
-                cont2++;
-                nome += ps.getName() + "\n";
-                modelo.addRow(new String[]{
-                    Integer.toString(cont2), ps.getName()
-                });
-            }
-        }
-    }
-
-    public void Carregar() throws IOException {
-        try {
-            PrintPdf.PrintPDF(impressora, Arquivo, Arquivo, opcao);
-        } catch (PrinterException ex) {
-            JOptionPane.showMessageDialog(this, "Erro: " + ex.getMessage());
-        }
-    }
-
-    private void ClockRunnable() {
-        new Thread() {
-            @Override
-            public void run() {
-                while (true) {
-                    try {
-                        EventQueue.invokeLater(() -> {
-                        });
-                        sleep(100);
-                        opcao = buttonGrupo.getSelection().getActionCommand();
-                        jtPapel.setText(opcao);
-                    } catch (InterruptedException ex) {
-                        JOptionPane.showMessageDialog(null, "Erro no Sleep: " + ex.getMessage());
-                    }
-                    if (reg >= 0) {
-                        int t = reg--;
-                        String k = Integer.toString(t);
-                        jLReg.setText(k);
-                        if (t == 0) {
-                            jLStatus.setText("Sistema Pronto");
-                        }
-                    }
-                }
-            }
-        }.start();
-    }
+    private void jbSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbSairActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_jbSairActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGrupo;
     private javax.swing.JButton jBImprimir;
-    private javax.swing.JButton jBSair;
     private javax.swing.JLabel jLReg;
     private javax.swing.JLabel jLStatus;
     private javax.swing.JLabel jLabel1;
@@ -469,6 +534,8 @@ public final class JTelaPrintPDF extends javax.swing.JFrame {
     private javax.swing.JTable jTableArquivos;
     private javax.swing.JTable jTableImpressora;
     private javax.swing.JFormattedTextField jTquantidade;
+    private javax.swing.JButton jbAtualizar;
+    private javax.swing.JButton jbSair;
     private javax.swing.JRadioButton jrPapelA4;
     private javax.swing.JRadioButton jrPapelTermico;
     private javax.swing.JTextField jtPapel;
