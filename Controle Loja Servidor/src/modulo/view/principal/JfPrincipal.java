@@ -16,7 +16,7 @@ import modulo.loja.JifLoja;
 import modulo.produtos.JifProdutos;
 import javax.swing.JOptionPane;
 import modulo.desenvolvimento.frames.JifAniversariantes;
-import modulo.campanhas.vendaD.JifCadastroCampanhaDia;
+import modulo.campanhas.vendaD.JifAcompanhamentoCampanhas;
 import modulo.planodevoo.JifCampanhasCaixa;
 import modulo.emailD.JifEmail;
 import modulo.avariasD.JifAvariasKibom;
@@ -51,10 +51,11 @@ import modulo.versao.Versao;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import modulo.ajuda.JifAjuda;
+import modulo.almoxarifado.JifAlmoxarifado;
 import modulo.atualizacao.JifAjusteParaAtualizacao;
 import modulo.campanhas.meta.JifCadastroMetasCampanhas;
 import modulo.campanhas.cadastro.JifCadastroDescricaoCampanhas;
-import modulo.campanhas.vendaD.JifCampanhaRelatorio;
+import modulo.relatorio.JifGeraRelatorios;
 import modulo.dashboardD.Dashboard;
 import modulo.metodos.Funcao;
 import modulo.seguranca.JifSeguranca;
@@ -108,7 +109,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
     private JifInventario jfInv = null;
     private JifControleDeContas jfContas = null;
     private JifBackup jfBack = null;
-    private JifCadastroCampanhaDia jfPower = null;
+    private JifAcompanhamentoCampanhas jfPower = null;
     private JifCampanhasCaixa jfCampC = null;
     private JifEmail jfEmail = null;
     private JifCreditoDigital jfCrediDig = null;
@@ -121,8 +122,9 @@ public final class JfPrincipal extends javax.swing.JFrame {
     private JifSeguranca jfSeguranca = null;
     private JifCadastroDescricaoCampanhas jfCampanhasCadProd = null;
     private JifCadastroMetasCampanhas jfCampanhasMetas = null;
-    private JifCadastroCampanhaDia jfCampanhasVendaDia = null;
-    private JifCampanhaRelatorio jfCampanhaRelatorio = null;
+    private JifAcompanhamentoCampanhas jfCampanhasVendaDia = null;
+    private JifGeraRelatorios jfCampanhaRelatorio = null;
+    private JifAlmoxarifado jfAlmox = null;
 
     public JfPrincipal() {
         initComponents();
@@ -167,7 +169,6 @@ public final class JfPrincipal extends javax.swing.JFrame {
             jmpHome.setEnabled(true);//TODOS
             jmpReforco.setEnabled(true);//TODOS
             jmpRelatorios.setEnabled(true);//TODOS
-            jmpTransacoes.setEnabled(true);//TODOS
 
             jmNotasSistema.setEnabled(true);//TODOS
             jmLogof.setEnabled(true);//TODOS
@@ -210,7 +211,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
             //Gerente, Assistente, Farmaceutico.
             jmIndisponiveis.setEnabled(g);//9 A 7
             jmBackup.setEnabled(g);//9 A 7
-            jmDevolucaoIndisponiveis.setEnabled(g);//9 A 7
+            jmIndisponiveis.setEnabled(g);//9 A 7
             jmAguaELuz.setEnabled(g);// 9 A 7
             jmAvariasKibom.setEnabled(g);//9 A 7
             jmAvariasYork.setEnabled(g);//9 A 7
@@ -375,22 +376,23 @@ public final class JfPrincipal extends javax.swing.JFrame {
         jmpControleLoja = new javax.swing.JMenu();
         jmAguaELuz = new javax.swing.JMenuItem();
         jmInventario = new javax.swing.JMenuItem();
-        jmIndisponiveis = new javax.swing.JMenuItem();
         jmVasilhames = new javax.swing.JMenuItem();
-        jmpTransacoes = new javax.swing.JMenu();
-        jmRegistrarTrocas = new javax.swing.JMenuItem();
+        jmAlmoxarifado = new javax.swing.JMenuItem();
+        jmIndisponiveis = new javax.swing.JMenuItem();
         jmAvariasKibom = new javax.swing.JMenuItem();
         jmAvariasYork = new javax.swing.JMenuItem();
-        jmDevolucaoIndisponiveis = new javax.swing.JMenuItem();
+        jmRegistrarTrocas = new javax.swing.JMenuItem();
         jmpReforco = new javax.swing.JMenu();
         jmRegistrarFaltas = new javax.swing.JMenuItem();
         jmRelatorioDeFaltas = new javax.swing.JMenuItem();
+        jmRegistrosReforcoGeral = new javax.swing.JMenuItem();
         jmCampanhas = new javax.swing.JMenu();
-        jmPlanoDeVoo = new javax.swing.JMenuItem();
         jmCampanhasCadProdutos = new javax.swing.JMenuItem();
         jmCampanhasMetasProd = new javax.swing.JMenuItem();
         jmRegistrodeVendasCampanhas = new javax.swing.JMenuItem();
         jmRelatoriosDeCampanhas = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        jmPlanoDeVoo = new javax.swing.JMenuItem();
         jmpFaturamento = new javax.swing.JMenu();
         jmFaturamentoCaixa = new javax.swing.JMenuItem();
         jmMetas = new javax.swing.JMenuItem();
@@ -401,7 +403,6 @@ public final class JfPrincipal extends javax.swing.JFrame {
         jmEnviaEmail = new javax.swing.JMenuItem();
         jmpRelatorios = new javax.swing.JMenu();
         jmRelatorioDeTrocasEDevolucoes = new javax.swing.JMenuItem();
-        jmRegistrosReforcoGeral = new javax.swing.JMenuItem();
         jmpDashboard = new javax.swing.JMenu();
         jmDashboardMenu = new javax.swing.JMenuItem();
         jmpDesemvolvimento = new javax.swing.JMenu();
@@ -484,6 +485,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
         });
         jmpHome.add(jmBackup);
 
+        jmLogof.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.CTRL_MASK));
         jmLogof.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/logof2.png"))); // NOI18N
         jmLogof.setText("Logof");
         jmLogof.addActionListener(new java.awt.event.ActionListener() {
@@ -602,15 +604,6 @@ public final class JfPrincipal extends javax.swing.JFrame {
         });
         jmpControleLoja.add(jmInventario);
 
-        jmIndisponiveis.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/chart_line_add.png"))); // NOI18N
-        jmIndisponiveis.setText("Indisponíveis");
-        jmIndisponiveis.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmIndisponiveisActionPerformed(evt);
-            }
-        });
-        jmpControleLoja.add(jmIndisponiveis);
-
         jmVasilhames.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/bricks.png"))); // NOI18N
         jmVasilhames.setText("Vasilhames");
         jmVasilhames.addActionListener(new java.awt.event.ActionListener() {
@@ -620,17 +613,23 @@ public final class JfPrincipal extends javax.swing.JFrame {
         });
         jmpControleLoja.add(jmVasilhames);
 
-        jmpTransacoes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/cog_go.png"))); // NOI18N
-        jmpTransacoes.setText("Transações");
-
-        jmRegistrarTrocas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/arrow_refresh.png"))); // NOI18N
-        jmRegistrarTrocas.setText("Troca e Devolução");
-        jmRegistrarTrocas.addActionListener(new java.awt.event.ActionListener() {
+        jmAlmoxarifado.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/pill_go.png"))); // NOI18N
+        jmAlmoxarifado.setText("Almoxarifado");
+        jmAlmoxarifado.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmRegistrarTrocasActionPerformed(evt);
+                jmAlmoxarifadoActionPerformed(evt);
             }
         });
-        jmpTransacoes.add(jmRegistrarTrocas);
+        jmpControleLoja.add(jmAlmoxarifado);
+
+        jmIndisponiveis.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/arrow_refresh.png"))); // NOI18N
+        jmIndisponiveis.setText("Indisponíveis");
+        jmIndisponiveis.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmIndisponiveisActionPerformed(evt);
+            }
+        });
+        jmpControleLoja.add(jmIndisponiveis);
 
         jmAvariasKibom.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/arrow_refresh.png"))); // NOI18N
         jmAvariasKibom.setText("Avarias Kibom");
@@ -639,7 +638,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
                 jmAvariasKibomActionPerformed(evt);
             }
         });
-        jmpTransacoes.add(jmAvariasKibom);
+        jmpControleLoja.add(jmAvariasKibom);
 
         jmAvariasYork.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/arrow_refresh.png"))); // NOI18N
         jmAvariasYork.setText("Avarias York");
@@ -648,18 +647,16 @@ public final class JfPrincipal extends javax.swing.JFrame {
                 jmAvariasYorkActionPerformed(evt);
             }
         });
-        jmpTransacoes.add(jmAvariasYork);
+        jmpControleLoja.add(jmAvariasYork);
 
-        jmDevolucaoIndisponiveis.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/arrow_refresh.png"))); // NOI18N
-        jmDevolucaoIndisponiveis.setText("Devolução de Indisponíveis");
-        jmDevolucaoIndisponiveis.addActionListener(new java.awt.event.ActionListener() {
+        jmRegistrarTrocas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/arrow_refresh.png"))); // NOI18N
+        jmRegistrarTrocas.setText("Troca e Devolução");
+        jmRegistrarTrocas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmDevolucaoIndisponiveisActionPerformed(evt);
+                jmRegistrarTrocasActionPerformed(evt);
             }
         });
-        jmpTransacoes.add(jmDevolucaoIndisponiveis);
-
-        jmpControleLoja.add(jmpTransacoes);
+        jmpControleLoja.add(jmRegistrarTrocas);
 
         jMenuBar1.add(jmpControleLoja);
 
@@ -684,19 +681,19 @@ public final class JfPrincipal extends javax.swing.JFrame {
         });
         jmpReforco.add(jmRelatorioDeFaltas);
 
+        jmRegistrosReforcoGeral.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/page.png"))); // NOI18N
+        jmRegistrosReforcoGeral.setText("Registros Reforço Geral");
+        jmRegistrosReforcoGeral.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmRegistrosReforcoGeralActionPerformed(evt);
+            }
+        });
+        jmpReforco.add(jmRegistrosReforcoGeral);
+
         jMenuBar1.add(jmpReforco);
 
         jmCampanhas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/editar.png"))); // NOI18N
         jmCampanhas.setText("Campanhas");
-
-        jmPlanoDeVoo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/money_add.png"))); // NOI18N
-        jmPlanoDeVoo.setText("Plano de Voo");
-        jmPlanoDeVoo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmPlanoDeVooActionPerformed(evt);
-            }
-        });
-        jmCampanhas.add(jmPlanoDeVoo);
 
         jmCampanhasCadProdutos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/brick_go.png"))); // NOI18N
         jmCampanhasCadProdutos.setText("Cadastrar Produto de Campanha");
@@ -725,6 +722,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
         });
         jmCampanhas.add(jmRegistrodeVendasCampanhas);
 
+        jmRelatoriosDeCampanhas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/page.png"))); // NOI18N
         jmRelatoriosDeCampanhas.setText("Relatórios de Campanhas");
         jmRelatoriosDeCampanhas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -734,6 +732,20 @@ public final class JfPrincipal extends javax.swing.JFrame {
         jmCampanhas.add(jmRelatoriosDeCampanhas);
 
         jMenuBar1.add(jmCampanhas);
+
+        jMenu1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/money.png"))); // NOI18N
+        jMenu1.setText("Plano de Voo");
+
+        jmPlanoDeVoo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/money_add.png"))); // NOI18N
+        jmPlanoDeVoo.setText("Plano de Voo");
+        jmPlanoDeVoo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmPlanoDeVooActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jmPlanoDeVoo);
+
+        jMenuBar1.add(jMenu1);
 
         jmpFaturamento.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/money.png"))); // NOI18N
         jmpFaturamento.setText("Faturamento");
@@ -810,15 +822,6 @@ public final class JfPrincipal extends javax.swing.JFrame {
         jmRelatorioDeTrocasEDevolucoes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/page.png"))); // NOI18N
         jmRelatorioDeTrocasEDevolucoes.setText("Relatório de Trocas e Devoluções");
         jmpRelatorios.add(jmRelatorioDeTrocasEDevolucoes);
-
-        jmRegistrosReforcoGeral.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/page.png"))); // NOI18N
-        jmRegistrosReforcoGeral.setText("Registros Reforço Geral");
-        jmRegistrosReforcoGeral.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmRegistrosReforcoGeralActionPerformed(evt);
-            }
-        });
-        jmpRelatorios.add(jmRegistrosReforcoGeral);
 
         jMenuBar1.add(jmpRelatorios);
 
@@ -1229,7 +1232,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jmVasilhamesActionPerformed
 
-    private void jmDevolucaoIndisponiveisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmDevolucaoIndisponiveisActionPerformed
+    private void jmIndisponiveisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmIndisponiveisActionPerformed
         if (jfControlIndisponiveis == null) {
             jfControlIndisponiveis = new JifControleIndisponiveis();
             jDesktopPrincipal.add(jfControlIndisponiveis);
@@ -1243,7 +1246,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
         } else {
             JOptionPane.showMessageDialog(this, "Janela ja esta aberta!");
         }
-    }//GEN-LAST:event_jmDevolucaoIndisponiveisActionPerformed
+    }//GEN-LAST:event_jmIndisponiveisActionPerformed
 
     private void jmpEmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmpEmailActionPerformed
         if (jfControlIndisponiveis == null) {
@@ -1485,10 +1488,6 @@ public final class JfPrincipal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jmAjudaActionPerformed
 
-    private void jmIndisponiveisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmIndisponiveisActionPerformed
-
-    }//GEN-LAST:event_jmIndisponiveisActionPerformed
-
     private void jmDashboardMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmDashboardMenuActionPerformed
         if (dash == null) {
             dash = new Dashboard();
@@ -1569,12 +1568,12 @@ public final class JfPrincipal extends javax.swing.JFrame {
 
     private void jmRegistrodeVendasCampanhasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmRegistrodeVendasCampanhasActionPerformed
         if (jfCampanhasVendaDia == null) {
-            jfCampanhasVendaDia = new JifCadastroCampanhaDia();
+            jfCampanhasVendaDia = new JifAcompanhamentoCampanhas();
             jDesktopPrincipal.add(jfCampanhasVendaDia);
             jfCampanhasVendaDia.setVisible(true);
             jfCampanhasVendaDia.setPosicao();
         } else if (!jfCampanhasVendaDia.isVisible()) {
-            jfCampanhasVendaDia = new JifCadastroCampanhaDia();
+            jfCampanhasVendaDia = new JifAcompanhamentoCampanhas();
             jDesktopPrincipal.add(jfCampanhasVendaDia);
             jfCampanhasVendaDia.setVisible(true);
             jfCampanhasVendaDia.setPosicao();
@@ -1585,13 +1584,27 @@ public final class JfPrincipal extends javax.swing.JFrame {
 
     private void jmRelatoriosDeCampanhasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmRelatoriosDeCampanhasActionPerformed
         if (jfCampanhaRelatorio == null) {
-            jfCampanhaRelatorio = new JifCampanhaRelatorio();
+            jfCampanhaRelatorio = new JifGeraRelatorios();
             jDesktopPrincipal.add(jfCampanhaRelatorio);
+            try {
+                jfCampanhaRelatorio.setMaximum(true);
+
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(JfPrincipal.class
+                        .getName()).log(Level.SEVERE, null, ex);
+            }
             jfCampanhaRelatorio.setVisible(true);
             jfCampanhaRelatorio.setPosicao();
         } else if (!jfCampanhaRelatorio.isVisible()) {
-            jfCampanhaRelatorio = new JifCampanhaRelatorio();
+            jfCampanhaRelatorio = new JifGeraRelatorios();
             jDesktopPrincipal.add(jfCampanhaRelatorio);
+            try {
+                jfCampanhaRelatorio.setMaximum(true);
+
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(JfPrincipal.class
+                        .getName()).log(Level.SEVERE, null, ex);
+            }
             jfCampanhaRelatorio.setVisible(true);
             jfCampanhaRelatorio.setPosicao();
         } else {
@@ -1599,8 +1612,25 @@ public final class JfPrincipal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jmRelatoriosDeCampanhasActionPerformed
 
+    private void jmAlmoxarifadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmAlmoxarifadoActionPerformed
+        if (jfAlmox == null) {
+            jfAlmox = new JifAlmoxarifado();
+            jDesktopPrincipal.add(jfAlmox);
+            jfAlmox.setVisible(true);
+            jfAlmox.setPosicao();
+        } else if (!jfAlmox.isVisible()) {
+            jfAlmox = new JifAlmoxarifado();
+            jDesktopPrincipal.add(jfAlmox);
+            jfAlmox.setVisible(true);
+            jfAlmox.setPosicao();
+        } else {
+            JOptionPane.showMessageDialog(this, "Janela ja esta aberta!");
+        }
+    }//GEN-LAST:event_jmAlmoxarifadoActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JDesktopPane jDesktopPrincipal;
+    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel jlHoraAtual;
@@ -1608,6 +1638,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmAdicionarNotaSistema;
     private javax.swing.JMenuItem jmAguaELuz;
     private javax.swing.JMenuItem jmAjuda;
+    private javax.swing.JMenuItem jmAlmoxarifado;
     private javax.swing.JMenuItem jmAvariasKibom;
     private javax.swing.JMenuItem jmAvariasYork;
     private javax.swing.JMenuItem jmBackup;
@@ -1619,7 +1650,6 @@ public final class JfPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmClientes;
     private javax.swing.JMenuItem jmConfiguracoes;
     private javax.swing.JMenuItem jmDashboardMenu;
-    private javax.swing.JMenuItem jmDevolucaoIndisponiveis;
     private javax.swing.JMenuItem jmEnviaEmail;
     private javax.swing.JMenuItem jmFaturamentoCaixa;
     private javax.swing.JMenuItem jmIndisponiveis;
@@ -1659,7 +1689,6 @@ public final class JfPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenu jmpReforco;
     private javax.swing.JMenu jmpRelatorios;
     private javax.swing.JMenu jmpRelatoriosGerencial;
-    private javax.swing.JMenu jmpTransacoes;
     // End of variables declaration//GEN-END:variables
 public void Carregando() {
         if (jfC == null) {

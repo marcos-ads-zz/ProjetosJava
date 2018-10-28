@@ -1,5 +1,6 @@
-package modulo.campanhas.vendaD;
+package modulo.relatorio;
 
+import modulo.relatorio.relatorioCampDAO;
 import java.awt.BorderLayout;
 import java.text.DateFormat;
 import java.util.Date;
@@ -17,6 +18,9 @@ import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import modulo.campanhas.meta.CadastroMetasCampanhas;
 import modulo.campanhas.meta.CadastroMetasCampanhasDAO;
+import modulo.campanhas.vendaD.CadastroCampanhaDia;
+import modulo.campanhas.vendaD.JifAcompanhamentoCampanhas;
+import modulo.campanhas.vendaD.graficosCampanha;
 import modulo.metodos.Funcao;
 import modulo.versao.Versao;
 import modulo.view.principal.JfPrincipal;
@@ -27,7 +31,7 @@ import org.jfree.chart.ChartPanel;
  *
  * @author Marcos Junior
  */
-public final class JifCampanhaRelatorio extends javax.swing.JInternalFrame {
+public final class JifGeraRelatorios extends javax.swing.JInternalFrame {
 
     private CadastroCampanhaDia cadCamp;
     private CadastroMetasCampanhasDAO CADCAMP_DAO;
@@ -40,10 +44,11 @@ public final class JifCampanhaRelatorio extends javax.swing.JInternalFrame {
     DateFormat formatoHora;
     DateFormat formatoDIA;
     private JifCarregamento jfC = null;
+    private JifTelaRelatorio jifRel = null;
     private Versao ver;
     private int numLoja;
 
-    public JifCampanhaRelatorio() {
+    public JifGeraRelatorios() {
         initComponents();
         DAOUSER = new UsuarioDAO();
         grfCamp = new graficosCampanha();
@@ -52,7 +57,7 @@ public final class JifCampanhaRelatorio extends javax.swing.JInternalFrame {
         rl = new JasperDAO();
         DAOREL = new relatorioCampDAO();
         CADCAMP_DAO = new CadastroMetasCampanhasDAO();
-        Thread relogioThred = new Thread(new JifCampanhaRelatorio.clsDataHora());
+        Thread relogioThred = new Thread(new JifGeraRelatorios.clsDataHora());
         relogioThred.start();
         setTitle("Relatórios de Campanhas: " + ver.getVersao());
         carregaDatasCampos();
@@ -64,7 +69,7 @@ public final class JifCampanhaRelatorio extends javax.swing.JInternalFrame {
             jdDataPesquisaInicio.setDate(fun.primeiroDiaMesAtual());
             jdDataPesquisaFim.setDate(new Date());
         } catch (ParseException ex) {
-            Logger.getLogger(JifCampanhaRelatorio.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(JifGeraRelatorios.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -168,7 +173,7 @@ public final class JifCampanhaRelatorio extends javax.swing.JInternalFrame {
                         dlm.addElement(c.getDescricao_Campanha());
                     }
                 } catch (Exception ex) {
-                    Logger.getLogger(JifCadastroCampanhaDia.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(JifAcompanhamentoCampanhas.class.getName()).log(Level.SEVERE, null, ex);
                 }
             });
         } catch (Exception ex) {
@@ -234,6 +239,22 @@ public final class JifCampanhaRelatorio extends javax.swing.JInternalFrame {
             JfPrincipal.jDesktopPrincipal.add(jfC);
             jfC.setVisible(true);
             jfC.setPosicao();
+        } else {
+            JOptionPane.showMessageDialog(this, "Erro!");
+        }
+    }
+
+    private void abreTelaDeTexto() {
+        if (jifRel == null) {
+            jifRel = new JifTelaRelatorio();
+            JfPrincipal.jDesktopPrincipal.add(jifRel);
+            jifRel.setVisible(true);
+            jifRel.setPosicao();
+        } else if (!jifRel.isVisible()) {
+            jifRel = new JifTelaRelatorio();
+            JfPrincipal.jDesktopPrincipal.add(jifRel);
+            jifRel.setVisible(true);
+            jifRel.setPosicao();
         } else {
             JOptionPane.showMessageDialog(this, "Erro!");
         }
@@ -624,14 +645,15 @@ public final class JifCampanhaRelatorio extends javax.swing.JInternalFrame {
 
     private void jbEnvioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbEnvioActionPerformed
         Carregando();
+        abreTelaDeTexto();
         Thread t = new Thread() {
             @Override
             public void run() {
-                if (validarCampoNovoRelatorio() == 5) {
-                    RelatorioDataEnvio();
-                } else {
-                    JOptionPane.showMessageDialog(null, "Selecione a pesquisa por data para emitir o relatório.");
-                }
+//                if (validarCampoNovoRelatorio() == 5) {
+//                    RelatorioDataEnvio();
+//                } else {
+//                    JOptionPane.showMessageDialog(null, "Selecione a pesquisa por data para emitir o relatório.");
+//                }
                 fechaCarregamento();
             }
         };

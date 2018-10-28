@@ -25,7 +25,7 @@ import org.jfree.chart.ChartPanel;
  *
  * @author Marcos Junior
  */
-public class JifCadastroCampanhaDia extends javax.swing.JInternalFrame {
+public class JifAcompanhamentoCampanhas extends javax.swing.JInternalFrame {
 
     private int soma = 0;
     private Versao ver;
@@ -37,7 +37,7 @@ public class JifCadastroCampanhaDia extends javax.swing.JInternalFrame {
     private CadastroCampanhaDiaDAO CAMPDIA_DAO;
     private CadastroMetasCampanhasDAO CADCAMP_DAO;
 
-    public JifCadastroCampanhaDia() {
+    public JifAcompanhamentoCampanhas() {
         initComponents();
         ver = new Versao();
         fun = new Funcao();
@@ -176,7 +176,7 @@ public class JifCadastroCampanhaDia extends javax.swing.JInternalFrame {
                         dlm.addElement(c.getDescricao_Campanha());
                     }
                 } catch (Exception ex) {
-                    Logger.getLogger(JifCadastroCampanhaDia.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(JifAcompanhamentoCampanhas.class.getName()).log(Level.SEVERE, null, ex);
                 }
             });
         } catch (Exception ex) {
@@ -196,7 +196,7 @@ public class JifCadastroCampanhaDia extends javax.swing.JInternalFrame {
                     fun.convertDataSQLToDateString(p.getData_registro())
                 });
             } catch (Exception ex) {
-                Logger.getLogger(JifCadastroCampanhaDia.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(JifAcompanhamentoCampanhas.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
 
@@ -898,7 +898,7 @@ public class JifCadastroCampanhaDia extends javax.swing.JInternalFrame {
                 
             });
         } catch (Exception ex) {
-            Logger.getLogger(JifCadastroCampanhaDia.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(JifAcompanhamentoCampanhas.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }//GEN-LAST:event_jbPesquisarActionPerformed
