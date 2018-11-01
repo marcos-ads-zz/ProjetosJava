@@ -57,6 +57,7 @@ import modulo.campanhas.meta.JifCadastroMetasCampanhas;
 import modulo.campanhas.cadastro.JifCadastroDescricaoCampanhas;
 import modulo.relatorio.JifGeraRelatorios;
 import modulo.dashboardD.Dashboard;
+import modulo.imprimePDF.JifTelaArquivosPDF;
 import modulo.metodos.Funcao;
 import modulo.seguranca.JifSeguranca;
 import modulo.usuarios.CargosDAO;
@@ -125,6 +126,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
     private JifAcompanhamentoCampanhas jfCampanhasVendaDia = null;
     private JifGeraRelatorios jfCampanhaRelatorio = null;
     private JifAlmoxarifado jfAlmox = null;
+    private JifTelaArquivosPDF jifPDF = null;
 
     public JfPrincipal() {
         initComponents();
@@ -408,6 +410,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
         jmpDesemvolvimento = new javax.swing.JMenu();
         jmAdicionarNotaSistema = new javax.swing.JMenuItem();
         jmpAtalhos = new javax.swing.JMenu();
+        jmImprimirPDF = new javax.swing.JMenuItem();
         jmpAjuda = new javax.swing.JMenu();
         jmNotasSistema = new javax.swing.JMenuItem();
         jmSobre = new javax.swing.JMenuItem();
@@ -855,6 +858,16 @@ public final class JfPrincipal extends javax.swing.JFrame {
 
         jmpAtalhos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/page_find.png"))); // NOI18N
         jmpAtalhos.setText("Atalhos");
+
+        jmImprimirPDF.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/page_white_acrobat.png"))); // NOI18N
+        jmImprimirPDF.setText("Imprimir PDFs");
+        jmImprimirPDF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmImprimirPDFActionPerformed(evt);
+            }
+        });
+        jmpAtalhos.add(jmImprimirPDF);
+
         jMenuBar1.add(jmpAtalhos);
 
         jmpAjuda.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/ajuda.png"))); // NOI18N
@@ -1628,6 +1641,22 @@ public final class JfPrincipal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jmAlmoxarifadoActionPerformed
 
+    private void jmImprimirPDFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmImprimirPDFActionPerformed
+        if (jifPDF == null) {
+            jifPDF = new JifTelaArquivosPDF();
+            jDesktopPrincipal.add(jifPDF);
+            jifPDF.setVisible(true);
+            jifPDF.setPosicao();
+        } else if (!jifPDF.isVisible()) {
+            jifPDF = new JifTelaArquivosPDF();
+            jDesktopPrincipal.add(jifPDF);
+            jifPDF.setVisible(true);
+            jifPDF.setPosicao();
+        } else {
+            JOptionPane.showMessageDialog(this, "Janela ja esta aberta!");
+        }
+    }//GEN-LAST:event_jmImprimirPDFActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JDesktopPane jDesktopPrincipal;
     private javax.swing.JMenu jMenu1;
@@ -1652,6 +1681,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmDashboardMenu;
     private javax.swing.JMenuItem jmEnviaEmail;
     private javax.swing.JMenuItem jmFaturamentoCaixa;
+    private javax.swing.JMenuItem jmImprimirPDF;
     private javax.swing.JMenuItem jmIndisponiveis;
     private javax.swing.JMenuItem jmInventario;
     private javax.swing.JMenuItem jmLiberarTerminal;

@@ -181,7 +181,7 @@ order by 3]]>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="7" isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA["782"]]></textFieldExpression>
+					<textFieldExpression><![CDATA["340"]]></textFieldExpression>
 				</textField>
 			</frame>
 		</band>

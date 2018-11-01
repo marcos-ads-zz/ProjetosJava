@@ -86,7 +86,7 @@ public class PrintPdf {
             double marginw = 0;
             //Tamanho dos Cantos Superiores Esquerdo
             double xWidth = 225;
-            JTelaPrintPDF jt = new JTelaPrintPDF();
+            JifTelaArquivosPDF jt = new JifTelaArquivosPDF();
             if (null == tipoDePapel) {
                 JOptionPane.showMessageDialog(null, "Erro ao selecionar tipo de papel!");
             } else switch (tipoDePapel) {

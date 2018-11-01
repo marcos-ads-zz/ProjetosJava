@@ -549,6 +549,19 @@
             </Property>
             <Property name="text" type="java.lang.String" value="Atalhos"/>
           </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="jmImprimirPDF">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/icons/page_white_acrobat.png"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Imprimir PDFs"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jmImprimirPDFActionPerformed"/>
+              </Events>
+            </MenuItem>
+          </SubComponents>
         </Menu>
         <Menu class="javax.swing.JMenu" name="jmpAjuda">
           <Properties>

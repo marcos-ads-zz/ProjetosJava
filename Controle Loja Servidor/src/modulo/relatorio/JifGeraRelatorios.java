@@ -1,6 +1,5 @@
 package modulo.relatorio;
 
-import modulo.relatorio.relatorioCampDAO;
 import java.awt.BorderLayout;
 import java.text.DateFormat;
 import java.util.Date;
@@ -41,10 +40,11 @@ public final class JifGeraRelatorios extends javax.swing.JInternalFrame {
     private Usuario objUSER;
     private JasperDAO rl;
     private Funcao fun;
+    private dataFrames datas;
     DateFormat formatoHora;
     DateFormat formatoDIA;
     private JifCarregamento jfC = null;
-    private JifTelaRelatorio jifRel = null;
+    private JifImprime jifRel = null;
     private Versao ver;
     private int numLoja;
 
@@ -65,13 +65,9 @@ public final class JifGeraRelatorios extends javax.swing.JInternalFrame {
     }
 
     private void carregaDatasCampos() {
-        try {
-            jdDataPesquisaInicio.setDate(fun.primeiroDiaMesAtual());
-            jdDataPesquisaFim.setDate(new Date());
-        } catch (ParseException ex) {
-            Logger.getLogger(JifGeraRelatorios.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+        //jdDataPesquisaInicio.setDate(fun.primeiroDiaMesAtual());
+        jdDataPesquisaInicio.setDate(new Date());
+        jdDataPesquisaFim.setDate(new Date());
     }
 
     private boolean verificaDatas() {
@@ -135,18 +131,22 @@ public final class JifGeraRelatorios extends javax.swing.JInternalFrame {
         String a, b;
         a = jtMatricula.getText();
         b = jListCampanhas.getSelectedItem().toString();
-        int mat = Integer.parseInt(a);
-        try {
-            preencheTabela(DAOREL.pesquisaCampanhasPorMes(Integer.parseInt(a), b, fun.convertDateToDateSql(jdDataPesquisaInicio.getDate())));
-            if (!jtMatricula.getText().equals("") || jListCampanhas.getSelectedIndex() == 0) {
-                painelGraficoCampanha(mat, b);
-            } else {
-                JOptionPane.showMessageDialog(this, "Erro ao Pesquisar Campanhas!");
+        if (!jtMatricula.getText().equals("") || jListCampanhas.getSelectedItem().toString().equals("")) {
+            int mat = Integer.parseInt(a);
+            try {
+                preencheTabela(DAOREL.pesquisaCampanhasPorMes(Integer.parseInt(a), b, fun.convertDateToDateSql(jdDataPesquisaInicio.getDate())));
+                if (!jtMatricula.getText().equals("") || jListCampanhas.getSelectedIndex() == 0) {
+                    painelGraficoCampanha(mat, b);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Erro ao Pesquisar Campanhas!");
+                }
+            } catch (ParseException ex) {
+                JOptionPane.showMessageDialog(this, "Erro ao Pesquisar Campanhas Parse! " + ex);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Erro ao Pesquisar Campanhas Exception! " + ex);
             }
-        } catch (ParseException ex) {
-            JOptionPane.showMessageDialog(this, "Erro ao Pesquisar Campanhas Parse! " + ex);
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Erro ao Pesquisar Campanhas Exception! " + ex);
+        } else {
+            JOptionPane.showMessageDialog(this, "Há Campos não preenchidos!");
         }
     }
 
@@ -181,36 +181,19 @@ public final class JifGeraRelatorios extends javax.swing.JInternalFrame {
         }
     }
 
-    private void RelatorioMatricula() {
+    public java.sql.Date RInicio() {
         Date data1 = jdDataPesquisaInicio.getDate();
-        Date data2 = jdDataPesquisaFim.getDate();
-        int mat = Integer.parseInt(jtMatricula.getText());
-        rl.RelatorioMatricula(mat, numLoja, fun.convertDateToDateSql(data1), fun.convertDateToDateSql(data2));
+        System.out.println("RInicio(): " + data1);
+        datas.setDataInicio(fun.convertDateToDateSql(data1));
+
+        return fun.convertDateToDateSql(data1);
     }
 
-    private void RelatorioObservacao() {
-        Date data1 = jdDataPesquisaInicio.getDate();
+    public java.sql.Date RFim() {
         Date data2 = jdDataPesquisaFim.getDate();
-        String obs = jListCampanhas.getSelectedItem().toString().toUpperCase();
-        rl.RelatorioObservacao(obs, numLoja, fun.convertDateToDateSql(data1), fun.convertDateToDateSql(data2));
-    }
-
-    private void RelatorioData() {
-        Date data1 = jdDataPesquisaInicio.getDate();
-        Date data2 = jdDataPesquisaFim.getDate();
-        rl.RelatorioData(fun.convertDateToDateSql(data1), fun.convertDateToDateSql(data2), numLoja);
-    }
-
-    private void RelatorioDataReforco() {
-        Date data1 = jdDataPesquisaInicio.getDate();
-        Date data2 = jdDataPesquisaFim.getDate();
-        rl.RelatorioReforcoData(fun.convertDateToDateSql(data1), fun.convertDateToDateSql(data2));
-    }
-
-    private void RelatorioDataEnvio() {
-        Date data1 = jdDataPesquisaInicio.getDate();
-        Date data2 = jdDataPesquisaFim.getDate();
-        rl.RelatorioDataEnvio(fun.convertDateToDateSql(data1), fun.convertDateToDateSql(data2), numLoja);
+        datas.setDataFim(fun.convertDateToDateSql(data2));
+        //System.out.println("modulo.relatorio.JifGeraRelatorios.RFim()" + data2);
+        return fun.convertDateToDateSql(data2);
     }
 
     class clsDataHora implements Runnable {
@@ -246,12 +229,12 @@ public final class JifGeraRelatorios extends javax.swing.JInternalFrame {
 
     private void abreTelaDeTexto() {
         if (jifRel == null) {
-            jifRel = new JifTelaRelatorio();
+            jifRel = new JifImprime();
             JfPrincipal.jDesktopPrincipal.add(jifRel);
             jifRel.setVisible(true);
             jifRel.setPosicao();
         } else if (!jifRel.isVisible()) {
-            jifRel = new JifTelaRelatorio();
+            jifRel = new JifImprime();
             JfPrincipal.jDesktopPrincipal.add(jifRel);
             jifRel.setVisible(true);
             jifRel.setPosicao();
@@ -276,34 +259,36 @@ public final class JifGeraRelatorios extends javax.swing.JInternalFrame {
 
         GrupoDeRadioButoes = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
-        jbPesquisar = new javax.swing.JButton();
-        jbListar = new javax.swing.JButton();
-        jlMat = new javax.swing.JLabel();
-        jtMatricula = new javax.swing.JTextField();
-        jLabel9 = new javax.swing.JLabel();
-        jlDataPesquisa = new javax.swing.JLabel();
-        jdDataPesquisaFim = new com.toedter.calendar.JDateChooser("dd/MM/yyyy", "##/##/#####", '-');
-        jdDataPesquisaInicio = new com.toedter.calendar.JDateChooser("dd/MM/yyyy", "##/##/#####", '-');
-        jlInicio = new javax.swing.JLabel();
-        jlFim = new javax.swing.JLabel();
+        jPanelGrafico = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jtTabela = new javax.swing.JTable();
+        jPanel2 = new javax.swing.JPanel();
+        jbEnvio = new javax.swing.JButton();
         jbPesquisa = new javax.swing.JButton();
+        jbPesquisar = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
+        jYearChooserAno = new com.toedter.calendar.JYearChooser();
+        jlInicio = new javax.swing.JLabel();
+        jdDataPesquisaInicio = new com.toedter.calendar.JDateChooser("dd/MM/yyyy", "##/##/#####", '-');
+        jlFim = new javax.swing.JLabel();
+        jdDataPesquisaFim = new com.toedter.calendar.JDateChooser("dd/MM/yyyy", "##/##/#####", '-');
+        jListCampanhas = new javax.swing.JComboBox<>();
+        jLabel9 = new javax.swing.JLabel();
+        jtMatricula = new javax.swing.JTextField();
+        jlMat = new javax.swing.JLabel();
         jrMatricula = new javax.swing.JRadioButton();
         jrObservacao = new javax.swing.JRadioButton();
-        jListCampanhas = new javax.swing.JComboBox<>();
-        jbEnvio = new javax.swing.JButton();
-        jPanelGrafico = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
         jTextField1 = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jTextField3 = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jTextField2 = new javax.swing.JTextField();
         jTextField4 = new javax.swing.JTextField();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jtTabela = new javax.swing.JTable();
-        jYearChooserAno = new com.toedter.calendar.JYearChooser();
-        jLabel6 = new javax.swing.JLabel();
+        jPanel4 = new javax.swing.JPanel();
+        jlDataPesquisa = new javax.swing.JLabel();
 
         setClosable(true);
         setIconifiable(true);
@@ -311,129 +296,8 @@ public final class JifGeraRelatorios extends javax.swing.JInternalFrame {
 
         jPanel1.setBackground(new java.awt.Color(0, 204, 204));
 
-        jbPesquisar.setBackground(new java.awt.Color(255, 0, 0));
-        jbPesquisar.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
-        jbPesquisar.setForeground(new java.awt.Color(255, 255, 255));
-        jbPesquisar.setText("Pesquisar");
-        jbPesquisar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jbPesquisarActionPerformed(evt);
-            }
-        });
-
-        jbListar.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
-        jbListar.setText("Gerar Todos");
-        jbListar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jbListarActionPerformed(evt);
-            }
-        });
-
-        jlMat.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jlMat.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jlMat.setText("Matrícula");
-
-        jtMatricula.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
-        jtMatricula.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jtMatriculaActionPerformed(evt);
-            }
-        });
-
-        jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel9.setText("Campanha");
-
-        jlDataPesquisa.setFont(new java.awt.Font("Times New Roman", 3, 36)); // NOI18N
-        jlDataPesquisa.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jlDataPesquisa.setText("Filtros");
-
-        jdDataPesquisaFim.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
-
-        jdDataPesquisaInicio.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
-
-        jlInicio.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jlInicio.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jlInicio.setText("Data Inicio");
-
-        jlFim.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jlFim.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jlFim.setText("Data Fim");
-
-        jbPesquisa.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
-        jbPesquisa.setText("Imprimir a Pesquisa");
-        jbPesquisa.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jbPesquisaActionPerformed(evt);
-            }
-        });
-
-        GrupoDeRadioButoes.add(jrMatricula);
-        jrMatricula.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
-        jrMatricula.setSelected(true);
-        jrMatricula.setText("Pesquisar por matrícula");
-        jrMatricula.setActionCommand("matricula");
-
-        GrupoDeRadioButoes.add(jrObservacao);
-        jrObservacao.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
-        jrObservacao.setText("Pesquisar por Campanha");
-        jrObservacao.setActionCommand("campanha");
-
-        jListCampanhas.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
-        jListCampanhas.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione Uma Campanha" }));
-
-        jbEnvio.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
-        jbEnvio.setText("Gerar Parcial");
-        jbEnvio.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jbEnvioActionPerformed(evt);
-            }
-        });
-
         jPanelGrafico.setBackground(new java.awt.Color(51, 255, 51));
         jPanelGrafico.setLayout(new java.awt.BorderLayout());
-
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel1.setText("Meta Dia");
-
-        jTextField1.setEditable(false);
-        jTextField1.setBackground(new java.awt.Color(51, 51, 255));
-        jTextField1.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
-        jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
-            }
-        });
-
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel2.setText("Venda Dia");
-
-        jTextField2.setEditable(false);
-        jTextField2.setBackground(new java.awt.Color(255, 0, 0));
-        jTextField2.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
-        jTextField2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel4.setText("Meta Mês");
-
-        jTextField3.setEditable(false);
-        jTextField3.setBackground(new java.awt.Color(51, 51, 255));
-        jTextField3.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
-        jTextField3.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField3ActionPerformed(evt);
-            }
-        });
-
-        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel5.setText("Venda Mês");
-
-        jTextField4.setEditable(false);
-        jTextField4.setBackground(new java.awt.Color(255, 0, 0));
-        jTextField4.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
-        jTextField4.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         jtTabela.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -453,9 +317,253 @@ public final class JifGeraRelatorios extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(jtTabela);
 
-        jLabel6.setFont(new java.awt.Font("sansserif", 3, 18)); // NOI18N
+        jPanel2.setBackground(new java.awt.Color(204, 255, 204));
+        jPanel2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
+
+        jbEnvio.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
+        jbEnvio.setText("Gerar Parcial");
+        jbEnvio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbEnvioActionPerformed(evt);
+            }
+        });
+
+        jbPesquisa.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
+        jbPesquisa.setText("Imprimir a Pesquisa");
+        jbPesquisa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbPesquisaActionPerformed(evt);
+            }
+        });
+
+        jbPesquisar.setBackground(new java.awt.Color(255, 0, 0));
+        jbPesquisar.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
+        jbPesquisar.setForeground(new java.awt.Color(255, 255, 255));
+        jbPesquisar.setText("Pesquisar");
+        jbPesquisar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbPesquisarActionPerformed(evt);
+            }
+        });
+
+        jLabel6.setFont(new java.awt.Font("sansserif", 3, 14)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(255, 51, 0));
         jLabel6.setText("Ano do Gráfico");
+
+        jYearChooserAno.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
+
+        jlInicio.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jlInicio.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jlInicio.setText("Data Inicio");
+
+        jdDataPesquisaInicio.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
+
+        jlFim.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jlFim.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jlFim.setText("Data Fim");
+
+        jdDataPesquisaFim.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
+
+        jListCampanhas.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
+        jListCampanhas.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione Uma Campanha" }));
+
+        jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel9.setText("Campanha");
+
+        jtMatricula.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
+        jtMatricula.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jtMatriculaActionPerformed(evt);
+            }
+        });
+
+        jlMat.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jlMat.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jlMat.setText("Matrícula");
+
+        GrupoDeRadioButoes.add(jrMatricula);
+        jrMatricula.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
+        jrMatricula.setSelected(true);
+        jrMatricula.setText("Pesquisar por matrícula");
+        jrMatricula.setActionCommand("matricula");
+
+        GrupoDeRadioButoes.add(jrObservacao);
+        jrObservacao.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
+        jrObservacao.setText("Pesquisar por Campanha");
+        jrObservacao.setActionCommand("campanha");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jrMatricula)
+                        .addGap(18, 18, 18)
+                        .addComponent(jrObservacao)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jbPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jbPesquisa))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jlMat)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jtMatricula, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel9)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jListCampanhas, 0, 227, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jYearChooserAno, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jlInicio)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jdDataPesquisaInicio, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jlFim)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jdDataPesquisaFim, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jbEnvio, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jdDataPesquisaFim, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jdDataPesquisaInicio, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jlFim, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jlInicio, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jListCampanhas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel9)
+                        .addComponent(jtMatricula, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jlMat, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jYearChooserAno, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jrMatricula)
+                        .addComponent(jrObservacao))
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jbEnvio)
+                        .addComponent(jbPesquisa)
+                        .addComponent(jbPesquisar)))
+                .addContainerGap())
+        );
+
+        jPanel3.setBackground(new java.awt.Color(255, 255, 204));
+        jPanel3.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
+
+        jTextField1.setEditable(false);
+        jTextField1.setBackground(new java.awt.Color(51, 51, 255));
+        jTextField1.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
+        jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel1.setText("Meta Dia");
+
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel4.setText("Meta Mês");
+
+        jTextField3.setEditable(false);
+        jTextField3.setBackground(new java.awt.Color(51, 51, 255));
+        jTextField3.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
+        jTextField3.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jTextField3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField3ActionPerformed(evt);
+            }
+        });
+
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel5.setText("Venda Mês");
+
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel2.setText("Venda Dia");
+
+        jTextField2.setEditable(false);
+        jTextField2.setBackground(new java.awt.Color(255, 0, 0));
+        jTextField2.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
+        jTextField2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+
+        jTextField4.setEditable(false);
+        jTextField4.setBackground(new java.awt.Color(255, 0, 0));
+        jTextField4.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
+        jTextField4.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTextField3)
+                    .addComponent(jTextField1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTextField4)
+                    .addComponent(jTextField2))
+                .addGap(253, 253, 253))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(12, 12, 12)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(9, 9, 9))
+        );
+
+        jPanel4.setBackground(new java.awt.Color(153, 153, 0));
+
+        jlDataPesquisa.setFont(new java.awt.Font("Times New Roman", 3, 36)); // NOI18N
+        jlDataPesquisa.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jlDataPesquisa.setText("Filtros");
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jlDataPesquisa, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jlDataPesquisa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -463,110 +571,23 @@ public final class JifGeraRelatorios extends javax.swing.JInternalFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane1)
             .addComponent(jPanelGrafico, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jbPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jbListar, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jbPesquisa)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jbEnvio, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jlDataPesquisa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jlMat, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jlInicio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(jtMatricula, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jLabel9)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jListCampanhas, javax.swing.GroupLayout.PREFERRED_SIZE, 336, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(jdDataPesquisaInicio, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jlFim)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jdDataPesquisaFim, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jrMatricula)
-                                .addGap(18, 18, 18)
-                                .addComponent(jrObservacao)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jTextField3)
-                                    .addComponent(jTextField1))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE)
-                                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jTextField4)
-                                    .addComponent(jTextField2)))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(0, 76, Short.MAX_VALUE)
-                                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jYearChooserAno, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap())
+            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jlDataPesquisa)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jrMatricula)
-                    .addComponent(jrObservacao))
-                .addGap(12, 12, 12)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel9)
-                        .addComponent(jListCampanhas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jtMatricula, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jlMat, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(12, 12, 12)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jdDataPesquisaFim, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 44, Short.MAX_VALUE)
-                        .addComponent(jdDataPesquisaInicio, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jlFim, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jlInicio, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jYearChooserAno, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(12, 12, 12)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jbListar)
-                    .addComponent(jbPesquisar)
-                    .addComponent(jbPesquisa)
-                    .addComponent(jbEnvio))
-                .addGap(8, 8, 8)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(jPanelGrafico, javax.swing.GroupLayout.DEFAULT_SIZE, 94, Short.MAX_VALUE))
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(jPanelGrafico, javax.swing.GroupLayout.DEFAULT_SIZE, 231, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -593,22 +614,6 @@ public final class JifGeraRelatorios extends javax.swing.JInternalFrame {
         PesquisaRegistros();
     }//GEN-LAST:event_jbPesquisarActionPerformed
 
-    private void jbListarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbListarActionPerformed
-        Carregando();
-        Thread t = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    // preencheTabela();
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(null, "Erro ao Iniciar readTable." + ex.getMessage());
-                }
-                fechaCarregamento();
-            }
-        };
-        t.start();
-    }//GEN-LAST:event_jbListarActionPerformed
-
     private void jtMatriculaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtMatriculaActionPerformed
         try {
             objUSER = DAOUSER.PesquisaPorMatricula(Integer.parseInt(jtMatricula.getText()));
@@ -624,36 +629,18 @@ public final class JifGeraRelatorios extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jtMatriculaActionPerformed
 
     private void jbPesquisaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbPesquisaActionPerformed
-        Carregando();
-        Thread t = new Thread() {
-            @Override
-            public void run() {
-                if (validarCampoNovoRelatorio() == 1) {
-                    RelatorioMatricula();
-                }
-                if (validarCampoNovoRelatorio() == 4) {
-                    RelatorioObservacao();
-                }
-                if (validarCampoNovoRelatorio() == 5) {
-                    RelatorioData();
-                }
-                fechaCarregamento();
-            }
-        };
-        t.start();
+
     }//GEN-LAST:event_jbPesquisaActionPerformed
 
     private void jbEnvioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbEnvioActionPerformed
         Carregando();
-        abreTelaDeTexto();
+
         Thread t = new Thread() {
             @Override
             public void run() {
-//                if (validarCampoNovoRelatorio() == 5) {
-//                    RelatorioDataEnvio();
-//                } else {
-//                    JOptionPane.showMessageDialog(null, "Selecione a pesquisa por data para emitir o relatório.");
-//                }
+                RInicio();
+                RFim();
+                abreTelaDeTexto();
                 fechaCarregamento();
             }
         };
@@ -679,6 +666,9 @@ public final class JifGeraRelatorios extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JComboBox<String> jListCampanhas;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanelGrafico;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField1;
@@ -687,7 +677,6 @@ public final class JifGeraRelatorios extends javax.swing.JInternalFrame {
     private javax.swing.JTextField jTextField4;
     private com.toedter.calendar.JYearChooser jYearChooserAno;
     private javax.swing.JButton jbEnvio;
-    private javax.swing.JButton jbListar;
     private javax.swing.JButton jbPesquisa;
     private javax.swing.JButton jbPesquisar;
     private com.toedter.calendar.JDateChooser jdDataPesquisaFim;

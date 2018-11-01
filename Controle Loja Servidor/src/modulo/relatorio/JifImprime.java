@@ -3,9 +3,12 @@ package modulo.relatorio;
 import modulo.versao.Versao;
 import java.awt.Dimension;
 import java.awt.print.PrinterException;
+import java.io.IOException;
 import java.sql.Date;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
@@ -14,6 +17,7 @@ import modulo.campanhas.meta.CadastroMetasCampanhas;
 import modulo.campanhas.meta.CadastroMetasCampanhasDAO;
 import modulo.campanhas.vendaD.CadastroCampanhaDia;
 import modulo.campanhas.vendaD.JifAcompanhamentoCampanhas;
+import static modulo.configuracoes.JifConfig.getProp;
 import modulo.imprimePDF.PrintPdf;
 import modulo.loja.LojaDAO;
 import modulo.metodos.Funcao;
@@ -22,30 +26,32 @@ import modulo.metodos.Funcao;
  *
  * @author Marcos Junior
  */
-public final class JifTelaRelatorio extends javax.swing.JInternalFrame {
+public final class JifImprime extends javax.swing.JInternalFrame {
 
     private int numLoja;
+    private String impressora = "prop.server.impressora";
+    private String diretorioRel = "prop.server.diretorioRel";
     private Versao ver;
     private Funcao fun;
     private LojaDAO DAO;
+    private dataFrames datas;
+    private Properties properties;
     private geraRelatorio gera;
-    private DefaultListModel dlm;
     private relatorioCampDAO DAOREL;
     private List<CadastroCampanhaDia> campDia;
     private CadastroMetasCampanhasDAO CADCAMP_DAO;
 
-    public JifTelaRelatorio() {
+    public JifImprime() {
         initComponents();
         ver = new Versao();
+        properties = new Properties();
+        setTitle("Relatório: " + ver.getVersao());
         fun = new Funcao();
         DAO = new LojaDAO();
         gera = new geraRelatorio();
-        dlm = new DefaultListModel();
         DAOREL = new relatorioCampDAO();
         CADCAMP_DAO = new CadastroMetasCampanhasDAO();
-        setTitle("Relatório: " + ver.getVersao());
         CarregaLoja();
-        Texto(fun.atualDateSQL());
 
     }
 
@@ -69,6 +75,16 @@ public final class JifTelaRelatorio extends javax.swing.JInternalFrame {
         return data.compareTo(fun.atualDateSQL()) == 1 || a.equals(b);
     }
 
+    public String CarregaDadosImpre() throws IOException {
+        Properties prop = getProp();
+        return prop.getProperty(impressora);
+    }
+
+    public String CarregaDadosDireto() throws IOException {
+        Properties prop = getProp();
+        return prop.getProperty(diretorioRel);
+    }
+
     private List<String> listaCampanhasAtivas() {
         List<CadastroMetasCampanhas> CadCamp;
         List<String> t = new ArrayList<>();
@@ -89,28 +105,24 @@ public final class JifTelaRelatorio extends javax.swing.JInternalFrame {
         return t;
     }
 
-    private void imprimirRelatorio() {
-//        try {
-//            PrintPdf.PrintPDF(impressora, Arquivo, Arquivo, opcao);
-//        } catch (PrinterException ex) {
-//            JOptionPane.showMessageDialog(this, "Erro: " + ex.getMessage());
-//        }
+    private void imprimirRelatorio() throws IOException, PrinterException {
+        PrintPdf.PrintPDF(CarregaDadosImpre(), CarregaDadosDireto(), CarregaDadosDireto(), "Termico");
     }
 
-    private void Texto(Date data) {
+    public void Texto() {
+        java.sql.Date dataInicio = datas.getDataInicio();
+        java.sql.Date dataFim = datas.getDataFim();
         try {
-
-            jTextArea.insert("Relatório De Campanhas Loja: " + numLoja, jTextArea.getCaretPosition());
-            jTextArea.append("\n");
-            jTextArea.insert("Data: " + fun.convertDataSQLToDateString(data), jTextArea.getCaretPosition());
-            jTextArea.append("\n\n");
-            jTextArea.insert("Matricula Quantidade Campanha", jTextArea.getCaretPosition());
-            jTextArea.append("\n");
-            jTextArea.insert("-----------------------------------------------", jTextArea.getCaretPosition());
+            String cabecario = "\n\n\nRelatório De Campanhas Loja: " + numLoja + "\n\n\n"
+                    + "Período: " + fun.convertDataSQLToDateString(dataInicio)
+                    + " a " + fun.convertDataSQLToDateString(dataFim) + "\n\n"
+                    + "Matricula Quantidade Campanha Data\n"
+                    + "-----------------------------------------------------------------------------\n";
+            jTextArea.insert(cabecario, jTextArea.getCaretPosition());
             jTextArea.append("\n");
             listaCampanhasAtivas().forEach((a) -> {
                 try {
-                    campDia = DAOREL.TabelaPesquisaTodosCamp(a, data);
+                    campDia = DAOREL.TabelaPesquisaTodosCamp(a, dataInicio, dataFim);
                     campDia.forEach((p) -> {
                         try {
                             jTextArea.insert(String.format("%s - %s - %s - %s",
@@ -119,27 +131,28 @@ public final class JifTelaRelatorio extends javax.swing.JInternalFrame {
                                     p.getDesc_campanha(),
                                     fun.convertDataSQLToDateString(p.getData_registro())),
                                     jTextArea.getCaretPosition());
+                            jTextArea.append("\n");
                         } catch (Exception ex) {
-                            Logger.getLogger(JifTelaRelatorio.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(JifImprime.class.getName()).log(Level.SEVERE, null, ex);
                         }
                         jTextArea.append("\n");
                     });
-
                 } catch (Exception ex) {
-                    Logger.getLogger(JifTelaRelatorio.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(JifImprime.class.getName()).log(Level.SEVERE, null, ex);
                 }
             });
-            jTextArea.append("\n");
-            jTextArea.insert("-----------------------------------------------", jTextArea.getCaretPosition());
-            jTextArea.append("\n");
-            jTextArea.insert(String.format("Total por Campanha."), jTextArea.getCaretPosition());
+            String rodape = "\n"
+                    + "-----------------------------------------------------------------------------\n"
+                    + String.format("\n\n\n\nTOTAL POR CAMPANHA.") + "\n\n\n";
+            jTextArea.insert(rodape, jTextArea.getCaretPosition());
             jTextArea.append("\n");
             listaCampanhasAtivas().forEach((c) -> {
                 try {
-                    jTextArea.insert(c + " - Total: " + DAOREL.TabelaPesquisaRowsCamp(c, data), jTextArea.getCaretPosition());
-                    jTextArea.append("\n");
+                    jTextArea.insert(c + " - Total: " + DAOREL.TabelaPesquisaRowsCamp(c, dataInicio, dataFim), jTextArea.getCaretPosition());
+                    jTextArea.append("\n-----------------------------------------------------------------------------\n");
+                    jTextArea.append("\n\n");
                 } catch (Exception ex) {
-                    Logger.getLogger(JifTelaRelatorio.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(JifImprime.class.getName()).log(Level.SEVERE, null, ex);
                 }
             });
 
@@ -150,7 +163,7 @@ public final class JifTelaRelatorio extends javax.swing.JInternalFrame {
             gera.relatorioPDF(jTextArea.getText());
 
         } catch (Exception ex) {
-            Logger.getLogger(JifTelaRelatorio.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(JifImprime.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -163,14 +176,14 @@ public final class JifTelaRelatorio extends javax.swing.JInternalFrame {
         jbSair = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea = new javax.swing.JTextArea();
-        jpBarraDeProgresso = new javax.swing.JProgressBar();
+        jtInfo = new javax.swing.JTextField();
 
         setClosable(true);
 
         jPanel1.setBackground(new java.awt.Color(51, 255, 51));
 
         jbImprimir.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
-        jbImprimir.setText("Imprimir");
+        jbImprimir.setText("Gerar Dados");
         jbImprimir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jbImprimirActionPerformed(evt);
@@ -185,9 +198,15 @@ public final class JifTelaRelatorio extends javax.swing.JInternalFrame {
             }
         });
 
+        jTextArea.setEditable(false);
         jTextArea.setColumns(20);
         jTextArea.setRows(5);
+        jTextArea.setEnabled(false);
         jScrollPane2.setViewportView(jTextArea);
+
+        jtInfo.setEditable(false);
+        jtInfo.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
+        jtInfo.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -195,15 +214,13 @@ public final class JifTelaRelatorio extends javax.swing.JInternalFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jpBarraDeProgresso, javax.swing.GroupLayout.PREFERRED_SIZE, 438, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jtInfo)
+                .addGap(18, 18, 18)
                 .addComponent(jbImprimir)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jbSair)
                 .addContainerGap())
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 632, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 502, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -213,7 +230,7 @@ public final class JifTelaRelatorio extends javax.swing.JInternalFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jbImprimir)
                     .addComponent(jbSair)
-                    .addComponent(jpBarraDeProgresso, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jtInfo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -232,7 +249,20 @@ public final class JifTelaRelatorio extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jbImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbImprimirActionPerformed
-
+        if (jbImprimir.getText().equals("Gerar Dados")) {
+            Texto();
+            jbImprimir.setText("Imprimir");
+            jtInfo.setText("Dados Gerados com Sucesso!!");
+        } else if (jbImprimir.getText().equals("Imprimir")) {
+            try {
+                imprimirRelatorio();
+                jtInfo.setText("Aguarde Imprimindo!!");
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Erro IOException: " + ex.getMessage());
+            } catch (PrinterException ex) {
+                JOptionPane.showMessageDialog(this, "Erro PrinterException: " + ex.getMessage());
+            }
+        }
 
     }//GEN-LAST:event_jbImprimirActionPerformed
 
@@ -247,6 +277,6 @@ public final class JifTelaRelatorio extends javax.swing.JInternalFrame {
     private javax.swing.JTextArea jTextArea;
     private javax.swing.JButton jbImprimir;
     private javax.swing.JButton jbSair;
-    private javax.swing.JProgressBar jpBarraDeProgresso;
+    private javax.swing.JTextField jtInfo;
     // End of variables declaration//GEN-END:variables
 }

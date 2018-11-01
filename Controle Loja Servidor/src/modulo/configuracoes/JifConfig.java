@@ -3,6 +3,7 @@ package modulo.configuracoes;
 import modulo.usuarios.UsuarioDAO;
 import ConexaoData.Conexao;
 import java.awt.Dimension;
+import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -10,7 +11,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.print.PrintService;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import modulo.campanhas.vendaD.JifAcompanhamentoCampanhas;
 import modulo.metodos.ConvertMD5;
 import modulo.metodos.CryptoBase64;
 import modulo.versao.Versao;
@@ -29,6 +35,9 @@ public final class JifConfig extends javax.swing.JInternalFrame {
     private String user = "prop.server.user";
     private String pass = "prop.server.password";
     private String base = "prop.server.base";
+    private String impressora = "prop.server.impressora";
+    private String backup = "prop.server.backup";
+    private String diretorioRel = "prop.server.diretorioRel";
     private Properties properties;
     private ConvertMD5 md5;
     private Versao ver;
@@ -60,16 +69,17 @@ public final class JifConfig extends javax.swing.JInternalFrame {
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(null, "Erro ao Carregar Arquivo!" + ex.getMessage());
         } catch (Exception ex) {
-            jtStatus.setText("Offline");
+            jtStatus.setText("OFFLINE");
         }
         jtLoja.requestFocus();
+        imprimeRelatorio();
 
     }
 
     public void TestaConexao() throws Exception {
         con = new Conexao();
         if (con.getCONEXAO().isValid(0)) {
-            jtStatus.setText("Online");
+            jtStatus.setText("ONLINE");
         } else {
             jtStatus.setText("OFFLINE");
         }
@@ -112,6 +122,9 @@ public final class JifConfig extends javax.swing.JInternalFrame {
         jtPass.setEnabled(h);
         jtBase.setEnabled(h);
         jbSalvar.setEnabled(h);
+        jcListaImpressoras.setEnabled(h);
+        jcBackups.setEnabled(h);
+        jcDiretorioRelatorio.setEnabled(h);
         try {
             Decrypt();
         } catch (IOException ex) {
@@ -127,6 +140,9 @@ public final class JifConfig extends javax.swing.JInternalFrame {
         jtUser.setEnabled(h);
         jtPass.setEnabled(h);
         jtBase.setEnabled(h);
+        jcListaImpressoras.setEnabled(h);
+        jcBackups.setEnabled(h);
+        jcDiretorioRelatorio.setEnabled(h);
     }
 
     public static Properties getProp() throws IOException {
@@ -145,6 +161,10 @@ public final class JifConfig extends javax.swing.JInternalFrame {
         jtUser.setText(prop.getProperty(user));
         jtPass.setText(prop.getProperty(pass));
         jtBase.setText(prop.getProperty(base));
+        jcListaImpressoras.setSelectedItem(prop.getProperty(impressora));
+        jcBackups.setSelectedItem(prop.getProperty(backup));
+        jcDiretorioRelatorio.setSelectedItem(prop.getProperty(diretorioRel));
+
     }
 
     public void Decrypt() throws IOException {
@@ -155,6 +175,9 @@ public final class JifConfig extends javax.swing.JInternalFrame {
         jtUser.setText(cry.decrypt(prop.getProperty(user)));
         jtPass.setText(cry.decrypt(prop.getProperty(pass)));
         jtBase.setText(cry.decrypt(prop.getProperty(base)));
+        jcListaImpressoras.setSelectedItem(prop.getProperty(impressora));
+        jcBackups.setSelectedItem(prop.getProperty(backup));
+        jcDiretorioRelatorio.setSelectedItem(prop.getProperty(diretorioRel));
     }
 
     public void EditaDados() throws FileNotFoundException, IOException {
@@ -167,6 +190,10 @@ public final class JifConfig extends javax.swing.JInternalFrame {
         properties.setProperty(user, cry.encrypt(jtUser.getText()));
         properties.setProperty(pass, cry.encrypt(jtPass.getText()));
         properties.setProperty(base, cry.encrypt(jtBase.getText()));
+
+        properties.setProperty(impressora, jcListaImpressoras.getSelectedItem().toString());
+        properties.setProperty(backup, jcBackups.getSelectedItem().toString());
+        properties.setProperty(diretorioRel, jcDiretorioRelatorio.getSelectedItem().toString());
         FileOutputStream fos = new FileOutputStream(file);
         properties.store(fos, "FILE DADOS PROPERTIES:");
         fos.close();
@@ -202,6 +229,30 @@ public final class JifConfig extends javax.swing.JInternalFrame {
         return chek;
     }
 
+    private void imprimeRelatorio() {
+        PrintService[] pservices = PrinterJob.lookupPrintServices();
+        if (pservices.length > 0) {
+            for (PrintService ps : pservices) {
+                jcListaImpressoras.addItem(ps.getName());
+            }
+
+        }
+    }
+//    private void listarImpressorasDisponíveis() {
+//        PrintService[] pservices = PrinterJob.lookupPrintServices();
+//        DefaultTableModel modelo = (DefaultTableModel) jTableImpressora.getModel();
+//        modelo.setNumRows(0);
+//        if (pservices.length > 0) {
+//            for (PrintService ps : pservices) {
+//                cont2++;
+//                modelo.addRow(new String[]{
+//                    Integer.toString(cont2), ps.getName()
+//                });
+//            }
+//        } else {
+//        }
+//    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -229,6 +280,12 @@ public final class JifConfig extends javax.swing.JInternalFrame {
         jbSalvar = new javax.swing.JButton();
         jbAtualizar = new javax.swing.JButton();
         jbCancelar = new javax.swing.JButton();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        jcDiretorioRelatorio = new javax.swing.JComboBox<>();
+        jcListaImpressoras = new javax.swing.JComboBox<>();
+        jcBackups = new javax.swing.JComboBox<>();
+        jLabel12 = new javax.swing.JLabel();
 
         setClosable(true);
         setIconifiable(true);
@@ -379,6 +436,27 @@ public final class JifConfig extends javax.swing.JInternalFrame {
             }
         });
 
+        jLabel7.setFont(new java.awt.Font("Microsoft YaHei UI", 1, 14)); // NOI18N
+        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel7.setText("Impressora Padrão \"Sweda\"");
+
+        jLabel11.setFont(new java.awt.Font("Microsoft YaHei UI", 1, 14)); // NOI18N
+        jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel11.setText("Diretórios dos Relatórios Gerados");
+
+        jcDiretorioRelatorio.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
+        jcDiretorioRelatorio.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione um Diretório Disponível." }));
+
+        jcListaImpressoras.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
+        jcListaImpressoras.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione uma Impressora." }));
+
+        jcBackups.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
+        jcBackups.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione um Diretório para Backup Disponível." }));
+
+        jLabel12.setFont(new java.awt.Font("Microsoft YaHei UI", 1, 14)); // NOI18N
+        jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel12.setText("Backups");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -387,48 +465,60 @@ public final class JifConfig extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jtLoja, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jtLoja))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jtHost))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jtPort))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jtUser))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jtPass)))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jtUserLogado)
+                                    .addComponent(jtFuncao)
+                                    .addComponent(jtStatus)
+                                    .addComponent(jtBase)))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(0, 472, Short.MAX_VALUE)
+                                .addComponent(jbEditar)
+                                .addGap(18, 18, 18)
+                                .addComponent(jbAtualizar)
+                                .addGap(18, 18, 18)
+                                .addComponent(jbSalvar)
+                                .addGap(18, 18, 18)
+                                .addComponent(jbCancelar)))
+                        .addGap(6, 6, 6))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jtHost, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jtPort, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jtUser, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jtPass, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jtUserLogado)
-                    .addComponent(jtFuncao)
-                    .addComponent(jtStatus)
-                    .addComponent(jtBase))
-                .addGap(14, 14, 14))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(48, Short.MAX_VALUE)
-                .addComponent(jbEditar)
-                .addGap(18, 18, 18)
-                .addComponent(jbAtualizar)
-                .addGap(18, 18, 18)
-                .addComponent(jbSalvar)
-                .addGap(18, 18, 18)
-                .addComponent(jbCancelar)
-                .addContainerGap(48, Short.MAX_VALUE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jcDiretorioRelatorio, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jcListaImpressoras, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jcBackups, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap())))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -472,29 +562,36 @@ public final class JifConfig extends javax.swing.JInternalFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel5)
                             .addComponent(jtPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(12, 12, 12)
+                .addComponent(jLabel11)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jcDiretorioRelatorio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jcListaImpressoras, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel12)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jcBackups, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jbEditar)
                     .addComponent(jbSalvar)
                     .addComponent(jbAtualizar)
                     .addComponent(jbCancelar))
-                .addContainerGap(9, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -564,11 +661,14 @@ public final class JifConfig extends javax.swing.JInternalFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
@@ -576,6 +676,9 @@ public final class JifConfig extends javax.swing.JInternalFrame {
     private javax.swing.JButton jbCancelar;
     private javax.swing.JButton jbEditar;
     private javax.swing.JButton jbSalvar;
+    private javax.swing.JComboBox<String> jcBackups;
+    private javax.swing.JComboBox<String> jcDiretorioRelatorio;
+    private javax.swing.JComboBox<String> jcListaImpressoras;
     private javax.swing.JTextField jtBase;
     private javax.swing.JTextField jtFuncao;
     private javax.swing.JTextField jtHost;

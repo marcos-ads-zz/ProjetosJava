@@ -81,16 +81,17 @@ public class relatorioCampDAO {
         return agua;
     }
 
-    public List<CadastroCampanhaDia> TabelaPesquisaTodosCamp(String campanha, Date data) throws Exception {
+    public List<CadastroCampanhaDia> TabelaPesquisaTodosCamp(String campanha, Date dataInicio, Date dataFim) throws Exception {
         con = new Conexao();
-        CadastroCampanhaDia objCamp = null;
+        CadastroCampanhaDia objCamp;
         java.util.List<CadastroCampanhaDia> agua = new ArrayList<>();
         String SQL = "SELECT * FROM relatorios.relatorio.campanha "
-                + "where data_registro = ? "
-                + "AND desc_campanha = ?";
+                + "where data_registro between ? and ? "
+                + "and desc_campanha = ?";
         PreparedStatement ps = con.getCONEXAO().prepareStatement(SQL);
-        ps.setDate(1, data);
-        ps.setString(2, campanha);
+        ps.setDate(1, dataInicio);
+        ps.setDate(2, dataFim);
+        ps.setString(3, campanha);
         ResultSet rs = ps.executeQuery();
         while (rs.next()) {
             objCamp = new CadastroCampanhaDia();
@@ -126,17 +127,18 @@ public class relatorioCampDAO {
         return total;
     }
 
-    public int TabelaPesquisaRowsCamp(String campanha, Date data) throws Exception {
+    public int TabelaPesquisaRowsCamp(String campanha, Date dataInicio, Date dataFim) throws Exception {
         con = new Conexao();
         int total = 0;
         String SQL = "SELECT "
                 + "SUM(quantidade) AS qtd "
                 + "FROM relatorio.campanha "
-                + "where data_registro = ? "
-                + "AND desc_campanha = ?";
+                + "where data_registro between ? and ? "
+                + "and desc_campanha = ?";
         PreparedStatement ps = con.getCONEXAO().prepareStatement(SQL);
-        ps.setDate(1, data);
-        ps.setString(2, campanha);
+        ps.setDate(1, dataInicio);
+        ps.setDate(2, dataFim);
+        ps.setString(3, campanha);
         ResultSet rs = ps.executeQuery();
         while (rs.next()) {
             total = rs.getInt("qtd");
