@@ -11,7 +11,7 @@ import modulo.campanhas.CadastroMetasCampanhas;
  *
  * @author Marcos Junior
  */
-public class CadastroMetasCampanhasDAO {
+public class metasCampanhasDAO {
 
     Conexao con;
 
@@ -66,5 +66,29 @@ public class CadastroMetasCampanhasDAO {
         }
         con.getCONEXAO().close();
         return campanhas;
+    }
+
+    public CadastroMetasCampanhas TabelaPesquisaObs(String descricao) throws Exception {
+        con = new Conexao();
+        CadastroMetasCampanhas objCamp = null;
+        String SQL = "SELECT * FROM relatorios.relatorio.cad_campanha where descricao_campanha = ?";
+        PreparedStatement ps = con.getCONEXAO().prepareStatement(SQL);
+        ps.setString(1, descricao);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            objCamp = new CadastroMetasCampanhas();
+            objCamp.setId(rs.getInt("id"));
+            objCamp.setDescricao_Campanha(rs.getString("descricao_campanha"));
+            objCamp.setData_inicio(rs.getDate("data_inicio"));
+            objCamp.setData_fim(rs.getDate("data_fim"));
+            objCamp.setMeta_mes(rs.getInt("meta_mes"));
+            objCamp.setMeta_trimestre(rs.getInt("meta_trimestre"));
+            objCamp.setMeta_semestre(rs.getInt("meta_semestre"));
+            objCamp.setMeta_anual(rs.getInt("meta_anual"));
+            objCamp.setObs(rs.getString("obs"));
+            objCamp.setData_registro(rs.getDate("data_registro"));
+        }
+        con.getCONEXAO().close();
+        return objCamp;
     }
 }

@@ -14,12 +14,12 @@ public class LojaDAO {
     Conexao con;
 
 
-    public Loja PesquisaNumeroLoja(int numero_loja) throws Exception {
+    public Loja PesquisaNumeroLoja(int id) throws Exception {
         con = new Conexao();
         Loja objFun = null;
-        String SQL = "select * from relatorios.relatorio.loja where numero_loja = ?";
+        String SQL = "select * from relatorios.relatorio.loja where idloja = ?";
         PreparedStatement ps = con.getCONEXAO().prepareStatement(SQL);
-        ps.setInt(1, numero_loja);
+        ps.setInt(1, id);
         ResultSet rs = ps.executeQuery();
         while (rs.next()) {
             objFun = new Loja();

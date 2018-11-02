@@ -23,9 +23,9 @@ import modulo.entidades.Usuario;
 import modulo.versao.Versao;
 import javax.swing.ImageIcon;
 import javax.swing.JFormattedTextField;
-import modulo.camapanha.DAO.CadastroDescricaoCampanhasDAO;
-import modulo.camapanha.DAO.CadastroCampanhaDiaDAO;
-import modulo.camapanha.DAO.CadastroMetasCampanhasDAO;
+import modulo.camapanha.DAO.descricaoCampanhasDAO;
+import modulo.camapanha.DAO.registroCampanhaDAO;
+import modulo.camapanha.DAO.metasCampanhasDAO;
 import modulo.camapanha.DAO.CampanhaPlanoVooDAO;
 import modulo.DAO.SegurancaDAO;
 import modulo.campanhas.CadastroDescricaoCampanhas;
@@ -59,13 +59,13 @@ public final class JfPrincipal extends javax.swing.JFrame {
     private DateFormat formatoHora;
     private DateFormat formatoDIA;
     private Versao ver;
-    private int numeroLoja = 782;
+    private int numeroLoja = 1;
     private boolean tipo = true;
     private String Aviso = "Atenção";
 
-    private CadastroDescricaoCampanhasDAO ITENSCAMP_DAO;
-    private CadastroCampanhaDiaDAO CAMP_DAO;
-    private CadastroMetasCampanhasDAO CADCAMP_DAO;
+    private descricaoCampanhasDAO ITENSCAMP_DAO;
+    private registroCampanhaDAO CAMP_DAO;
+    private metasCampanhasDAO CADCAMP_DAO;
 
     private CadastroCampanhaDia objCamp;
     private CadastroMetasCampanhas objCadCamp;
@@ -85,9 +85,9 @@ public final class JfPrincipal extends javax.swing.JFrame {
         DAOLOJA = new LojaDAO();
         DAOPRO = new ProdutoDAO();
         DAOLista = new FaltasDAO();
-        ITENSCAMP_DAO = new CadastroDescricaoCampanhasDAO();
-        CAMP_DAO = new CadastroCampanhaDiaDAO();
-        CADCAMP_DAO = new CadastroMetasCampanhasDAO();
+        ITENSCAMP_DAO = new descricaoCampanhasDAO();
+        CAMP_DAO = new registroCampanhaDAO();
+        CADCAMP_DAO = new metasCampanhasDAO();
         DAOVOO = new CampanhaPlanoVooDAO();
         SEGDAO = new SegurancaDAO();
         segu = new SegurancaFuncoes();
@@ -742,6 +742,20 @@ public final class JfPrincipal extends javax.swing.JFrame {
         }
     }
 
+    public void mostraObservacao() {
+        String obs, nome;
+        obs = "Selecione Uma Campanha";
+        nome = jcCampanhaObs.getSelectedItem().toString();
+        if (!nome.equals(obs) || !nome.equals("")) {
+            try {
+                if (!nome.equals(obs)) {
+                    jLabelAvisos.setText("PREMIAÇÃO: " + CADCAMP_DAO.TabelaPesquisaObs(nome).getObs());
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(JfPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
 //*************************Fim**************************************************
 //    public boolean PesquisaUltmos30Dias() {
 //        boolean chek = false;
@@ -754,6 +768,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
 //        return chek;
 //    }
 //******************************************************************Segunda Parte
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -1147,9 +1162,17 @@ public final class JfPrincipal extends javax.swing.JFrame {
         });
 
         jcCampanhaObs.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione Uma Campanha" }));
+        jcCampanhaObs.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jcCampanhaObsActionPerformed(evt);
+            }
+        });
         jcCampanhaObs.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 jcCampanhaObsKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jcCampanhaObsKeyReleased(evt);
             }
         });
 
@@ -2025,6 +2048,14 @@ public final class JfPrincipal extends javax.swing.JFrame {
     private void jbParcialCampanhasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbParcialCampanhasActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jbParcialCampanhasActionPerformed
+
+    private void jcCampanhaObsKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jcCampanhaObsKeyReleased
+        mostraObservacao();
+    }//GEN-LAST:event_jcCampanhaObsKeyReleased
+
+    private void jcCampanhaObsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcCampanhaObsActionPerformed
+        mostraObservacao();
+    }//GEN-LAST:event_jcCampanhaObsActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

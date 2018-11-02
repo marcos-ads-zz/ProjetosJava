@@ -8,7 +8,7 @@ import modulo.campanhas.CadastroCampanhaDia;
  *
  * @author Marcos Junior
  */
-public class CadastroCampanhaDiaDAO {
+public class registroCampanhaDAO {
     
     Conexao con;
 
