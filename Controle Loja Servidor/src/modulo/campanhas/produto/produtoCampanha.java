@@ -1,10 +1,10 @@
-package modulo.campanhas.cadastro;
+package modulo.campanhas.produto;
 
 /**
  *
  * @author Marcos Junior
  */
-public class CadastroDescricaoCampanhas {
+public class produtoCampanha {
 
     private int id;
     private String descricaoCampanha;

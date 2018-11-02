@@ -1,5 +1,5 @@
 
-package modulo.relatorio;
+package modulo.campanhas.relatorio;
 
 import java.sql.Date;
 

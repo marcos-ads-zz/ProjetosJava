@@ -1,4 +1,4 @@
-package modulo.relatorio;
+package modulo.campanhas.relatorio;
 
 import java.awt.BorderLayout;
 import java.text.DateFormat;
@@ -15,11 +15,11 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
-import modulo.campanhas.meta.CadastroMetasCampanhas;
-import modulo.campanhas.meta.CadastroMetasCampanhasDAO;
-import modulo.campanhas.vendaD.CadastroCampanhaDia;
-import modulo.campanhas.vendaD.JifAcompanhamentoCampanhas;
-import modulo.campanhas.vendaD.graficosCampanha;
+import modulo.campanhas.meta.metaCampanha;
+import modulo.campanhas.meta.MetasCampanhasDAO;
+import modulo.campanhas.acompanhamento.CadastroCampanhaDia;
+import modulo.campanhas.acompanhamento.JifAcompanhamentoCampanhas;
+import modulo.campanhas.acompanhamento.graficosCampanha;
 import modulo.metodos.Funcao;
 import modulo.versao.Versao;
 import modulo.view.principal.JfPrincipal;
@@ -33,7 +33,7 @@ import org.jfree.chart.ChartPanel;
 public final class JifGeraRelatorios extends javax.swing.JInternalFrame {
 
     private CadastroCampanhaDia cadCamp;
-    private CadastroMetasCampanhasDAO CADCAMP_DAO;
+    private MetasCampanhasDAO CADCAMP_DAO;
     private relatorioCampDAO DAOREL;
     private graficosCampanha grfCamp;
     private UsuarioDAO DAOUSER;
@@ -56,7 +56,7 @@ public final class JifGeraRelatorios extends javax.swing.JInternalFrame {
         ver = new Versao();
         rl = new JasperDAO();
         DAOREL = new relatorioCampDAO();
-        CADCAMP_DAO = new CadastroMetasCampanhasDAO();
+        CADCAMP_DAO = new MetasCampanhasDAO();
         Thread relogioThred = new Thread(new JifGeraRelatorios.clsDataHora());
         relogioThred.start();
         setTitle("Relatórios de Campanhas: " + ver.getVersao());
@@ -163,7 +163,7 @@ public final class JifGeraRelatorios extends javax.swing.JInternalFrame {
 
     private void listaCampanhasAtivas() {
         DefaultListModel dlm = new DefaultListModel();
-        List<CadastroMetasCampanhas> CadCamp;
+        List<metaCampanha> CadCamp;
         try {
             CadCamp = CADCAMP_DAO.TabelaPesquisaTodos();
             CadCamp.forEach((c) -> {
@@ -349,8 +349,6 @@ public final class JifGeraRelatorios extends javax.swing.JInternalFrame {
         jLabel6.setFont(new java.awt.Font("sansserif", 3, 14)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(255, 51, 0));
         jLabel6.setText("Ano do Gráfico");
-
-        jYearChooserAno.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
 
         jlInicio.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jlInicio.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);

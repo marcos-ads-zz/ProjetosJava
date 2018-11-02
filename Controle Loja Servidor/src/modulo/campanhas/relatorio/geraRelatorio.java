@@ -1,4 +1,4 @@
-package modulo.relatorio;
+package modulo.campanhas.relatorio;
 
 import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.BaseColor;

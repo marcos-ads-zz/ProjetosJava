@@ -16,7 +16,7 @@ import modulo.loja.JifLoja;
 import modulo.produtos.JifProdutos;
 import javax.swing.JOptionPane;
 import modulo.desenvolvimento.frames.JifAniversariantes;
-import modulo.campanhas.vendaD.JifAcompanhamentoCampanhas;
+import modulo.campanhas.acompanhamento.JifAcompanhamentoCampanhas;
 import modulo.planodevoo.JifCampanhasCaixa;
 import modulo.emailD.JifEmail;
 import modulo.avariasD.JifAvariasKibom;
@@ -53,9 +53,9 @@ import java.util.List;
 import modulo.ajuda.JifAjuda;
 import modulo.almoxarifado.JifAlmoxarifado;
 import modulo.atualizacao.JifAjusteParaAtualizacao;
-import modulo.campanhas.meta.JifCadastroMetasCampanhas;
-import modulo.campanhas.cadastro.JifCadastroDescricaoCampanhas;
-import modulo.relatorio.JifGeraRelatorios;
+import modulo.campanhas.meta.JifMetasCampanhas;
+import modulo.campanhas.produto.JifProdutoCampanha;
+import modulo.campanhas.relatorio.JifGeraRelatorios;
 import modulo.dashboardD.Dashboard;
 import modulo.imprimePDF.JifTelaArquivosPDF;
 import modulo.metodos.Funcao;
@@ -121,8 +121,8 @@ public final class JfPrincipal extends javax.swing.JFrame {
     private JifMetas jfMetas = null;
     private JifAjusteParaAtualizacao Ajustes = null;
     private JifSeguranca jfSeguranca = null;
-    private JifCadastroDescricaoCampanhas jfCampanhasCadProd = null;
-    private JifCadastroMetasCampanhas jfCampanhasMetas = null;
+    private JifProdutoCampanha jfCampanhasCadProd = null;
+    private JifMetasCampanhas jfCampanhasMetas = null;
     private JifAcompanhamentoCampanhas jfCampanhasVendaDia = null;
     private JifGeraRelatorios jfCampanhaRelatorio = null;
     private JifAlmoxarifado jfAlmox = null;
@@ -699,7 +699,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
         jmCampanhas.setText("Campanhas");
 
         jmCampanhasCadProdutos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/brick_go.png"))); // NOI18N
-        jmCampanhasCadProdutos.setText("Cadastrar Produto de Campanha");
+        jmCampanhasCadProdutos.setText("Cadastrar Produtos");
         jmCampanhasCadProdutos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jmCampanhasCadProdutosActionPerformed(evt);
@@ -708,7 +708,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
         jmCampanhas.add(jmCampanhasCadProdutos);
 
         jmCampanhasMetasProd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/brick_go.png"))); // NOI18N
-        jmCampanhasMetasProd.setText("Cadastar Meta dos Produtos");
+        jmCampanhasMetasProd.setText("Cadastrar Metas");
         jmCampanhasMetasProd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jmCampanhasMetasProdActionPerformed(evt);
@@ -726,7 +726,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
         jmCampanhas.add(jmRegistrodeVendasCampanhas);
 
         jmRelatoriosDeCampanhas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/page.png"))); // NOI18N
-        jmRelatoriosDeCampanhas.setText("Relatórios de Campanhas");
+        jmRelatoriosDeCampanhas.setText("Gerar Relatórios");
         jmRelatoriosDeCampanhas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jmRelatoriosDeCampanhasActionPerformed(evt);
@@ -1549,12 +1549,12 @@ public final class JfPrincipal extends javax.swing.JFrame {
 
     private void jmCampanhasCadProdutosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmCampanhasCadProdutosActionPerformed
         if (jfCampanhasCadProd == null) {
-            jfCampanhasCadProd = new JifCadastroDescricaoCampanhas();
+            jfCampanhasCadProd = new JifProdutoCampanha();
             jDesktopPrincipal.add(jfCampanhasCadProd);
             jfCampanhasCadProd.setVisible(true);
             jfCampanhasCadProd.setPosicao();
         } else if (!jfCampanhasCadProd.isVisible()) {
-            jfCampanhasCadProd = new JifCadastroDescricaoCampanhas();
+            jfCampanhasCadProd = new JifProdutoCampanha();
             jDesktopPrincipal.add(jfCampanhasCadProd);
             jfCampanhasCadProd.setVisible(true);
             jfCampanhasCadProd.setPosicao();
@@ -1565,12 +1565,12 @@ public final class JfPrincipal extends javax.swing.JFrame {
 
     private void jmCampanhasMetasProdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmCampanhasMetasProdActionPerformed
         if (jfCampanhasMetas == null) {
-            jfCampanhasMetas = new JifCadastroMetasCampanhas();
+            jfCampanhasMetas = new JifMetasCampanhas();
             jDesktopPrincipal.add(jfCampanhasMetas);
             jfCampanhasMetas.setVisible(true);
             jfCampanhasMetas.setPosicao();
         } else if (!jfCampanhasMetas.isVisible()) {
-            jfCampanhasMetas = new JifCadastroMetasCampanhas();
+            jfCampanhasMetas = new JifMetasCampanhas();
             jDesktopPrincipal.add(jfCampanhasMetas);
             jfCampanhasMetas.setVisible(true);
             jfCampanhasMetas.setPosicao();

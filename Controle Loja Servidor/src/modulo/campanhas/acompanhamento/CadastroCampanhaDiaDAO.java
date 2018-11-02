@@ -1,4 +1,4 @@
-package modulo.campanhas.vendaD;
+package modulo.campanhas.acompanhamento;
 
 import ConexaoData.Conexao;
 import java.sql.Date;

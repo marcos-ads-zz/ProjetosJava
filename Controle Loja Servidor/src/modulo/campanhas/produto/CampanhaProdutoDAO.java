@@ -1,4 +1,4 @@
-package modulo.campanhas.cadastro;
+package modulo.campanhas.produto;
 
 import ConexaoData.Conexao;
 import java.sql.PreparedStatement;
@@ -10,11 +10,11 @@ import java.util.List;
  *
  * @author Marcos Junior
  */
-public class CadastroDescricaoCampanhasDAO {
+public class CampanhaProdutoDAO {
 
     Conexao con;
 
-    public boolean Insert(CadastroDescricaoCampanhas objItens) throws Exception {
+    public boolean Insert(produtoCampanha objItens) throws Exception {
         con = new Conexao();
         String SQL = "insert into relatorios.relatorio.itens_campanha("
                 + "descricaocampanha) "
@@ -26,7 +26,7 @@ public class CadastroDescricaoCampanhasDAO {
         return p;
     }
 
-    public boolean Update(CadastroDescricaoCampanhas objCli) throws Exception {
+    public boolean Update(produtoCampanha objCli) throws Exception {
         con = new Conexao();
         String SQL = "UPDATE relatorios.relatorio.itens_campanha set descricaoCampanha = ? WHERE id = ?";
         PreparedStatement ps = con.getCONEXAO().prepareStatement(SQL);
@@ -47,16 +47,16 @@ public class CadastroDescricaoCampanhasDAO {
         return p;
     }
 
-    public List<CadastroDescricaoCampanhas> TabelaPesquisa() throws Exception {
+    public List<produtoCampanha> TabelaPesquisa() throws Exception {
         con = new Conexao();
-        CadastroDescricaoCampanhas objCamp = null;
-        List<CadastroDescricaoCampanhas> cliente = new ArrayList<>();
+        produtoCampanha objCamp = null;
+        List<produtoCampanha> cliente = new ArrayList<>();
 
-        String SQL = "select * from relatorios.relatorio.itens_campanha order by 3";
+        String SQL = "select * from relatorios.relatorio.itens_campanha order by 2";
         PreparedStatement ps = con.getCONEXAO().prepareStatement(SQL);
         ResultSet rs = ps.executeQuery();
         while (rs.next()) {
-            objCamp = new CadastroDescricaoCampanhas();
+            objCamp = new produtoCampanha();
             objCamp.setId(rs.getInt("id"));
             objCamp.setDescricaoCampanha(rs.getString("descricaocampanha"));
             cliente.add(objCamp);
@@ -66,16 +66,16 @@ public class CadastroDescricaoCampanhasDAO {
 
     }
 
-    public List<CadastroDescricaoCampanhas> PesquisaNome(String nome) throws Exception {
+    public List<produtoCampanha> PesquisaNome(String nome) throws Exception {
         con = new Conexao();
-        CadastroDescricaoCampanhas objCamp = null;
-        List<CadastroDescricaoCampanhas> cliente = new ArrayList<>();
+        produtoCampanha objCamp = null;
+        List<produtoCampanha> cliente = new ArrayList<>();
         String SQL = "select * from relatorios.relatorio.itens_campanha where descricaocampanha like ?";
         PreparedStatement ps = con.getCONEXAO().prepareStatement(SQL);
         ps.setString(1, "%" + nome.toUpperCase() + "%");
         ResultSet rs = ps.executeQuery();
         while (rs.next()) {
-            objCamp = new CadastroDescricaoCampanhas();
+            objCamp = new produtoCampanha();
             objCamp.setId(rs.getInt("id"));
             objCamp.setDescricaoCampanha(rs.getString("descricaocampanha"));
             cliente.add(objCamp);

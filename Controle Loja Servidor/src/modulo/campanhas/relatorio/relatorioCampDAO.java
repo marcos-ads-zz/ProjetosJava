@@ -1,4 +1,4 @@
-package modulo.relatorio;
+package modulo.campanhas.relatorio;
 
 import ConexaoData.Conexao;
 import java.sql.Date;
@@ -6,7 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
-import modulo.campanhas.vendaD.CadastroCampanhaDia;
+import modulo.campanhas.acompanhamento.CadastroCampanhaDia;
 
 /**
  *

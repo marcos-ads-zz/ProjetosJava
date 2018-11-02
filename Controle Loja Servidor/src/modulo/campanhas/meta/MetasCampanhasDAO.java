@@ -5,17 +5,17 @@ import java.util.List;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import modulo.campanhas.cadastro.CadastroDescricaoCampanhas;
+import modulo.campanhas.produto.produtoCampanha;
 
 /**
  *
  * @author Marcos Junior
  */
-public class CadastroMetasCampanhasDAO {
+public class MetasCampanhasDAO {
 
     Conexao con;
 
-    public boolean Insert(CadastroMetasCampanhas obj) throws Exception {
+    public boolean Insert(metaCampanha obj) throws Exception {
         con = new Conexao();
         String SQL = "insert into relatorios.relatorio.cad_campanha("
                 + "descricao_campanha, "
@@ -43,15 +43,15 @@ public class CadastroMetasCampanhasDAO {
         return p;
     }
 
-    public List<CadastroMetasCampanhas> TabelaPesquisaTodos() throws Exception {
+    public List<metaCampanha> TabelaPesquisaTodos() throws Exception {
         con = new Conexao();
-        CadastroMetasCampanhas objCamp = null;
-        java.util.List<CadastroMetasCampanhas> agua = new ArrayList<>();
+        metaCampanha objCamp = null;
+        java.util.List<metaCampanha> agua = new ArrayList<>();
         String SQL = "SELECT * FROM relatorios.relatorio.cad_campanha order by 2";
         PreparedStatement ps = con.getCONEXAO().prepareStatement(SQL);
         ResultSet rs = ps.executeQuery();
         while (rs.next()) {
-            objCamp = new CadastroMetasCampanhas();
+            objCamp = new metaCampanha();
             objCamp.setId(rs.getInt("id"));
             objCamp.setDescricao_Campanha(rs.getString("descricao_campanha"));
             objCamp.setData_inicio(rs.getDate("data_inicio"));
@@ -68,7 +68,7 @@ public class CadastroMetasCampanhasDAO {
         return agua;
     }
 
-    public boolean Update(CadastroMetasCampanhas obj) throws Exception {
+    public boolean Update(metaCampanha obj) throws Exception {
         con = new Conexao();
         String SQL = "UPDATE relatorios.relatorio.cad_campanha set "
                 + "descricao_campanha = ?, "
@@ -107,16 +107,16 @@ public class CadastroMetasCampanhasDAO {
         return p;
     }
 
-    public List<CadastroMetasCampanhas> TabelaPesquisa() throws Exception {
+    public List<metaCampanha> TabelaPesquisa() throws Exception {
         con = new Conexao();
-        CadastroMetasCampanhas objCamp = null;
-        List<CadastroMetasCampanhas> cliente = new ArrayList<>();
+        metaCampanha objCamp = null;
+        List<metaCampanha> cliente = new ArrayList<>();
 
-        String SQL = "select * from relatorios.relatorio.cad_campanha order by 4";
+        String SQL = "select * from relatorios.relatorio.cad_campanha order by 2";
         PreparedStatement ps = con.getCONEXAO().prepareStatement(SQL);
         ResultSet rs = ps.executeQuery();
         while (rs.next()) {
-            objCamp = new CadastroMetasCampanhas();
+            objCamp = new metaCampanha();
             objCamp.setId(rs.getInt("id"));
             objCamp.setDescricao_Campanha(rs.getString("descricao_campanha"));
             objCamp.setData_inicio(rs.getDate("data_inicio"));
@@ -134,16 +134,16 @@ public class CadastroMetasCampanhasDAO {
 
     }
 
-    public List<CadastroMetasCampanhas> PesquisaNome(String nome) throws Exception {
+    public List<metaCampanha> PesquisaNome(String nome) throws Exception {
         con = new Conexao();
-        CadastroMetasCampanhas objCamp = null;
-        List<CadastroMetasCampanhas> cliente = new ArrayList<>();
+        metaCampanha objCamp = null;
+        List<metaCampanha> cliente = new ArrayList<>();
         String SQL = "select * from relatorios.relatorio.cad_campanha where descricao_campanha like ?";
         PreparedStatement ps = con.getCONEXAO().prepareStatement(SQL);
         ps.setString(1, "%" + nome.toUpperCase() + "%");
         ResultSet rs = ps.executeQuery();
         while (rs.next()) {
-            objCamp = new CadastroMetasCampanhas();
+            objCamp = new metaCampanha();
             objCamp.setId(rs.getInt("id"));
             objCamp.setDescricao_Campanha(rs.getString("descricao_campanha"));
             objCamp.setData_inicio(rs.getDate("data_inicio"));
@@ -175,16 +175,16 @@ public class CadastroMetasCampanhasDAO {
         return check;
     }
 
-    public List<CadastroDescricaoCampanhas> TabelaPesquisaDescricao() throws Exception {
+    public List<produtoCampanha> TabelaPesquisaDescricao() throws Exception {
         con = new Conexao();
-        CadastroDescricaoCampanhas objCamp = null;
-        List<CadastroDescricaoCampanhas> camp = new ArrayList<>();
+        produtoCampanha objCamp = null;
+        List<produtoCampanha> camp = new ArrayList<>();
 
-        String SQL = "select * from relatorios.relatorio.itens_campanha order by 3";
+        String SQL = "select * from relatorios.relatorio.itens_campanha order by 2";
         PreparedStatement ps = con.getCONEXAO().prepareStatement(SQL);
         ResultSet rs = ps.executeQuery();
         while (rs.next()) {
-            objCamp = new CadastroDescricaoCampanhas();
+            objCamp = new produtoCampanha();
             objCamp.setId(rs.getInt("id"));
             objCamp.setDescricaoCampanha(rs.getString("descricaocampanha"));
             camp.add(objCamp);

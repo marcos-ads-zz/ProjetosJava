@@ -6,7 +6,7 @@ import java.sql.Date;
  *
  * @author Marcos Junior
  */
-public class CadastroMetasCampanhas {
+public class metaCampanha {
 
     private int id;
     private String descricao_Campanha;

@@ -1,4 +1,4 @@
-package modulo.relatorio;
+package modulo.campanhas.relatorio;
 
 import modulo.versao.Versao;
 import java.awt.Dimension;
@@ -13,10 +13,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
-import modulo.campanhas.meta.CadastroMetasCampanhas;
-import modulo.campanhas.meta.CadastroMetasCampanhasDAO;
-import modulo.campanhas.vendaD.CadastroCampanhaDia;
-import modulo.campanhas.vendaD.JifAcompanhamentoCampanhas;
+import modulo.campanhas.meta.metaCampanha;
+import modulo.campanhas.meta.MetasCampanhasDAO;
+import modulo.campanhas.acompanhamento.CadastroCampanhaDia;
+import modulo.campanhas.acompanhamento.JifAcompanhamentoCampanhas;
 import static modulo.configuracoes.JifConfig.getProp;
 import modulo.imprimePDF.PrintPdf;
 import modulo.loja.LojaDAO;
@@ -39,7 +39,7 @@ public final class JifImprime extends javax.swing.JInternalFrame {
     private geraRelatorio gera;
     private relatorioCampDAO DAOREL;
     private List<CadastroCampanhaDia> campDia;
-    private CadastroMetasCampanhasDAO CADCAMP_DAO;
+    private MetasCampanhasDAO CADCAMP_DAO;
 
     public JifImprime() {
         initComponents();
@@ -50,7 +50,7 @@ public final class JifImprime extends javax.swing.JInternalFrame {
         DAO = new LojaDAO();
         gera = new geraRelatorio();
         DAOREL = new relatorioCampDAO();
-        CADCAMP_DAO = new CadastroMetasCampanhasDAO();
+        CADCAMP_DAO = new MetasCampanhasDAO();
         CarregaLoja();
 
     }
@@ -86,7 +86,7 @@ public final class JifImprime extends javax.swing.JInternalFrame {
     }
 
     private List<String> listaCampanhasAtivas() {
-        List<CadastroMetasCampanhas> CadCamp;
+        List<metaCampanha> CadCamp;
         List<String> t = new ArrayList<>();
         try {
             CadCamp = CADCAMP_DAO.TabelaPesquisaTodos();

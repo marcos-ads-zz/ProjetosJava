@@ -1,4 +1,4 @@
-package modulo.campanhas.vendaD;
+package modulo.campanhas.acompanhamento;
 
 import java.awt.BorderLayout;
 import modulo.versao.Versao;
@@ -13,8 +13,8 @@ import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
-import modulo.campanhas.meta.CadastroMetasCampanhas;
-import modulo.campanhas.meta.CadastroMetasCampanhasDAO;
+import modulo.campanhas.meta.metaCampanha;
+import modulo.campanhas.meta.MetasCampanhasDAO;
 import modulo.dashboardD.DadosGraficos;
 import modulo.metodos.Funcao;
 import modulo.usuarios.Usuario;
@@ -35,7 +35,7 @@ public class JifAcompanhamentoCampanhas extends javax.swing.JInternalFrame {
     private DadosGraficos dg;
     private CadastroCampanhaDia obj;
     private CadastroCampanhaDiaDAO CAMPDIA_DAO;
-    private CadastroMetasCampanhasDAO CADCAMP_DAO;
+    private MetasCampanhasDAO CADCAMP_DAO;
 
     public JifAcompanhamentoCampanhas() {
         initComponents();
@@ -43,7 +43,7 @@ public class JifAcompanhamentoCampanhas extends javax.swing.JInternalFrame {
         fun = new Funcao();
         dg = new DadosGraficos();
         DAOUSER = new UsuarioDAO();
-        CADCAMP_DAO = new CadastroMetasCampanhasDAO();
+        CADCAMP_DAO = new MetasCampanhasDAO();
         CAMPDIA_DAO = new CadastroCampanhaDiaDAO();
         setTitle("Acompanhamento de Campanhas: " + ver.getVersao());
         exibeDados();
@@ -166,7 +166,7 @@ public class JifAcompanhamentoCampanhas extends javax.swing.JInternalFrame {
 
     private void listaCampanhasAtivas() {
         DefaultListModel dlm = new DefaultListModel();
-        List<CadastroMetasCampanhas> CadCamp;
+        List<metaCampanha> CadCamp;
         try {
             CadCamp = CADCAMP_DAO.TabelaPesquisaTodos();
             CadCamp.forEach((c) -> {

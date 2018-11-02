@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 import javax.print.PrintService;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import modulo.campanhas.vendaD.JifAcompanhamentoCampanhas;
+import modulo.campanhas.acompanhamento.JifAcompanhamentoCampanhas;
 import modulo.metodos.ConvertMD5;
 import modulo.metodos.CryptoBase64;
 import modulo.versao.Versao;

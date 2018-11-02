@@ -11,28 +11,28 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
-import modulo.campanhas.cadastro.CadastroDescricaoCampanhas;
+import modulo.campanhas.produto.produtoCampanha;
 import modulo.metodos.Funcao;
 
 /**
  * @author Marcos Junior
  */
-public final class JifCadastroMetasCampanhas extends javax.swing.JInternalFrame {
+public final class JifMetasCampanhas extends javax.swing.JInternalFrame {
 
     private int acao;
-    private CadastroMetasCampanhasDAO CAMPDAO;
-    private CadastroMetasCampanhas obj;
+    private MetasCampanhasDAO CAMPDAO;
+    private metaCampanha obj;
     private Funcao fun;
     private Versao ver;
     private JTextField[] campanha1;
     private JFormattedTextField[] campanha2;
 
-    public JifCadastroMetasCampanhas() {
+    public JifMetasCampanhas() {
         initComponents();
         fun = new Funcao();
         ver = new Versao();
-        CAMPDAO = new CadastroMetasCampanhasDAO();
-        Thread relogioThred = new Thread(new JifCadastroMetasCampanhas.clsDataHora());
+        CAMPDAO = new MetasCampanhasDAO();
+        Thread relogioThred = new Thread(new JifMetasCampanhas.clsDataHora());
         relogioThred.start();
         setTitle("Cadastro de Metas Para Produtos de Campanhas: " + ver.getVersao());
         Cancelar();
@@ -165,7 +165,7 @@ public final class JifCadastroMetasCampanhas extends javax.swing.JInternalFrame 
     int cont = 0;
 
     public void Pesquisar() {
-        List<CadastroMetasCampanhas> obj;
+        List<metaCampanha> obj;
         try {
             obj = CAMPDAO.PesquisaNome(jcCampanha.getSelectedItem().toString().toUpperCase());
             PreencheTabelaDaViewNome(obj);
@@ -196,7 +196,7 @@ public final class JifCadastroMetasCampanhas extends javax.swing.JInternalFrame 
     }
 
     public boolean preencherObjetosSalvar() throws ParseException {
-        obj = new CadastroMetasCampanhas();
+        obj = new metaCampanha();
         obj.setDescricao_Campanha(jcCampanha.getSelectedItem().toString().toUpperCase());
         obj.setData_fim(fun.convertDateStringToDateSQL(jtDataFim.getText()));
         obj.setData_inicio(fun.convertDateStringToDateSQL(jtDataInicio.getText()));
@@ -210,7 +210,7 @@ public final class JifCadastroMetasCampanhas extends javax.swing.JInternalFrame 
     }
 
     public boolean preencherObjetosEditar() throws ParseException {
-        obj = new CadastroMetasCampanhas();
+        obj = new metaCampanha();
         obj.setId(Integer.parseInt(jtId.getText()));
         obj.setDescricao_Campanha(jcCampanha.getSelectedItem().toString().toUpperCase());
         obj.setData_fim(fun.convertDateStringToDateSQL(jtDataFim.getText()));
@@ -225,7 +225,7 @@ public final class JifCadastroMetasCampanhas extends javax.swing.JInternalFrame 
     }
 
     private void carregaLista() throws Exception {
-        List<CadastroDescricaoCampanhas> campanha = CAMPDAO.TabelaPesquisaDescricao();
+        List<produtoCampanha> campanha = CAMPDAO.TabelaPesquisaDescricao();
         campanha.forEach((p) -> {
             jcCampanha.addItem(p.getDescricaoCampanha());
         });
@@ -234,7 +234,7 @@ public final class JifCadastroMetasCampanhas extends javax.swing.JInternalFrame 
     public void PreencheTabelaDaView() throws Exception {
         DefaultTableModel modelo = (DefaultTableModel) jtTabela.getModel();
         modelo.setNumRows(0);
-        List<CadastroMetasCampanhas> campanha = CAMPDAO.TabelaPesquisa();
+        List<metaCampanha> campanha = CAMPDAO.TabelaPesquisa();
         campanha.forEach((p) -> {
             try {
                 modelo.addRow(new Object[]{
@@ -243,12 +243,12 @@ public final class JifCadastroMetasCampanhas extends javax.swing.JInternalFrame 
                     fun.convertDataSQLToDateString(p.getData_registro()), p.getObs()
                 });
             } catch (Exception ex) {
-                Logger.getLogger(JifCadastroMetasCampanhas.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(JifMetasCampanhas.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
     }
 
-    public void PreencheTabelaDaViewNome(List<CadastroMetasCampanhas> campanha) throws Exception {
+    public void PreencheTabelaDaViewNome(List<metaCampanha> campanha) throws Exception {
         DefaultTableModel modelo = (DefaultTableModel) jtTabela.getModel();
         modelo.setNumRows(0);
         if (acao != 1) {
@@ -260,7 +260,7 @@ public final class JifCadastroMetasCampanhas extends javax.swing.JInternalFrame 
                         fun.convertDataSQLToDateString(p.getData_registro()), p.getObs()
                     });
                 } catch (Exception ex) {
-                    Logger.getLogger(JifCadastroMetasCampanhas.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(JifMetasCampanhas.class.getName()).log(Level.SEVERE, null, ex);
                 }
             });
         }

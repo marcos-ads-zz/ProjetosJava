@@ -1,6 +1,6 @@
-package modulo.campanhas.vendaD;
+package modulo.campanhas.acompanhamento;
 
-import modulo.relatorio.relatorioCampDAO;
+import modulo.campanhas.relatorio.relatorioCampDAO;
 import java.beans.PropertyVetoException;
 import java.sql.Date;
 import java.util.List;

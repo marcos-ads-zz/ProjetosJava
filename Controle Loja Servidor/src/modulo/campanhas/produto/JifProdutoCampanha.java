@@ -1,4 +1,4 @@
-package modulo.campanhas.cadastro;
+package modulo.campanhas.produto;
 
 import modulo.versao.Versao;
 import java.awt.Dimension;
@@ -10,16 +10,16 @@ import javax.swing.table.DefaultTableModel;
 /**
  * @author Marcos Junior
  */
-public final class JifCadastroDescricaoCampanhas extends javax.swing.JInternalFrame {
+public final class JifProdutoCampanha extends javax.swing.JInternalFrame {
 
     private int acao;
-    private CadastroDescricaoCampanhasDAO DAOCAMP;
-    private CadastroDescricaoCampanhas objCamp;
+    private CampanhaProdutoDAO DAOCAMP;
+    private produtoCampanha objCamp;
     private Versao ver;
 
-    public JifCadastroDescricaoCampanhas() {
+    public JifProdutoCampanha() {
         initComponents();
-        DAOCAMP = new CadastroDescricaoCampanhasDAO();
+        DAOCAMP = new CampanhaProdutoDAO();
         ver = new Versao();
         setTitle("Cadastro de Produtos de Campanhas: " + ver.getVersao());
     }
@@ -86,7 +86,7 @@ public final class JifCadastroDescricaoCampanhas extends javax.swing.JInternalFr
     int cont = 0;
 
     public void Pesquisar() {
-        List<CadastroDescricaoCampanhas> campanha;
+        List<produtoCampanha> campanha;
         try {
             campanha = DAOCAMP.PesquisaNome(jtNomeCliente.getText().toUpperCase());
             if (campanha != null) {
@@ -99,13 +99,13 @@ public final class JifCadastroDescricaoCampanhas extends javax.swing.JInternalFr
     }
 
     public boolean preencherObjetosSalvar() throws ParseException {
-        objCamp = new CadastroDescricaoCampanhas();
+        objCamp = new produtoCampanha();
         objCamp.setDescricaoCampanha(jtNomeCliente.getText().toUpperCase());
         return objCamp != null;
     }
 
     public boolean preencherObjetosEditar() {
-        objCamp = new CadastroDescricaoCampanhas();
+        objCamp = new produtoCampanha();
         objCamp.setId(Integer.parseInt(jtId.getText()));
         objCamp.setDescricaoCampanha(jtNomeCliente.getText().toUpperCase());
         return objCamp != null;
@@ -114,7 +114,7 @@ public final class JifCadastroDescricaoCampanhas extends javax.swing.JInternalFr
     public void PreencheTabelaDaView() throws Exception {
         DefaultTableModel modelo = (DefaultTableModel) jtTabela.getModel();
         modelo.setNumRows(0);
-        List<CadastroDescricaoCampanhas> campanha = DAOCAMP.TabelaPesquisa();
+        List<produtoCampanha> campanha = DAOCAMP.TabelaPesquisa();
         campanha.forEach((p) -> {
             modelo.addRow(new Object[]{
                 p.getId(), p.getDescricaoCampanha()
@@ -122,7 +122,7 @@ public final class JifCadastroDescricaoCampanhas extends javax.swing.JInternalFr
         });
     }
 
-    public void PreencheTabelaDaViewNome(List<CadastroDescricaoCampanhas> campanha) throws Exception {
+    public void PreencheTabelaDaViewNome(List<produtoCampanha> campanha) throws Exception {
         DefaultTableModel modelo = (DefaultTableModel) jtTabela.getModel();
         modelo.setNumRows(0);
         if (acao != 1) {
