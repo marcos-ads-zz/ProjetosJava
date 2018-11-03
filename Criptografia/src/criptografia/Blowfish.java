@@ -26,7 +26,6 @@ public class Blowfish {
             Cipher cipher = Cipher.getInstance("Blowfish");
             cipher.init(Cipher.ENCRYPT_MODE, skeyspec);
             encrypted = cipher.doFinal(strTexotlimpo.getBytes());
-
         } catch (InvalidKeyException | NoSuchAlgorithmException | BadPaddingException | IllegalBlockSizeException | NoSuchPaddingException e) {
             throw new Exception(e);
         }
@@ -40,7 +39,6 @@ public class Blowfish {
             Cipher cipher = Cipher.getInstance("Blowfish");
             cipher.init(Cipher.DECRYPT_MODE, skeyspec);
             decrypted = cipher.doFinal(strEncryText);
-
         } catch (InvalidKeyException | NoSuchAlgorithmException | BadPaddingException | IllegalBlockSizeException | NoSuchPaddingException e) {
             throw new Exception(e);
         }

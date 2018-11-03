@@ -1,4 +1,6 @@
-package criptografia;
+package cifra.cesar;
+
+import java.text.Normalizer;
 
 /**
  *
@@ -6,11 +8,12 @@ package criptografia;
  */
 public class CifraDeCesar {
 
-    public static String encriptar(int chave, String texto) { 
+    public static String encriptar(int chave, String texto) {
+        String s = RetiraAcento(texto);
         StringBuilder textoCifrado = new StringBuilder();
-        int tamanhoTexto = texto.length();
+        int tamanhoTexto = s.length();
         for (int c = 0; c < tamanhoTexto; c++) {
-            int letraCifradaASCII = ((int) texto.charAt(c)) + (chave);
+            int letraCifradaASCII = ((int) s.charAt(c)) + (chave);
             while (letraCifradaASCII > 126) {
                 letraCifradaASCII -= 94;
             }
@@ -30,5 +33,11 @@ public class CifraDeCesar {
             texto.append((char) letraDecifradaASCII);
         }
         return texto.toString();
+    }
+
+    public static String RetiraAcento(String str) {
+        str = Normalizer.normalize(str, Normalizer.Form.NFD);
+        str = str.replaceAll("[^\\p{ASCII}]", "");
+        return str;
     }
 }

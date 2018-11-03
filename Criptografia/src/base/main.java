@@ -3,8 +3,9 @@
  * Para alterar este arquivo de modelo, escolha Ferramentas | Modelos
  * e abra o modelo no editor.
  */
-package criptografia;
+package base;
 
+import view.JfPrincipal;
 import java.io.IOException;
 
 /**
@@ -27,11 +28,11 @@ public class main {
                 }
             }
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(jfPrincipal.class
+            java.util.logging.Logger.getLogger(JfPrincipal.class
                     .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         java.awt.EventQueue.invokeLater(() -> {
-            new jfPrincipal().setVisible(true);
+            new JfPrincipal().setVisible(true);
         });
     }
 }
