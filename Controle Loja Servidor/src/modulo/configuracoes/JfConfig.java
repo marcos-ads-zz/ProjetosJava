@@ -56,7 +56,7 @@ public final class JfConfig extends javax.swing.JFrame {
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, "Erro ao Carregar Arquivo!" + ex.getMessage());
         } catch (Exception ex) {
-            jtStatus.setText("Offline");
+            jtStatus.setText("OFFLINE");
         }
         jtLoja.requestFocus();
 
@@ -65,7 +65,7 @@ public final class JfConfig extends javax.swing.JFrame {
     public void TestaConexao() throws Exception {
         con = new Conexao();
         if (con.getCONEXAO().isValid(0)) {
-            jtStatus.setText("Online");
+            jtStatus.setText("ONLINE");
         } else {
             jtStatus.setText("OFFLINE");
         }
