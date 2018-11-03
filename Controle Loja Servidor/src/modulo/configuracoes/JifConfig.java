@@ -445,7 +445,7 @@ public final class JifConfig extends javax.swing.JInternalFrame {
         jLabel11.setText("Diretórios dos Relatórios Gerados");
 
         jcDiretorioRelatorio.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
-        jcDiretorioRelatorio.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione um Diretório Disponível." }));
+        jcDiretorioRelatorio.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "C\\:\\\\PmenosF\\\\ArquivosPDF\\\\relatorioCampanhas.pdf" }));
 
         jcListaImpressoras.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
         jcListaImpressoras.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione uma Impressora." }));
