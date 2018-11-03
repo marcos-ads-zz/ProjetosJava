@@ -26,7 +26,7 @@ import javax.swing.JFormattedTextField;
 import modulo.camapanha.DAO.descricaoCampanhasDAO;
 import modulo.camapanha.DAO.registroCampanhaDAO;
 import modulo.camapanha.DAO.metasCampanhasDAO;
-import modulo.camapanha.DAO.CampanhaPlanoVooDAO;
+import modulo.camapanha.DAO.PlanoVooDAO;
 import modulo.DAO.SegurancaDAO;
 import modulo.campanhas.CadastroDescricaoCampanhas;
 import modulo.campanhas.CadastroCampanhaDia;
@@ -72,7 +72,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
     private CadastroDescricaoCampanhas objCadIntesCamp;
 
     private CampanhasPlanoDeVoo objVoo;
-    private CampanhaPlanoVooDAO DAOVOO;
+    private PlanoVooDAO DAOVOO;
     private JFormattedTextField[] campanha;
     private JFormattedTextField[] planoVoo;
     private SegurancaDAO SEGDAO;
@@ -88,7 +88,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
         ITENSCAMP_DAO = new descricaoCampanhasDAO();
         CAMP_DAO = new registroCampanhaDAO();
         CADCAMP_DAO = new metasCampanhasDAO();
-        DAOVOO = new CampanhaPlanoVooDAO();
+        DAOVOO = new PlanoVooDAO();
         SEGDAO = new SegurancaDAO();
         segu = new SegurancaFuncoes();
         fun = new Funcao();
@@ -342,6 +342,15 @@ public final class JfPrincipal extends javax.swing.JFrame {
         return objCamp != null;
     }
 
+    private boolean carregaVariaveisCamapanhaU() throws ParseException {
+        objCamp = new CadastroCampanhaDia();
+        objCamp.setDesc_campanha(jcCampanhaObs.getSelectedItem().toString());
+        objCamp.setData_registro(fun.converteDateStringEmSQL(jtDataDoRegistroCampanha.getText()));
+        objCamp.setMatricula(fun.convertToInt(jtMatriculaCampanha.getText()));
+        objCamp.setUltimaChance(fun.getDoubledaString(jtQtdProdutoCampanha.getText()));
+        return objCamp != null;
+    }
+
     private void listaCampanhasAtivas() {
         List<CadastroMetasCampanhas> CadCamp;
         try {
@@ -363,49 +372,79 @@ public final class JfPrincipal extends javax.swing.JFrame {
     private boolean validaCamposCampanha() {
         boolean check = true;
         jtQtdProdutoCampanha.setBackground(new java.awt.Color(255, 255, 255));
-        //jcCampanhaObs.setBackground(new java.awt.Color(214, 217, 223));
-        if (jtQtdProdutoCampanha.getText().equals("") || Integer.parseInt(jtQtdProdutoCampanha.getText()) <= 0) {
-            jtQtdProdutoCampanha.setBackground(new java.awt.Color(255, 0, 0));
-            jtQtdProdutoCampanha.requestFocus();
-            jLabelAvisos.setText("Quantidade de Produtos Incorreta!");
-            check = false;
-        }
-        if (jcCampanhaObs.getSelectedIndex() == 0) {
-            //jcCampanhaObs.setBackground(new java.awt.Color(255, 0, 0));
-            jcCampanhaObs.requestFocus();
-            jLabelAvisos.setText("Selecione Uma Campanha Vigente!");
-            check = false;
-        }
-        if (!fun.testaNumerosDecimais(jtQtdProdutoCampanha.getText())) {
-            jtQtdProdutoCampanha.setText("");
-            jtQtdProdutoCampanha.requestFocus();
-            check = false;
+        String v = jcCampanhaObs.getSelectedItem().toString();
+        if ("ÚLTIMA CHANCE".equals(v)) {
+
+        } else {
+            if (jtQtdProdutoCampanha.getText().equals("") || Integer.parseInt(jtQtdProdutoCampanha.getText()) <= 0) {
+                jtQtdProdutoCampanha.setBackground(new java.awt.Color(255, 0, 0));
+                jtQtdProdutoCampanha.requestFocus();
+                jLabelAvisos.setText("Quantidade de Produtos Incorreta!");
+                check = false;
+            }
+            if (jcCampanhaObs.getSelectedIndex() == 0) {
+                //jcCampanhaObs.setBackground(new java.awt.Color(255, 0, 0));
+                jcCampanhaObs.requestFocus();
+                jLabelAvisos.setText("Selecione Uma Campanha Vigente!");
+                check = false;
+            }
+            if (!fun.testaNumerosDecimais(jtQtdProdutoCampanha.getText())) {
+                jtQtdProdutoCampanha.setText("");
+                jtQtdProdutoCampanha.requestFocus();
+                check = false;
+            }
         }
         return check;
     }
 
     private void salvarCamapanha() {
-        try {
-            if (validaCamposCampanha()) {
-                if (verificaMatriculaAntesDeSalvar()) {
-                    if (carregaVariaveisCamapanha()) {
-                        if (CAMP_DAO.Insert(objCamp)) {
-                            JOptionPane.showMessageDialog(this, "Salvo com Sucesso!");
-                            limparCampos();
-                            jtQtdProdutoCampanha.requestFocus();
-                            jLabelAvisos.setText("Salvo com Sucesso!");
-                        } else {
-                            jLabelAvisos.setText("Não foi possível salvar!");
+        String v = jcCampanhaObs.getSelectedItem().toString();
+        if ("ÚLTIMA CHANCE".equals(v)) {
+            try {
+                if (validaCamposCampanha()) {
+                    if (verificaMatriculaAntesDeSalvar()) {
+                        if (carregaVariaveisCamapanhaU()) {
+                            if (CAMP_DAO.InsertUltimaChance(objCamp)) {
+                                JOptionPane.showMessageDialog(this, "Salvo com Sucesso!");
+                                limparCampos();
+                                jtQtdProdutoCampanha.requestFocus();
+                                jLabelAvisos.setText("Salvo com Sucesso!");
+                            } else {
+                                jLabelAvisos.setText("Não foi possível salvar!");
+                            }
                         }
+                    } else {
+                        jLabelAvisos.setText("Matrícula Incorreta!");
+                        jtMatriculaCampanha.requestFocus();
                     }
-                } else {
-                    jLabelAvisos.setText("Matrícula Incorreta!");
-                    jtMatriculaCampanha.requestFocus();
                 }
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Falha ao salvarDadosColaboradorUC: " + ex);
             }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Falha ao salvarDadosColaborador: " + ex);
+        } else {
+            try {
+                if (validaCamposCampanha()) {
+                    if (verificaMatriculaAntesDeSalvar()) {
+                        if (carregaVariaveisCamapanha()) {
+                            if (CAMP_DAO.Insert(objCamp)) {
+                                JOptionPane.showMessageDialog(this, "Salvo com Sucesso!");
+                                limparCampos();
+                                jtQtdProdutoCampanha.requestFocus();
+                                jLabelAvisos.setText("Salvo com Sucesso!");
+                            } else {
+                                jLabelAvisos.setText("Não foi possível salvar!");
+                            }
+                        }
+                    } else {
+                        jLabelAvisos.setText("Matrícula Incorreta!");
+                        jtMatriculaCampanha.requestFocus();
+                    }
+                }
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Falha ao salvarDadosColaboradorQ: " + ex);
+            }
         }
+
     }
 
     //*************************Fim**********************************************
@@ -1102,7 +1141,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
         jlMat23.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jlMat23.setText("QTD PROD");
 
-        jtQtdProdutoCampanha.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
+        jtQtdProdutoCampanha.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
         jtQtdProdutoCampanha.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jtQtdProdutoCampanha.setFocusLostBehavior(javax.swing.JFormattedTextField.PERSIST);
         jtQtdProdutoCampanha.setMinimumSize(new java.awt.Dimension(12, 26));

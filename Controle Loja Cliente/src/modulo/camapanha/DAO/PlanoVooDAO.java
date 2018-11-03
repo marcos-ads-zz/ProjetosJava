@@ -8,7 +8,7 @@ import modulo.entidades.CampanhasPlanoDeVoo;
  *
  * @author Marcos Junior
  */
-public class CampanhaPlanoVooDAO {
+public class PlanoVooDAO {
 
     Conexao con;
 

@@ -82,6 +82,12 @@ public class Funcao {
         return und;
     }
 
+    public Double getDoubledaString(String valorString) {
+        String valor = valorString;
+        Double valorDouble = Double.parseDouble(valor.replaceAll("\\.", "").replace(",", "."));
+        return valorDouble;
+    }
+
     public String getMaxDias(int month, int year) {
         Calendar cal = (Calendar) Calendar.getInstance().clone();
         cal.set(Calendar.YEAR, year);
