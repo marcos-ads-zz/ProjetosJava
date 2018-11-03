@@ -40,7 +40,7 @@ public final class JifGeraRelatorios extends javax.swing.JInternalFrame {
     private Usuario objUSER;
     private JasperDAO rl;
     private Funcao fun;
-    private dataFrames datas;
+    private dataFrames fram;
     DateFormat formatoHora;
     DateFormat formatoDIA;
     private JifCarregamento jfC = null;
@@ -122,9 +122,18 @@ public final class JifGeraRelatorios extends javax.swing.JInternalFrame {
     }
 
     private void painelGraficoCampanha(int matricula, String campanha) throws PropertyVetoException, Exception {
-        jPanelGrafico.removeAll();
-        jPanelGrafico.add(new ChartPanel(grfCamp.painelGraficoCampanhas(matricula, campanha, anoY())), BorderLayout.CENTER);
-        jPanelGrafico.validate();
+        String u = jListCampanhas.getSelectedItem().toString();
+        if (u.equals("ÚLTIMA CHANCE")) {
+            int uc1 = 0;
+            jPanelGrafico.removeAll();
+            jPanelGrafico.add(new ChartPanel(grfCamp.painelGraficoCampanhas(matricula, campanha, anoY(), uc1)), BorderLayout.CENTER);
+            jPanelGrafico.validate();
+        } else {
+            int uc2 = 1;
+            jPanelGrafico.removeAll();
+            jPanelGrafico.add(new ChartPanel(grfCamp.painelGraficoCampanhas(matricula, campanha, anoY(), uc2)), BorderLayout.CENTER);
+            jPanelGrafico.validate();
+        }
     }
 
     private void PesquisaRegistros() {
@@ -156,7 +165,7 @@ public final class JifGeraRelatorios extends javax.swing.JInternalFrame {
         cadlist.forEach((p) -> {
             modelo.addRow(new Object[]{
                 p.getId(), p.getMatricula(), p.getDesc_campanha(),
-                p.getQuantidade(), p.getData_registro()
+                p.getQuantidade(), p.getUltimaChance(), p.getData_registro()
             });
         });
     }
@@ -184,14 +193,23 @@ public final class JifGeraRelatorios extends javax.swing.JInternalFrame {
     public java.sql.Date RInicio() {
         Date data1 = jdDataPesquisaInicio.getDate();
         System.out.println("RInicio(): " + data1);
-        datas.setDataInicio(fun.convertDateToDateSql(data1));
+        fram.setDataInicio(fun.convertDateToDateSql(data1));
 
         return fun.convertDateToDateSql(data1);
     }
 
+    public void RMatri() {
+        if (jtMatricula.getText().equals("")) {
+            fram.setMatricula(0);
+        } else {
+            int matri = Integer.parseInt(jtMatricula.getText());
+            fram.setMatricula(matri);
+        }
+    }
+
     public java.sql.Date RFim() {
         Date data2 = jdDataPesquisaFim.getDate();
-        datas.setDataFim(fun.convertDateToDateSql(data2));
+        fram.setDataFim(fun.convertDateToDateSql(data2));
         //System.out.println("modulo.relatorio.JifGeraRelatorios.RFim()" + data2);
         return fun.convertDateToDateSql(data2);
     }
@@ -304,11 +322,11 @@ public final class JifGeraRelatorios extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "VENDEDOR", "CAMPANHA", "VENDA", "DATA DO REGISTRO"
+                "ID", "VENDEDOR", "CAMPANHA", "VENDA", "VENDA ÚLTIMA CHANCE", "DATA DO REGISTRO"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -638,6 +656,7 @@ public final class JifGeraRelatorios extends javax.swing.JInternalFrame {
             public void run() {
                 RInicio();
                 RFim();
+                RMatri();
                 abreTelaDeTexto();
                 fechaCarregamento();
             }

@@ -2,13 +2,11 @@ package modulo.campanhas.acompanhamento;
 
 import modulo.campanhas.relatorio.relatorioCampDAO;
 import java.beans.PropertyVetoException;
-import java.sql.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import modulo.contas.Agua;
 import modulo.dashboardD.DadosGraficos;
-import modulo.faceamento.ListaDeRupturaDAO;
 import modulo.metodos.Funcao;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -24,16 +22,23 @@ public class graficosCampanha {
     Funcao fun = new Funcao();
     relatorioCampDAO DAO = new relatorioCampDAO();
 
-    public JFreeChart painelGraficoCampanhas(int matricula, String campanha, String ano) throws PropertyVetoException, Exception {
+    public JFreeChart painelGraficoCampanhas(int matricula, String campanha, String ano, int u) throws PropertyVetoException, Exception {
         DefaultCategoryDataset caty = new DefaultCategoryDataset();
-
+        double result;
         String mesAbrev[] = {"", "Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"};
         String mesComp[] = {"", "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"};
-
-        for (int i = 1; i <= 12; i++) {
-            int result = DAO.TabelaPesquisaRows(matricula, campanha, fun.convertDateStringToDateSQL("01/" + i + "/" + ano));
-            caty.setValue(result, mesComp[i], mesAbrev[i] + " (" + result + ")");  
+        if (u == 1) {
+            for (int i = 1; i <= 12; i++) {
+                result = DAO.TabelaPesquisaRowsQtd(matricula, campanha, fun.convertDateStringToDateSQL("01/" + i + "/" + ano));
+                caty.setValue(result, mesComp[i], mesAbrev[i] + " (" + result + ")");
+            }
+        } else if (u == 0) {
+            for (int i = 1; i <= 12; i++) {
+                result = DAO.TabelaPesquisaRowsValor(matricula, campanha, fun.convertDateStringToDateSQL("01/" + i + "/" + ano));
+                caty.setValue(result, mesComp[i], "(" + result + ")");
+            }
         }
+
         JFreeChart grafico = ChartFactory.createBarChart3D("Acompanhamento de Campanhas do Ano de " + ano,
                 "Mês", "Quantidade de Produtos",
                 caty, PlotOrientation.VERTICAL,

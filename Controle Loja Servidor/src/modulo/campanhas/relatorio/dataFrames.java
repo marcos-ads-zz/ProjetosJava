@@ -1,4 +1,3 @@
-
 package modulo.campanhas.relatorio;
 
 import java.sql.Date;
@@ -11,6 +10,7 @@ public class dataFrames {
 
     static Date dataFim;
     static Date dataInicio;
+    static int matricula;
 
     public static Date getDataFim() {
         return dataFim;
@@ -27,6 +27,13 @@ public class dataFrames {
     public static void setDataInicio(Date dataInicio) {
         dataFrames.dataInicio = dataInicio;
     }
-    
+
+    public static int getMatricula() {
+        return matricula;
+    }
+
+    public static void setMatricula(int matricula) {
+        dataFrames.matricula = matricula;
+    }
 
 }

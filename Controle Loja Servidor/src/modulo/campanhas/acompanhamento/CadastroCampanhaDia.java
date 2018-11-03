@@ -12,6 +12,7 @@ public class CadastroCampanhaDia {
     private int matricula;
     private String desc_campanha;
     private int quantidade;
+    private double ultimaChance;
     private Date data_registro;
 
     public int getId() {
@@ -44,6 +45,14 @@ public class CadastroCampanhaDia {
 
     public void setQuantidade(int quantidade) {
         this.quantidade = quantidade;
+    }
+
+    public double getUltimaChance() {
+        return ultimaChance;
+    }
+
+    public void setUltimaChance(double ultimaChance) {
+        this.ultimaChance = ultimaChance;
     }
 
     public Date getData_registro() {

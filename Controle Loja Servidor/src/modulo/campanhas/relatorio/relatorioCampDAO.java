@@ -25,6 +25,7 @@ public class relatorioCampDAO {
                 + "matricula, "
                 + "desc_campanha, "
                 + "quantidade, "
+                + "valor, "
                 + "data_registro, "
                 + "EXTRACT(Month from data_registro) mes, "
                 + "EXTRACT (Year from data_registro) ano "
@@ -43,6 +44,7 @@ public class relatorioCampDAO {
             objCamp.setMatricula(rs.getInt("matricula"));
             objCamp.setDesc_campanha(rs.getString("desc_campanha"));
             objCamp.setQuantidade(rs.getInt("quantidade"));
+            objCamp.setUltimaChance(rs.getDouble("valor"));
             objCamp.setData_registro(rs.getDate("data_registro"));
             camp.add(objCamp);
         }
@@ -74,6 +76,7 @@ public class relatorioCampDAO {
             objCamp.setMatricula(rs.getInt("matricula"));
             objCamp.setDesc_campanha(rs.getString("desc_campanha"));
             objCamp.setQuantidade(rs.getInt("quantidade"));
+            objCamp.setUltimaChance(rs.getDouble("valor"));
             objCamp.setData_registro(rs.getDate("data_registro"));
             agua.add(objCamp);
         }
@@ -99,6 +102,7 @@ public class relatorioCampDAO {
             objCamp.setMatricula(rs.getInt("matricula"));
             objCamp.setDesc_campanha(rs.getString("desc_campanha"));
             objCamp.setQuantidade(rs.getInt("quantidade"));
+            objCamp.setUltimaChance(rs.getDouble("valor"));
             objCamp.setData_registro(rs.getDate("data_registro"));
             agua.add(objCamp);
         }
@@ -106,7 +110,35 @@ public class relatorioCampDAO {
         return agua;
     }
 
-    public int TabelaPesquisaRows(int matricula, String campanha, Date data) throws Exception {
+    public List<CadastroCampanhaDia> TabelaPesquisaTodosMatricula(String campanha, Date dataInicio, Date dataFim, int matricula) throws Exception {
+        con = new Conexao();
+        CadastroCampanhaDia objCamp;
+        java.util.List<CadastroCampanhaDia> agua = new ArrayList<>();
+        String SQL = "SELECT * FROM relatorios.relatorio.campanha "
+                + "where data_registro between ? and ? "
+                + "and desc_campanha = ? "
+                + "and matricula = ?";
+        PreparedStatement ps = con.getCONEXAO().prepareStatement(SQL);
+        ps.setDate(1, dataInicio);
+        ps.setDate(2, dataFim);
+        ps.setString(3, campanha);
+        ps.setInt(4, matricula);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            objCamp = new CadastroCampanhaDia();
+            objCamp.setId(rs.getInt("id"));
+            objCamp.setMatricula(rs.getInt("matricula"));
+            objCamp.setDesc_campanha(rs.getString("desc_campanha"));
+            objCamp.setQuantidade(rs.getInt("quantidade"));
+            objCamp.setUltimaChance(rs.getDouble("valor"));
+            objCamp.setData_registro(rs.getDate("data_registro"));
+            agua.add(objCamp);
+        }
+        con.getCONEXAO().close();
+        return agua;
+    }
+
+    public int TabelaPesquisaRowsQtd(int matricula, String campanha, Date data) throws Exception {
         con = new Conexao();
         int total = 0;
         String SQL = "SELECT "
@@ -122,6 +154,27 @@ public class relatorioCampDAO {
         ResultSet rs = ps.executeQuery();
         while (rs.next()) {
             total = rs.getInt("qtd");
+        }
+        con.getCONEXAO().close();
+        return total;
+    }
+
+    public double TabelaPesquisaRowsValor(int matricula, String campanha, Date data) throws Exception {
+        con = new Conexao();
+        double total = 0;
+        String SQL = "SELECT "
+                + "SUM(valor) AS qtd "
+                + "FROM relatorio.campanha "
+                + "where date_trunc('month', data_registro) = ? "
+                + "AND matricula = ? "
+                + "AND desc_campanha = ?";
+        PreparedStatement ps = con.getCONEXAO().prepareStatement(SQL);
+        ps.setDate(1, data);
+        ps.setInt(2, matricula);
+        ps.setString(3, campanha);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            total = rs.getDouble("qtd");
         }
         con.getCONEXAO().close();
         return total;
@@ -147,4 +200,67 @@ public class relatorioCampDAO {
         return total;
     }
 
+    public int TabelaPesquisaRowsCampMatri(String campanha, Date dataInicio, Date dataFim, int matricula) throws Exception {
+        con = new Conexao();
+        int total = 0;
+        String SQL = "SELECT "
+                + "SUM(quantidade) AS qtd "
+                + "FROM relatorio.campanha "
+                + "where data_registro between ? and ? "
+                + "and desc_campanha = ? "
+                + "and matricula = ?";
+        PreparedStatement ps = con.getCONEXAO().prepareStatement(SQL);
+        ps.setDate(1, dataInicio);
+        ps.setDate(2, dataFim);
+        ps.setString(3, campanha);
+        ps.setInt(4, matricula);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            total = rs.getInt("qtd");
+        }
+        con.getCONEXAO().close();
+        return total;
+    }
+
+    public double TabelaPesquisaRowsUltima(String campanha, Date dataInicio, Date dataFim) throws Exception {
+        con = new Conexao();
+        double total = 0;
+        String SQL = "SELECT "
+                + "SUM(valor) AS qtd "
+                + "FROM relatorio.campanha "
+                + "where data_registro between ? and ? "
+                + "and desc_campanha = ?";
+        PreparedStatement ps = con.getCONEXAO().prepareStatement(SQL);
+        ps.setDate(1, dataInicio);
+        ps.setDate(2, dataFim);
+        ps.setString(3, campanha);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            total = rs.getDouble("qtd");
+        }
+        con.getCONEXAO().close();
+        return total;
+    }
+
+    public double TabelaPesquisaRowsUltimaMatri(String campanha, Date dataInicio, Date dataFim, int matricula) throws Exception {
+        con = new Conexao();
+        double total = 0;
+        String SQL = "SELECT "
+                + "SUM(valor) AS qtd "
+                + "FROM relatorio.campanha "
+                + "where data_registro between ? and ? "
+                + "and desc_campanha = ? "
+                + "and matricula = ?";
+        PreparedStatement ps = con.getCONEXAO().prepareStatement(SQL);
+        ps.setDate(1, dataInicio);
+        ps.setDate(2, dataFim);
+        ps.setString(3, campanha);
+        ps.setInt(4, matricula);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            total = rs.getDouble("qtd");
+        }
+        con.getCONEXAO().close();
+        return total;
+    }
 }

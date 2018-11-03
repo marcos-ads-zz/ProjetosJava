@@ -21,13 +21,15 @@ public class CadastroCampanhaDiaDAO {
                 + "matricula, "
                 + "desc_campanha, "
                 + "quantidade, "
+                + "valor, "
                 + "data_registro) "
                 + "values (?,?,?,?)";
         PreparedStatement ps = con.getCONEXAO().prepareStatement(SQL);
         ps.setInt(1, objCamp.getMatricula());
         ps.setString(2, objCamp.getDesc_campanha());
         ps.setInt(3, objCamp.getQuantidade());
-        ps.setDate(4, objCamp.getData_registro());
+        ps.setDouble(4, objCamp.getUltimaChance());
+        ps.setDate(5, objCamp.getData_registro());
         boolean p = ps.executeUpdate() > 0;
         con.getCONEXAO().close();
         return p;
@@ -39,14 +41,16 @@ public class CadastroCampanhaDiaDAO {
                 + "matricula = ?, "
                 + "desc_campanha = ?, "
                 + "quantidade = ?, "
+                + "valor = ?, "
                 + "data_registro = ? "
                 + "WHERE id = ?";
         PreparedStatement ps = con.getCONEXAO().prepareStatement(SQL);
         ps.setInt(1, obj.getMatricula());
         ps.setString(2, obj.getDesc_campanha());
         ps.setInt(3, obj.getQuantidade());
-        ps.setDate(4, obj.getData_registro());
-        ps.setInt(5, obj.getId());
+        ps.setDouble(4, obj.getUltimaChance());
+        ps.setDate(5, obj.getData_registro());
+        ps.setInt(6, obj.getId());
         boolean p = ps.executeUpdate() > 0;
         con.getCONEXAO().close();
         return p;
@@ -75,6 +79,7 @@ public class CadastroCampanhaDiaDAO {
             objCamp.setMatricula(rs.getInt("matricula"));
             objCamp.setDesc_campanha(rs.getString("desc_campanha"));
             objCamp.setQuantidade(rs.getInt("quantidade"));
+            objCamp.setUltimaChance(rs.getDouble("valor"));
             objCamp.setData_registro(rs.getDate("data_registro"));
             agua.add(objCamp);
         }
@@ -95,6 +100,7 @@ public class CadastroCampanhaDiaDAO {
             objCamp.setMatricula(rs.getInt("matricula"));
             objCamp.setDesc_campanha(rs.getString("desc_campanha"));
             objCamp.setQuantidade(rs.getInt("quantidade"));
+            objCamp.setUltimaChance(rs.getDouble("valor"));
             objCamp.setData_registro(rs.getDate("data_registro"));
             camp.add(objCamp);
         }
@@ -123,6 +129,7 @@ public class CadastroCampanhaDiaDAO {
             objCamp.setMatricula(rs.getInt("matricula"));
             objCamp.setDesc_campanha(rs.getString("desc_campanha"));
             objCamp.setQuantidade(rs.getInt("quantidade"));
+            objCamp.setUltimaChance(rs.getDouble("valor"));
             objCamp.setData_registro(rs.getDate("data_registro"));
             camp.add(objCamp);
         }
@@ -151,6 +158,7 @@ public class CadastroCampanhaDiaDAO {
             objCamp.setMatricula(rs.getInt("matricula"));
             objCamp.setDesc_campanha(rs.getString("desc_campanha"));
             objCamp.setQuantidade(rs.getInt("quantidade"));
+            objCamp.setUltimaChance(rs.getDouble("valor"));
             objCamp.setData_registro(rs.getDate("data_registro"));
             camp.add(objCamp);
         }
@@ -172,6 +180,7 @@ public class CadastroCampanhaDiaDAO {
             objCamp.setMatricula(rs.getInt("matricula"));
             objCamp.setDesc_campanha(rs.getString("desc_campanha"));
             objCamp.setQuantidade(rs.getInt("quantidade"));
+            objCamp.setUltimaChance(rs.getDouble("valor"));
             objCamp.setData_registro(rs.getDate("data_registro"));
             camp.add(objCamp);
         }
@@ -199,6 +208,7 @@ public class CadastroCampanhaDiaDAO {
             objCamp.setMatricula(rs.getInt("matricula"));
             objCamp.setDesc_campanha(rs.getString("desc_campanha"));
             objCamp.setQuantidade(rs.getInt("quantidade"));
+            objCamp.setUltimaChance(rs.getDouble("valor"));
             objCamp.setData_registro(rs.getDate("data_registro"));
             camp.add(objCamp);
         }

@@ -141,7 +141,14 @@ public class JifAcompanhamentoCampanhas extends javax.swing.JInternalFrame {
         obj = new CadastroCampanhaDia();
         obj.setMatricula(fun.convertToInt(jtMatricula.getText()));
         obj.setDesc_campanha(jcCampanha.getSelectedItem().toString().toUpperCase());
+        if (jfQuantidadeVendida.getText().equals("")) {
+            obj.setQuantidade(0);
+        }
         obj.setQuantidade(fun.convertToInt(jfQuantidadeVendida.getText()));
+        if (jfValorUltimaChance.getText().equals("")) {
+            obj.setUltimaChance(0);
+        }
+        obj.setUltimaChance(fun.convertDoubleStringToDouble(jfValorUltimaChance.getText()));
         obj.setData_registro(fun.convertDateStringToDateSQL(jfDataRegistro.getText()));
         return obj != null;
     }
@@ -151,7 +158,14 @@ public class JifAcompanhamentoCampanhas extends javax.swing.JInternalFrame {
         obj.setId(Integer.parseInt(jtId.getText()));
         obj.setMatricula(fun.convertToInt(jtMatricula.getText()));
         obj.setDesc_campanha(jcCampanha.getSelectedItem().toString().toUpperCase());
+        if (jfQuantidadeVendida.getText().equals("")) {
+            obj.setQuantidade(0);
+        }
         obj.setQuantidade(fun.convertToInt(jfQuantidadeVendida.getText()));
+        if (jfValorUltimaChance.getText().equals("")) {
+            obj.setUltimaChance(0);
+        }
+        obj.setUltimaChance(fun.getDoubledaString(jfValorUltimaChance.getText()));
         obj.setData_registro(fun.convertDateStringToDateSQL(jfDataRegistro.getText()));
         return obj != null;
     }
@@ -193,7 +207,7 @@ public class JifAcompanhamentoCampanhas extends javax.swing.JInternalFrame {
             try {
                 modelo.addRow(new Object[]{
                     p.getId(), p.getMatricula(), p.getDesc_campanha(), p.getQuantidade(),
-                    fun.convertDataSQLToDateString(p.getData_registro())
+                    p.getUltimaChance(), fun.convertDataSQLToDateString(p.getData_registro())
                 });
             } catch (Exception ex) {
                 Logger.getLogger(JifAcompanhamentoCampanhas.class.getName()).log(Level.SEVERE, null, ex);
@@ -210,7 +224,7 @@ public class JifAcompanhamentoCampanhas extends javax.swing.JInternalFrame {
             try {
                 modelo.addRow(new Object[]{
                     p.getId(), p.getMatricula(), p.getDesc_campanha(), p.getQuantidade(),
-                    fun.convertDataSQLToDateString(p.getData_registro())
+                    p.getUltimaChance(), fun.convertDataSQLToDateString(p.getData_registro())
                 });
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Erro ao Pesquisar Campanhas! " + ex.getMessage());
@@ -226,7 +240,7 @@ public class JifAcompanhamentoCampanhas extends javax.swing.JInternalFrame {
             try {
                 modelo.addRow(new Object[]{
                     p.getId(), p.getMatricula(), p.getDesc_campanha(), p.getQuantidade(),
-                    fun.convertDataSQLToDateString(p.getData_registro())
+                    p.getUltimaChance(), fun.convertDataSQLToDateString(p.getData_registro())
                 });
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Erro ao Pesquisar Campanhas! " + ex.getMessage());
@@ -242,7 +256,7 @@ public class JifAcompanhamentoCampanhas extends javax.swing.JInternalFrame {
             try {
                 modelo.addRow(new Object[]{
                     p.getId(), p.getMatricula(), p.getDesc_campanha(), p.getQuantidade(),
-                    fun.convertDataSQLToDateString(p.getData_registro())
+                    p.getUltimaChance(), fun.convertDataSQLToDateString(p.getData_registro())
                 });
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Erro ao Pesquisar Campanhas! " + ex.getMessage());
@@ -348,6 +362,7 @@ public class JifAcompanhamentoCampanhas extends javax.swing.JInternalFrame {
         jtNomeUsuario = new javax.swing.JTextField();
         jRadioButtonMes = new javax.swing.JRadioButton();
         jRadioButtonDia = new javax.swing.JRadioButton();
+        jfValorUltimaChance = new javax.swing.JFormattedTextField();
 
         setClosable(true);
         setIconifiable(true);
@@ -361,11 +376,11 @@ public class JifAcompanhamentoCampanhas extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "VENDEDOR", "CAMPANHA", "VENDA", "DATA DO REGISTRO"
+                "ID", "VENDEDOR", "CAMPANHA", "UNIDADE VENDIDA", "VALOR ÚLTIMA CHANCE", "DATA DO REGISTRO"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -379,9 +394,16 @@ public class JifAcompanhamentoCampanhas extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(jtTabela);
         if (jtTabela.getColumnModel().getColumnCount() > 0) {
-            jtTabela.getColumnModel().getColumn(0).setMaxWidth(45);
-            jtTabela.getColumnModel().getColumn(1).setMinWidth(110);
-            jtTabela.getColumnModel().getColumn(1).setMaxWidth(200);
+            jtTabela.getColumnModel().getColumn(0).setMinWidth(60);
+            jtTabela.getColumnModel().getColumn(0).setMaxWidth(60);
+            jtTabela.getColumnModel().getColumn(1).setMinWidth(150);
+            jtTabela.getColumnModel().getColumn(1).setMaxWidth(150);
+            jtTabela.getColumnModel().getColumn(3).setMinWidth(150);
+            jtTabela.getColumnModel().getColumn(3).setMaxWidth(150);
+            jtTabela.getColumnModel().getColumn(4).setMinWidth(150);
+            jtTabela.getColumnModel().getColumn(4).setMaxWidth(150);
+            jtTabela.getColumnModel().getColumn(5).setMinWidth(200);
+            jtTabela.getColumnModel().getColumn(5).setMaxWidth(200);
         }
 
         jLabel1.setText("Vendedor");
@@ -661,6 +683,13 @@ public class JifAcompanhamentoCampanhas extends javax.swing.JInternalFrame {
             }
         });
 
+        jfValorUltimaChance.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jfValorUltimaChance.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jfValorUltimaChanceActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -671,7 +700,7 @@ public class JifAcompanhamentoCampanhas extends javax.swing.JInternalFrame {
                         .addContainerGap()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(18, 18, 18)
@@ -683,16 +712,18 @@ public class JifAcompanhamentoCampanhas extends javax.swing.JInternalFrame {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(jtNomeUsuario))
                                     .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(jcCampanha, javax.swing.GroupLayout.PREFERRED_SIZE, 407, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jcCampanha, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(jLabel2)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jfValorUltimaChance, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addComponent(jfQuantidadeVendida, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(jLabel5)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(jfDataRegistro, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(63, 63, 63)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                         .addComponent(jMonthChooserMes, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -739,7 +770,8 @@ public class JifAcompanhamentoCampanhas extends javax.swing.JInternalFrame {
                     .addComponent(jbSalvar)
                     .addComponent(jbEditar)
                     .addComponent(jbExcluir)
-                    .addComponent(jbCancelar))
+                    .addComponent(jbCancelar)
+                    .addComponent(jfValorUltimaChance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -895,7 +927,7 @@ public class JifAcompanhamentoCampanhas extends javax.swing.JInternalFrame {
         try {
             CAMPDIA_DAO.PesquisaNomeGraficoCampanha(fun.atualDateSQL(), fun.atualDateSQL(), "BALANCE").forEach((p) -> {
                 System.out.println("Teste " + p.getDesc_campanha() + " " + p.getQuantidade());
-                
+
             });
         } catch (Exception ex) {
             Logger.getLogger(JifAcompanhamentoCampanhas.class.getName()).log(Level.SEVERE, null, ex);
@@ -906,6 +938,10 @@ public class JifAcompanhamentoCampanhas extends javax.swing.JInternalFrame {
     private void jbSalvarKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jbSalvarKeyPressed
         // TODO add your handling code here:
     }//GEN-LAST:event_jbSalvarKeyPressed
+
+    private void jfValorUltimaChanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jfValorUltimaChanceActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jfValorUltimaChanceActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -948,6 +984,7 @@ public class JifAcompanhamentoCampanhas extends javax.swing.JInternalFrame {
     private javax.swing.JFormattedTextField jfTotalMes;
     private javax.swing.JFormattedTextField jfTotalSemestre;
     private javax.swing.JFormattedTextField jfTotalTrimestre;
+    private javax.swing.JFormattedTextField jfValorUltimaChance;
     private javax.swing.JFormattedTextField jtId;
     private javax.swing.JFormattedTextField jtMatricula;
     private javax.swing.JTextField jtNomeUsuario;

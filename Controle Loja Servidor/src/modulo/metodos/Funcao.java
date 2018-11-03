@@ -96,6 +96,12 @@ public class Funcao {
         return und;
     }
 
+    public Double getDoubledaString(String valorString) {
+        String valor = valorString;
+        Double valorDouble = Double.parseDouble(valor.replaceAll("\\.", "").replace(",", "."));
+        return valorDouble;
+    }
+
     public boolean verificaDoubleSeEValor(String string) {
         boolean retorno = false;
         String precoProduto = string;

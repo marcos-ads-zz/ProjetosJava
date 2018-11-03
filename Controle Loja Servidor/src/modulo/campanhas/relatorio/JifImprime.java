@@ -4,14 +4,11 @@ import modulo.versao.Versao;
 import java.awt.Dimension;
 import java.awt.print.PrinterException;
 import java.io.IOException;
-import java.sql.Date;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import modulo.campanhas.meta.metaCampanha;
 import modulo.campanhas.meta.MetasCampanhasDAO;
@@ -21,6 +18,7 @@ import static modulo.configuracoes.JifConfig.getProp;
 import modulo.imprimePDF.PrintPdf;
 import modulo.loja.LojaDAO;
 import modulo.metodos.Funcao;
+import modulo.usuarios.UsuarioDAO;
 
 /**
  *
@@ -33,13 +31,15 @@ public final class JifImprime extends javax.swing.JInternalFrame {
     private String diretorioRel = "prop.server.diretorioRel";
     private Versao ver;
     private Funcao fun;
+    private UsuarioDAO useDAO;
     private LojaDAO DAO;
-    private dataFrames datas;
+    private dataFrames frams;
     private Properties properties;
     private geraRelatorio gera;
     private relatorioCampDAO DAOREL;
     private List<CadastroCampanhaDia> campDia;
     private MetasCampanhasDAO CADCAMP_DAO;
+    int matricula;
 
     public JifImprime() {
         initComponents();
@@ -48,9 +48,11 @@ public final class JifImprime extends javax.swing.JInternalFrame {
         setTitle("Relatório: " + ver.getVersao());
         fun = new Funcao();
         DAO = new LojaDAO();
+        useDAO = new UsuarioDAO();
         gera = new geraRelatorio();
         DAOREL = new relatorioCampDAO();
         CADCAMP_DAO = new MetasCampanhasDAO();
+        matricula = frams.getMatricula();
         CarregaLoja();
 
     }
@@ -85,6 +87,11 @@ public final class JifImprime extends javax.swing.JInternalFrame {
         return prop.getProperty(diretorioRel);
     }
 
+    public int verificaMatricula() {
+
+        return 0;
+    }
+
     private List<String> listaCampanhasAtivas() {
         List<metaCampanha> CadCamp;
         List<String> t = new ArrayList<>();
@@ -109,29 +116,39 @@ public final class JifImprime extends javax.swing.JInternalFrame {
         PrintPdf.PrintPDF(CarregaDadosImpre(), CarregaDadosDireto(), CarregaDadosDireto(), "Termico");
     }
 
-    public void Texto() {
-        java.sql.Date dataInicio = datas.getDataInicio();
-        java.sql.Date dataFim = datas.getDataFim();
+    public void gerarTextoLoja() {
+        java.sql.Date dataInicio = frams.getDataInicio();
+        java.sql.Date dataFim = frams.getDataFim();
         try {
-            String cabecario = "\n\n\nRelatório De Campanhas Loja: " + numLoja + "\n\n\n"
-                    + "Período: " + fun.convertDataSQLToDateString(dataInicio)
-                    + " a " + fun.convertDataSQLToDateString(dataFim) + "\n\n"
-                    + "Matricula Quantidade Campanha Data\n"
+            String cabecario = "\n\n\nRELATÓRIO DE CAMPANHAS LOJA: " + numLoja + "\n\n"
+                    + "PERÍODO: " + fun.convertDataSQLToDateString(dataInicio)
+                    + " a " + fun.convertDataSQLToDateString(dataFim) + "\n"
+                    + "\nMATRÍCULA - QTD - CAMPANHA - DATA\n"
                     + "-----------------------------------------------------------------------------\n";
             jTextArea.insert(cabecario, jTextArea.getCaretPosition());
-            jTextArea.append("\n");
             listaCampanhasAtivas().forEach((a) -> {
                 try {
                     campDia = DAOREL.TabelaPesquisaTodosCamp(a, dataInicio, dataFim);
                     campDia.forEach((p) -> {
                         try {
-                            jTextArea.insert(String.format("%s - %s - %s - %s",
-                                    Integer.toString(p.getMatricula()),
-                                    p.getQuantidade(),
-                                    p.getDesc_campanha(),
-                                    fun.convertDataSQLToDateString(p.getData_registro())),
-                                    jTextArea.getCaretPosition());
-                            jTextArea.append("\n");
+                            if (a.equals("ÚLTIMA CHANCE")) {
+                                jTextArea.insert(String.format("%s - %s - %s - %s",
+                                        Integer.toString(p.getMatricula()),
+                                        fun.convertDoubleToStringMoeda(p.getUltimaChance()),
+                                        p.getDesc_campanha(),
+                                        fun.convertDataSQLToDateString(p.getData_registro())),
+                                        jTextArea.getCaretPosition());
+                                jTextArea.append("\n");
+                            } else {
+                                jTextArea.insert(String.format("%s - %s - %s - %s",
+                                        Integer.toString(p.getMatricula()),
+                                        p.getQuantidade(),
+                                        p.getDesc_campanha(),
+                                        fun.convertDataSQLToDateString(p.getData_registro())),
+                                        jTextArea.getCaretPosition());
+                                jTextArea.append("\n");
+                            }
+
                         } catch (Exception ex) {
                             Logger.getLogger(JifImprime.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -141,25 +158,90 @@ public final class JifImprime extends javax.swing.JInternalFrame {
                     Logger.getLogger(JifImprime.class.getName()).log(Level.SEVERE, null, ex);
                 }
             });
-            String rodape = "\n"
-                    + "-----------------------------------------------------------------------------\n"
-                    + String.format("\n\n\n\nTOTAL POR CAMPANHA.") + "\n\n\n";
+            String rodape = "-----------------------------------------------------------------------------"
+                    + String.format("\n\n\n\nRESULTADO POR CAMPANHA.") + "\n\n\n";
             jTextArea.insert(rodape, jTextArea.getCaretPosition());
-            jTextArea.append("\n");
             listaCampanhasAtivas().forEach((c) -> {
                 try {
-                    jTextArea.insert(c + " - Total: " + DAOREL.TabelaPesquisaRowsCamp(c, dataInicio, dataFim), jTextArea.getCaretPosition());
+                    if (c.equals("ÚLTIMA CHANCE")) {
+                        jTextArea.insert(c + "  - TOTAL: " + fun.convertDoubleToStringMoeda(DAOREL.TabelaPesquisaRowsUltima(c, dataInicio, dataFim)), jTextArea.getCaretPosition());
+                    } else {
+                        jTextArea.insert(c + "  - TOTAL: " + DAOREL.TabelaPesquisaRowsCamp(c, dataInicio, dataFim), jTextArea.getCaretPosition());
+
+                    }
                     jTextArea.append("\n-----------------------------------------------------------------------------\n");
-                    jTextArea.append("\n\n");
                 } catch (Exception ex) {
                     Logger.getLogger(JifImprime.class.getName()).log(Level.SEVERE, null, ex);
                 }
             });
+            jTextArea.insert("\n\nFINAL DO RELATÓRIO", jTextArea.getCaretPosition());
+            gera.relatorioPDF(jTextArea.getText());
 
-            jTextArea.append("\n");
-            jTextArea.insert("Final do Relatório", jTextArea.getCaretPosition());
-            jTextArea.append("\n");
+        } catch (Exception ex) {
+            Logger.getLogger(JifImprime.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
+    public void gerarTextoVendedor() {
+        java.sql.Date dataInicio = frams.getDataInicio();
+        java.sql.Date dataFim = frams.getDataFim();
+        try {
+            String cabecario = "\n\n\nRELATÓRIO DE CAMPANHAS LOJA: " + numLoja + "\n\n"
+                    + "PERÍODO: " + fun.convertDataSQLToDateString(dataInicio)
+                    + " a " + fun.convertDataSQLToDateString(dataFim) + "\n\n"
+                    + "VENDEDOR: " + matricula + " - " + useDAO.PesquisaMatriculaR(matricula).getNome() + "\n"
+                    + "\nMATRÍCULA - QTD - CAMPANHA - DATA\n"
+                    + "-----------------------------------------------------------------------------\n";
+            jTextArea.insert(cabecario, jTextArea.getCaretPosition());
+            listaCampanhasAtivas().forEach((a) -> {
+                try {
+                    campDia = DAOREL.TabelaPesquisaTodosMatricula(a, dataInicio, dataFim, matricula);
+                    campDia.forEach((p) -> {
+                        try {
+                            if (a.equals("ÚLTIMA CHANCE")) {
+                                jTextArea.insert(String.format("%s - %s - %s - %s",
+                                        Integer.toString(p.getMatricula()),
+                                        fun.convertDoubleToStringMoeda(p.getUltimaChance()),
+                                        p.getDesc_campanha(),
+                                        fun.convertDataSQLToDateString(p.getData_registro())),
+                                        jTextArea.getCaretPosition());
+                                jTextArea.append("\n");
+                            } else {
+                                jTextArea.insert(String.format("%s - %s - %s - %s",
+                                        Integer.toString(p.getMatricula()),
+                                        p.getQuantidade(),
+                                        p.getDesc_campanha(),
+                                        fun.convertDataSQLToDateString(p.getData_registro())),
+                                        jTextArea.getCaretPosition());
+                                jTextArea.append("\n");
+                            }
+
+                        } catch (Exception ex) {
+                            Logger.getLogger(JifImprime.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        jTextArea.append("\n");
+                    });
+                } catch (Exception ex) {
+                    Logger.getLogger(JifImprime.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            });
+            String rodape = "-----------------------------------------------------------------------------"
+                    + String.format("\n\n\n\nRESULTADO POR CAMPANHA.") + "\n\n\n";
+            jTextArea.insert(rodape, jTextArea.getCaretPosition());
+            listaCampanhasAtivas().forEach((c) -> {
+                try {
+                    if (c.equals("ÚLTIMA CHANCE")) {
+                        jTextArea.insert(c + "  - TOTAL: " + fun.convertDoubleToStringMoeda(DAOREL.TabelaPesquisaRowsUltimaMatri(c, dataInicio, dataFim, matricula)), jTextArea.getCaretPosition());
+                    } else {
+                        jTextArea.insert(c + "  - TOTAL: " + DAOREL.TabelaPesquisaRowsCampMatri(c, dataInicio, dataFim, matricula), jTextArea.getCaretPosition());
+
+                    }
+                    jTextArea.append("\n-----------------------------------------------------------------------------\n");
+                } catch (Exception ex) {
+                    Logger.getLogger(JifImprime.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            });
+            jTextArea.insert("\n\nFINAL DO RELATÓRIO", jTextArea.getCaretPosition());
             gera.relatorioPDF(jTextArea.getText());
 
         } catch (Exception ex) {
@@ -250,7 +332,11 @@ public final class JifImprime extends javax.swing.JInternalFrame {
 
     private void jbImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbImprimirActionPerformed
         if (jbImprimir.getText().equals("Gerar Dados")) {
-            Texto();
+            if (matricula == 0) {
+                gerarTextoLoja();
+            } else {
+                gerarTextoVendedor();
+            }
             jbImprimir.setText("Imprimir");
             jtInfo.setText("Dados Gerados com Sucesso!!");
         } else if (jbImprimir.getText().equals("Imprimir")) {
