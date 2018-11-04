@@ -234,9 +234,9 @@
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
               <StringArray count="8">
                 <StringItem index="0" value="Selecione o Tipo de Criptografia"/>
-                <StringItem index="1" value="Java Cifra de Cesar"/>
-                <StringItem index="2" value="Java Monoalfab&#xe9;tica"/>
-                <StringItem index="3" value="Java Polialfab&#xe9;tica"/>
+                <StringItem index="1" value="Cifra de Cesar Simples"/>
+                <StringItem index="2" value="Cifra Monoalfab&#xe9;tica"/>
+                <StringItem index="3" value="Cifra Polialfab&#xe9;tica Vigen&#xe8;re"/>
                 <StringItem index="4" value="Base64"/>
                 <StringItem index="5" value="AES"/>
                 <StringItem index="6" value="MD5"/>

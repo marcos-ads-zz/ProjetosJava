@@ -185,12 +185,8 @@ public final class JfConfig extends javax.swing.JFrame {
         jtPass = new javax.swing.JTextField();
         jtBase = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
-        jtUserLogado = new javax.swing.JTextField();
         jtStatus = new javax.swing.JTextField();
-        jtFuncao = new javax.swing.JTextField();
         jbEditar = new javax.swing.JButton();
         jbSalvar = new javax.swing.JButton();
         jbAtualizar = new javax.swing.JButton();
@@ -204,7 +200,7 @@ public final class JfConfig extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Microsoft YaHei UI", 1, 14)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Loja");
+        jLabel1.setText("Tipo");
 
         jtLoja.setBackground(new java.awt.Color(153, 255, 204));
         jtLoja.setFont(new java.awt.Font("sansserif", 1, 12)); // NOI18N
@@ -286,32 +282,14 @@ public final class JfConfig extends javax.swing.JFrame {
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel6.setText("BD");
 
-        jLabel8.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
-        jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel8.setText("Função");
-
         jLabel9.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
         jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel9.setText("Conexão");
-
-        jLabel10.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
-        jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel10.setText("Usuário");
-
-        jtUserLogado.setEditable(false);
-        jtUserLogado.setBackground(new java.awt.Color(204, 255, 153));
-        jtUserLogado.setFont(new java.awt.Font("sansserif", 1, 12)); // NOI18N
-        jtUserLogado.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         jtStatus.setEditable(false);
         jtStatus.setBackground(new java.awt.Color(51, 255, 51));
         jtStatus.setFont(new java.awt.Font("sansserif", 1, 12)); // NOI18N
         jtStatus.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-
-        jtFuncao.setEditable(false);
-        jtFuncao.setBackground(new java.awt.Color(204, 255, 153));
-        jtFuncao.setFont(new java.awt.Font("sansserif", 1, 10)); // NOI18N
-        jtFuncao.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         jbEditar.setBackground(new java.awt.Color(51, 255, 102));
         jbEditar.setText("Editar");
@@ -377,14 +355,10 @@ public final class JfConfig extends javax.swing.JFrame {
                                 .addComponent(jtPass, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jtUserLogado)
-                            .addComponent(jtFuncao)
                             .addComponent(jtStatus)
                             .addComponent(jtBase))
                         .addGap(14, 14, 14))
@@ -412,11 +386,7 @@ public final class JfConfig extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel9)
                             .addComponent(jtStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel8)
-                            .addComponent(jtFuncao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(68, 68, 68))
+                        .addGap(100, 100, 100))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1)
@@ -430,18 +400,13 @@ public final class JfConfig extends javax.swing.JFrame {
                             .addComponent(jLabel3)
                             .addComponent(jtPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel10)
-                                .addComponent(jtUserLogado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel4)
-                                .addComponent(jtUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(jtUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel5)
                             .addComponent(jtPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jbEditar)
                     .addComponent(jbSalvar)
@@ -522,13 +487,11 @@ public final class JfConfig extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JButton jbAtualizar;
@@ -536,13 +499,11 @@ public final class JfConfig extends javax.swing.JFrame {
     private javax.swing.JButton jbEditar;
     private javax.swing.JButton jbSalvar;
     private javax.swing.JTextField jtBase;
-    private javax.swing.JTextField jtFuncao;
     private javax.swing.JTextField jtHost;
     private javax.swing.JTextField jtLoja;
     private javax.swing.JTextField jtPass;
     private javax.swing.JTextField jtPort;
     private javax.swing.JTextField jtStatus;
     private javax.swing.JTextField jtUser;
-    private javax.swing.JTextField jtUserLogado;
     // End of variables declaration//GEN-END:variables
 }

@@ -16,7 +16,7 @@ public class CifraDeCesarMono {
         int ASCII = 0;
         tabelaDAO t = new tabelaDAO();
         try {
-            System.out.println("cifrarLetra():> " + letra);
+            System.out.print(letra + ", ");
             if (letra != 32) {
                 ASCII = t.CpesquisaTabelaASCII(letra).getDecimalASCIICifrado();
             } else {
@@ -32,7 +32,7 @@ public class CifraDeCesarMono {
         int ASCII = 0;
         tabelaDAO t = new tabelaDAO();
         try {
-            System.out.println("descifrarLetra():> " + letra);
+            System.out.print(letra + ", ");
             if (letra == 35) {
                 ASCII = 32;
             } else {
@@ -48,6 +48,7 @@ public class CifraDeCesarMono {
         String s = RetiraAcento(texto);
         StringBuilder textoCifrado = new StringBuilder();
         int tamanhoTexto = s.length();
+        System.out.print("Texto Original Convertido em Inteiros:> ");
         for (int c = 0; c < tamanhoTexto; c++) {
             int letraCifradaASCII = cifraLetra(((int) s.charAt(c)));
             while (letraCifradaASCII > 126) {
@@ -61,6 +62,7 @@ public class CifraDeCesarMono {
     public String decriptarMono(String textoCifrado) {
         StringBuilder texto = new StringBuilder();
         int tamanhoTexto = textoCifrado.length();
+        System.out.print("\nTexto Cifrado Convertido em Inteiros:> ");
         for (int c = 0; c < tamanhoTexto; c++) {
             int letraDecifradaASCII = descifrarLetra(((int) textoCifrado.charAt(c)));
             while (letraDecifradaASCII < 32) {

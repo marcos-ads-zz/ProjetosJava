@@ -2,7 +2,7 @@ package view;
 
 import cifra.cesar.CifraDeCesar;
 import cifra.monoalfabetica.CifraDeCesarMono;
-import cifra.vigenere.CifraDeVigenere;
+import cifra.vigenere.cifraPoliVigenere;
 import javax.swing.JOptionPane;
 
 /**
@@ -13,13 +13,11 @@ public class JfPrincipal extends javax.swing.JFrame {
 
     private CifraDeCesar cifra;
     private CifraDeCesarMono cifraMono;
-    private CifraDeVigenere cifraPoli;
 
     public JfPrincipal() {
         initComponents();
         cifra = new CifraDeCesar();
         cifraMono = new CifraDeCesarMono();
-        cifraPoli = new CifraDeVigenere();
         jcChavePoli.setVisible(false);
         jtChave.setVisible(false);
         jlTexto.setVisible(false);
@@ -94,9 +92,23 @@ public class JfPrincipal extends javax.swing.JFrame {
 //------------------------------------Java Cifra de Cesar Mono Fim--------------------------------------
 //------------------------------------Java Cifra de Cesar Poli------------------------------------------
 
-    private void getTextoDecryPoli() {
-        //cifraPoli.CifraDeVigenere(jTextAreaEncri.getText(), jcChavePoli.getSelectedItem().toString());
-        jtAreaDescript.insert(cifraPoli.decifrar(), jtAreaDescript.getCaretPosition());
+    private void getTextoCifradoPoli() {
+        if (jcChavePoli.getSelectedIndex() == 0) {
+            JOptionPane.showMessageDialog(this, "Selecione uma Chave.");
+        } else {
+            cifraPoliVigenere cifaPoli = new cifraPoliVigenere(jtAreaDigitacao.getText(), jcChavePoli.getSelectedItem().toString().toLowerCase());
+            jTextAreaEncri.insert(cifaPoli.Cifrar(), jTextAreaEncri.getCaretPosition());
+            jtAreaDigitacao.setText("");
+        }
+    }
+
+    private void getTextDecifradoPoli() {
+        if (jcChavePoli.getSelectedIndex() == 0) {
+            JOptionPane.showMessageDialog(this, "Selecione uma Chave.");
+        } else {
+            cifraPoliVigenere cifaPoli2 = new cifraPoliVigenere(jTextAreaEncri.getText(), jcChavePoli.getSelectedItem().toString().toLowerCase());
+            jtAreaDescript.insert(cifaPoli2.DesCifrar(), jtAreaDescript.getCaretPosition());
+        }
     }
 //------------------------------------Java Cifra de Cesar Poli Fim--------------------------------------
 
@@ -130,10 +142,7 @@ public class JfPrincipal extends javax.swing.JFrame {
                 break;
             case 3:
                 if (!jtAreaDigitacao.getText().equals("")) {
-                    cifraPoli.CifraDeVigenere(jtAreaDigitacao.getText(), jcChavePoli.getSelectedItem().toString());
-                    jTextAreaEncri.insert(cifraPoli.cifrar(), jTextAreaEncri.getCaretPosition());
-                    jtAreaDescript.insert(cifraPoli.decifrar(), jtAreaDescript.getCaretPosition());
-                    jtAreaDigitacao.setText("");
+                    getTextoCifradoPoli();
                 } else {
                     JOptionPane.showMessageDialog(this, "Informe um Texto a ser Cifrado.");
                 }
@@ -215,7 +224,7 @@ public class JfPrincipal extends javax.swing.JFrame {
         jScrollPane5.setViewportView(jTextAreaEncri);
 
         jComboBoxTipoCripto.setFont(new java.awt.Font("sansserif", 3, 14)); // NOI18N
-        jComboBoxTipoCripto.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione o Tipo de Criptografia", "Java Cifra de Cesar", "Java Monoalfabética", "Java Polialfabética", "Base64", "AES", "MD5", "Blowfish" }));
+        jComboBoxTipoCripto.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione o Tipo de Criptografia", "Cifra de Cesar Simples", "Cifra Monoalfabética", "Cifra Polialfabética Vigenère", "Base64", "AES", "MD5", "Blowfish" }));
         jComboBoxTipoCripto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBoxTipoCriptoActionPerformed(evt);
@@ -390,7 +399,7 @@ public class JfPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jbConfigurarActionPerformed
 
     private void jbDecryptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbDecryptActionPerformed
-        getTextoDecryPoli();
+        getTextDecifradoPoli();
     }//GEN-LAST:event_jbDecryptActionPerformed
 
 
