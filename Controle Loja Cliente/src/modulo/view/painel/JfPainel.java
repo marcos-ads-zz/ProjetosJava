@@ -2,13 +2,20 @@ package modulo.view.painel;
 
 import java.awt.BorderLayout;
 import java.beans.PropertyVetoException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import modulo.metodos.DadosGraficos;
+import modulo.dados.graficos.DadosGraficos;
 import org.jfree.chart.ChartPanel;
 import javax.swing.ImageIcon;
+import modulo.DAO.Cargos;
+import modulo.DAO.CargosDAO;
+import modulo.camapanha.DAO.metasCampanhasDAO;
+import modulo.campanhas.CadastroMetasCampanhas;
+import modulo.metodos.Funcao;
 import modulo.versao.Versao;
+import modulo.view.principal.JfPrincipal;
 
 /**
  *
@@ -16,23 +23,67 @@ import modulo.versao.Versao;
  */
 public final class JfPainel extends javax.swing.JFrame {
 
+    private metasCampanhasDAO CADCAMP_DAO;
+    private CargosDAO DAOCAR;
+    private List<Cargos> objCar;
     private DadosGraficos dg;
-    private int nume = 4;
+    private int nume = 6;
     private Versao ver = new Versao();
+    private Funcao fun;
+    private static int a, b, c, d, e, f;
 
     public JfPainel() {
         initComponents();
+        DAOCAR = new CargosDAO();
+        fun = new Funcao();
         setTitle(ver.getNomesys() + " Gráficos " + ver.getVersao());
         dg = new DadosGraficos();
+        CADCAMP_DAO = new metasCampanhasDAO();
+        carregaCargos();
+        listaCampanhasAtivas();
+    }
+
+    public void carregaCargos() {
         try {
-            painelGraficoRuptura();
+            objCar = DAOCAR.Pesquisa();
         } catch (Exception ex) {
-            Logger.getLogger(JfPainel.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, "Erro ao Pesquisar Cargos! " + ex);
+        }
+        objCar.forEach((cc) -> {
+            jcGnano.addItem(cc.getCargos());
+            jcPower.addItem(cc.getCargos());
+            jcCampCargos.addItem(cc.getCargos());
+        });
+    }
+
+    private boolean validadeCampanha(java.sql.Date data) throws Exception {
+        String aa, bb;
+        aa = fun.converteDataSQLemDateString(data);
+        bb = fun.converteDataSQLemDateString(fun.atualDateSQL());
+        return data.compareTo(fun.atualDateSQL()) == 1 || aa.equals(bb);
+    }
+
+    private void listaCampanhasAtivas() {
+        List<CadastroMetasCampanhas> CadCamp;
+        try {
+            CadCamp = CADCAMP_DAO.TabelaPesquisaTodos();
+            CadCamp.forEach((result) -> {
+                try {
+                    if (validadeCampanha(result.getData_fim())) {
+                        if (!"POWER VITA".equals(result.getDescricao_Campanha()) & !"GNANO".equals(result.getDescricao_Campanha())) {
+                            jcCampanhas.addItem(result.getDescricao_Campanha());
+                        }
+                    }
+                } catch (Exception ex) {
+                    Logger.getLogger(JfPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            });
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Erro ao Pesquisar Campanhas! " + ex);
         }
     }
 
     public void MouseClik(int num) throws PropertyVetoException, Exception {
-
         if (num != nume) {
             //Pimba
             nume = num;
@@ -40,22 +91,47 @@ public final class JfPainel extends javax.swing.JFrame {
             switch (num) {
                 case 0:
                     //Painel Vendas
-
+                    if (a == 0) {
+                        a = num;
+                    }
                     break;
                 case 1:
                     //Painel Power
+                    if (b == 0) {
+                        CarregaPower();
+                        b = num;
+                    }
 
                     break;
                 case 2:
-                    //Painel Faltas
-                    
+                    //Painel Gnano
+                    if (c == 0) {
+                        CarregaGnano();
+                        c = num;
+                    }
+
                     break;
                 case 3:
-                    //Painel Desconto Vip
+                    //Painel Faltas
+                    if (d == 0) {
+                        painelGraficoRuptura();
+                        d = num;
+                    }
 
                     break;
                 case 4:
+                    //Painel Desconto Vip
+                    if (e == 0) {
+                        e = num;
+                    }
+
+                    break;
+                case 5:
                     //Painel Campanhas
+                    if (f == 0) {
+                        CarregaCampanhas();
+                        f = num;
+                    }
 
                     break;
 
@@ -67,22 +143,18 @@ public final class JfPainel extends javax.swing.JFrame {
         }
     }
 
-    public void CarregaGraf2() {
-
-        Thread t = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    painelGraficoRuptura();
-                    jlErros.setText("");
-                } catch (Exception ex) {
-                    jlErros.setText(ex.getMessage());
-
-                }
-            }
-        };
-        t.start();
+    public void CarregaGnano() throws Exception {
+        painelBalcaoGnano("GNANO", jcGnano.getSelectedItem().toString());
     }
+
+    public void CarregaPower() throws Exception {
+        painelBalcaoPower("POWER VITA", jcPower.getSelectedItem().toString());
+    }
+
+    public void CarregaCampanhas() throws Exception {
+        painelBalcaoCampanhas(jcCampanhas.getSelectedItem().toString(), jcCampCargos.getSelectedItem().toString());
+    }
+
 
     public String CarregaAnoSelecionado() {
         int ano = jYearChooser1.getYear();
@@ -95,6 +167,24 @@ public final class JfPainel extends javax.swing.JFrame {
         jPanelGraficoFaltas.removeAll();
         jPanelGraficoFaltas.add(new ChartPanel(dg.painelGraficoRuptura(anoVigente)), BorderLayout.CENTER);
         jPanelGraficoFaltas.validate();
+    }
+
+    public void painelBalcaoPower(String campanha, String cargo) throws PropertyVetoException, Exception {
+        jPanelGraficoPower.removeAll();
+        jPanelGraficoPower.add(new ChartPanel(dg.painelGraficoBarraPowerBalcao(campanha, cargo)), BorderLayout.CENTER);
+        jPanelGraficoPower.validate();
+    }
+
+    public void painelBalcaoGnano(String campanha, String cargo) throws PropertyVetoException, Exception {
+        jPanelGraficoGnano.removeAll();
+        jPanelGraficoGnano.add(new ChartPanel(dg.painelGraficoBarraGnanoBalcao(campanha, cargo)), BorderLayout.CENTER);
+        jPanelGraficoGnano.validate();
+    }
+
+    public void painelBalcaoCampanhas(String campanha, String cargo) throws PropertyVetoException, Exception {
+        jPanelGraficoCampanhas.removeAll();
+        jPanelGraficoCampanhas.add(new ChartPanel(dg.painelGraficoBarraCampanhaBalcao(campanha, cargo)), BorderLayout.CENTER);
+        jPanelGraficoCampanhas.validate();
     }
 
     @SuppressWarnings("unchecked")
@@ -114,8 +204,16 @@ public final class JfPainel extends javax.swing.JFrame {
         jPanel6 = new javax.swing.JPanel();
         jLabel34 = new javax.swing.JLabel();
         jYearChooser2 = new com.toedter.calendar.JYearChooser();
-        jBAtualizar1 = new javax.swing.JButton();
-        jPanelGraficoFaltas1 = new javax.swing.JPanel();
+        jBAtualizarPower = new javax.swing.JButton();
+        jPanelGraficoPower = new javax.swing.JPanel();
+        jcPower = new javax.swing.JComboBox<>();
+        jPanel5 = new javax.swing.JPanel();
+        jPanel10 = new javax.swing.JPanel();
+        jLabel38 = new javax.swing.JLabel();
+        jYearChooser6 = new com.toedter.calendar.JYearChooser();
+        jBAtualizarGnano = new javax.swing.JButton();
+        jPanelGraficoGnano = new javax.swing.JPanel();
+        jcGnano = new javax.swing.JComboBox<>();
         jPanel3 = new javax.swing.JPanel();
         jPanelGraficoFaltas = new javax.swing.JPanel();
         jLabel33 = new javax.swing.JLabel();
@@ -132,11 +230,10 @@ public final class JfPainel extends javax.swing.JFrame {
         jPanel8 = new javax.swing.JPanel();
         jLabel36 = new javax.swing.JLabel();
         jYearChooser4 = new com.toedter.calendar.JYearChooser();
-        jBAtualizar3 = new javax.swing.JButton();
-        jPanelGraficoFaltas3 = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
-        jFormattedTextField3 = new javax.swing.JFormattedTextField();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        jBAtualizarCamp = new javax.swing.JButton();
+        jPanelGraficoCampanhas = new javax.swing.JPanel();
+        jcCampanhas = new javax.swing.JComboBox<>();
+        jcCampCargos = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setAlwaysOnTop(true);
@@ -159,7 +256,7 @@ public final class JfPainel extends javax.swing.JFrame {
         jLabel35.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
         jLabel35.setText("SELECIONE O ANO VIGENTE");
 
-        jYearChooser3.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
+        jYearChooser3.setEnabled(false);
 
         jBAtualizar2.setBackground(new java.awt.Color(255, 0, 51));
         jBAtualizar2.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
@@ -176,6 +273,7 @@ public final class JfPainel extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
         jLabel2.setText("Matricula");
 
+        jFormattedTextField2.setEnabled(false);
         jFormattedTextField2.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
@@ -188,7 +286,7 @@ public final class JfPainel extends javax.swing.JFrame {
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jFormattedTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 146, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 582, Short.MAX_VALUE)
                 .addComponent(jLabel35, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jYearChooser3, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -233,43 +331,55 @@ public final class JfPainel extends javax.swing.JFrame {
         jLabel34.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
         jLabel34.setText("SELECIONE O ANO VIGENTE");
 
-        jYearChooser2.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
+        jYearChooser2.setEnabled(false);
 
-        jBAtualizar1.setBackground(new java.awt.Color(255, 0, 51));
-        jBAtualizar1.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
-        jBAtualizar1.setText("ATUALIZA");
-        jBAtualizar1.addActionListener(new java.awt.event.ActionListener() {
+        jBAtualizarPower.setBackground(new java.awt.Color(255, 0, 51));
+        jBAtualizarPower.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
+        jBAtualizarPower.setText("ATUALIZA");
+        jBAtualizarPower.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBAtualizar1ActionPerformed(evt);
+                jBAtualizarPowerActionPerformed(evt);
             }
         });
 
-        jPanelGraficoFaltas1.setBackground(new java.awt.Color(102, 255, 204));
-        jPanelGraficoFaltas1.setLayout(new java.awt.BorderLayout());
+        jPanelGraficoPower.setBackground(new java.awt.Color(102, 255, 204));
+        jPanelGraficoPower.setLayout(new java.awt.BorderLayout());
+
+        jcPower.setBackground(new java.awt.Color(204, 255, 204));
+        jcPower.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "TODOS" }));
+        jcPower.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jcPowerActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                .addGap(83, 314, Short.MAX_VALUE)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGap(0, 440, Short.MAX_VALUE)
+                .addComponent(jcPower, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(jLabel34, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jYearChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jBAtualizar1, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jBAtualizarPower, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(12, 12, 12))
-            .addComponent(jPanelGraficoFaltas1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanelGraficoPower, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jBAtualizar1)
-                    .addComponent(jLabel34, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jBAtualizarPower)
+                    .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel34, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jcPower, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jYearChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 0, 0)
-                .addComponent(jPanelGraficoFaltas1, javax.swing.GroupLayout.DEFAULT_SIZE, 453, Short.MAX_VALUE))
+                .addComponent(jPanelGraficoPower, javax.swing.GroupLayout.DEFAULT_SIZE, 453, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -285,6 +395,78 @@ public final class JfPainel extends javax.swing.JFrame {
 
         jtPainelDeMenus.addTab("Power", jPanel2);
 
+        jPanel5.setBackground(new java.awt.Color(204, 255, 204));
+
+        jPanel10.setBackground(new java.awt.Color(255, 255, 204));
+        jPanel10.setBorder(null);
+
+        jLabel38.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
+        jLabel38.setText("SELECIONE O ANO VIGENTE");
+
+        jYearChooser6.setEnabled(false);
+
+        jBAtualizarGnano.setBackground(new java.awt.Color(255, 0, 51));
+        jBAtualizarGnano.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
+        jBAtualizarGnano.setText("ATUALIZA");
+        jBAtualizarGnano.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBAtualizarGnanoActionPerformed(evt);
+            }
+        });
+
+        jPanelGraficoGnano.setBackground(new java.awt.Color(102, 255, 204));
+        jPanelGraficoGnano.setLayout(new java.awt.BorderLayout());
+
+        jcGnano.setBackground(new java.awt.Color(204, 255, 204));
+        jcGnano.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "TODOS" }));
+        jcGnano.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jcGnanoActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
+        jPanel10.setLayout(jPanel10Layout);
+        jPanel10Layout.setHorizontalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel10Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jcGnano, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel38, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jYearChooser6, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jBAtualizarGnano, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12))
+            .addComponent(jPanelGraficoGnano, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel10Layout.setVerticalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jBAtualizarGnano)
+                    .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel38, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jcGnano, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jYearChooser6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, 0)
+                .addComponent(jPanelGraficoGnano, javax.swing.GroupLayout.DEFAULT_SIZE, 453, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        jtPainelDeMenus.addTab("Gnano", jPanel5);
+
         jPanel3.setBackground(new java.awt.Color(204, 255, 204));
 
         jPanelGraficoFaltas.setBackground(new java.awt.Color(102, 255, 204));
@@ -292,8 +474,6 @@ public final class JfPainel extends javax.swing.JFrame {
 
         jLabel33.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
         jLabel33.setText("SELECIONE O ANO VIGENTE");
-
-        jYearChooser1.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
 
         jBAtualizar.setBackground(new java.awt.Color(255, 0, 51));
         jBAtualizar.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
@@ -313,7 +493,7 @@ public final class JfPainel extends javax.swing.JFrame {
             .addComponent(jPanelGraficoFaltas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jlErros, javax.swing.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
+                .addComponent(jlErros, javax.swing.GroupLayout.DEFAULT_SIZE, 732, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel33, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -345,8 +525,6 @@ public final class JfPainel extends javax.swing.JFrame {
         jLabel37.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
         jLabel37.setText("SELECIONE O ANO VIGENTE");
 
-        jYearChooser5.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
-
         jBAtualizar4.setBackground(new java.awt.Color(255, 0, 51));
         jBAtualizar4.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
         jBAtualizar4.setText("ATUALIZA");
@@ -365,7 +543,7 @@ public final class JfPainel extends javax.swing.JFrame {
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanelGraficoFaltas4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
-                .addContainerGap(314, Short.MAX_VALUE)
+                .addContainerGap(750, Short.MAX_VALUE)
                 .addComponent(jLabel37, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jYearChooser5, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -410,60 +588,63 @@ public final class JfPainel extends javax.swing.JFrame {
         jLabel36.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
         jLabel36.setText("SELECIONE O ANO VIGENTE");
 
-        jBAtualizar3.setBackground(new java.awt.Color(255, 0, 51));
-        jBAtualizar3.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
-        jBAtualizar3.setText("ATUALIZA");
-        jBAtualizar3.addActionListener(new java.awt.event.ActionListener() {
+        jYearChooser4.setEnabled(false);
+
+        jBAtualizarCamp.setBackground(new java.awt.Color(255, 0, 51));
+        jBAtualizarCamp.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
+        jBAtualizarCamp.setText("ATUALIZA");
+        jBAtualizarCamp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBAtualizar3ActionPerformed(evt);
+                jBAtualizarCampActionPerformed(evt);
             }
         });
 
-        jPanelGraficoFaltas3.setBackground(new java.awt.Color(102, 255, 204));
-        jPanelGraficoFaltas3.setLayout(new java.awt.BorderLayout());
+        jPanelGraficoCampanhas.setBackground(new java.awt.Color(102, 255, 204));
+        jPanelGraficoCampanhas.setLayout(new java.awt.BorderLayout());
 
-        jLabel3.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
-        jLabel3.setText("Matricula");
+        jcCampanhas.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "TODAS" }));
 
-        jFormattedTextField3.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
-
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione Uma Campanha" }));
+        jcCampCargos.setBackground(new java.awt.Color(204, 255, 204));
+        jcCampCargos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "TODOS" }));
+        jcCampCargos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jcCampCargosActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanelGraficoFaltas3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanelGraficoCampanhas, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jFormattedTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jcCampCargos, 0, 379, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jComboBox1, 0, 134, Short.MAX_VALUE)
+                .addComponent(jcCampanhas, 0, 353, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel36, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jYearChooser4, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jBAtualizar3, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jBAtualizarCamp, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(12, 12, 12))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+            .addGroup(jPanel8Layout.createSequentialGroup()
                 .addGap(0, 0, 0)
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jBAtualizarCamp)
+                    .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel36, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3)
-                            .addComponent(jFormattedTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(jYearChooser4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jBAtualizar3))
+                            .addComponent(jcCampanhas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jcCampCargos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jYearChooser4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(0, 0, 0)
-                .addComponent(jPanelGraficoFaltas3, javax.swing.GroupLayout.DEFAULT_SIZE, 453, Short.MAX_VALUE))
+                .addComponent(jPanelGraficoCampanhas, javax.swing.GroupLayout.DEFAULT_SIZE, 453, Short.MAX_VALUE)
+                .addGap(0, 0, 0))
         );
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -495,7 +676,11 @@ public final class JfPainel extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jBAtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBAtualizarActionPerformed
-        CarregaGraf2();
+        try {
+            painelGraficoRuptura();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Erro Painel Ruptura:" +ex);
+        }
     }//GEN-LAST:event_jBAtualizarActionPerformed
 
     private void jtPainelDeMenusMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtPainelDeMenusMouseClicked
@@ -509,57 +694,92 @@ public final class JfPainel extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jtPainelDeMenusMouseClicked
 
-    private void jBAtualizar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBAtualizar1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jBAtualizar1ActionPerformed
+    private void jBAtualizarPowerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBAtualizarPowerActionPerformed
+        try {
+            CarregaPower();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Erro Painel Power:" +ex);
+        }
+    }//GEN-LAST:event_jBAtualizarPowerActionPerformed
 
     private void jBAtualizar2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBAtualizar2ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jBAtualizar2ActionPerformed
 
-    private void jBAtualizar3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBAtualizar3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jBAtualizar3ActionPerformed
+    private void jBAtualizarCampActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBAtualizarCampActionPerformed
+        try {
+            CarregaCampanhas();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Erro Painel Camapanhas:" +ex);
+        }
+    }//GEN-LAST:event_jBAtualizarCampActionPerformed
 
     private void jBAtualizar4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBAtualizar4ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jBAtualizar4ActionPerformed
 
+    private void jBAtualizarGnanoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBAtualizarGnanoActionPerformed
+        try {
+            CarregaGnano();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Erro Painel Gnano:" +ex);
+        }
+    }//GEN-LAST:event_jBAtualizarGnanoActionPerformed
+
+    private void jcGnanoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcGnanoActionPerformed
+
+    }//GEN-LAST:event_jcGnanoActionPerformed
+
+    private void jcPowerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcPowerActionPerformed
+
+    }//GEN-LAST:event_jcPowerActionPerformed
+
+    private void jcCampCargosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcCampCargosActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jcCampCargosActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jBAtualizar;
-    private javax.swing.JButton jBAtualizar1;
     private javax.swing.JButton jBAtualizar2;
-    private javax.swing.JButton jBAtualizar3;
     private javax.swing.JButton jBAtualizar4;
-    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JButton jBAtualizarCamp;
+    private javax.swing.JButton jBAtualizarGnano;
+    private javax.swing.JButton jBAtualizarPower;
     private javax.swing.JFormattedTextField jFormattedTextField2;
-    private javax.swing.JFormattedTextField jFormattedTextField3;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel33;
     private javax.swing.JLabel jLabel34;
     private javax.swing.JLabel jLabel35;
     private javax.swing.JLabel jLabel36;
     private javax.swing.JLabel jLabel37;
+    private javax.swing.JLabel jLabel38;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel4Vip;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
+    private javax.swing.JPanel jPanelGraficoCampanhas;
     private javax.swing.JPanel jPanelGraficoFaltas;
-    private javax.swing.JPanel jPanelGraficoFaltas1;
     private javax.swing.JPanel jPanelGraficoFaltas2;
-    private javax.swing.JPanel jPanelGraficoFaltas3;
     private javax.swing.JPanel jPanelGraficoFaltas4;
+    private javax.swing.JPanel jPanelGraficoGnano;
+    private javax.swing.JPanel jPanelGraficoPower;
     private com.toedter.calendar.JYearChooser jYearChooser1;
     private com.toedter.calendar.JYearChooser jYearChooser2;
     private com.toedter.calendar.JYearChooser jYearChooser3;
     private com.toedter.calendar.JYearChooser jYearChooser4;
     private com.toedter.calendar.JYearChooser jYearChooser5;
+    private com.toedter.calendar.JYearChooser jYearChooser6;
+    private javax.swing.JComboBox<String> jcCampCargos;
+    private javax.swing.JComboBox<String> jcCampanhas;
+    private javax.swing.JComboBox<String> jcGnano;
+    private javax.swing.JComboBox<String> jcPower;
     private javax.swing.JLabel jlErros;
     private javax.swing.JTabbedPane jtPainelDeMenus;
     // End of variables declaration//GEN-END:variables

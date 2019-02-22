@@ -50,6 +50,22 @@ public class Funcao {
         return dataFormatada;
     }
 
+    public java.sql.Date primeiroDiaMesAtual() throws ParseException {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.DAY_OF_MONTH, cal.getActualMinimum(Calendar.DAY_OF_MONTH));
+        String d = new SimpleDateFormat("dd/MM/yyyy").format(cal.getTime());
+
+        return convertDateStringToDateSQL(d);
+    }
+
+    public java.sql.Date ultimoDiaMesAtual() throws ParseException {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+        String d = new SimpleDateFormat("dd/MM/yyyy").format(cal.getTime());
+
+        return convertDateStringToDateSQL(d);
+    }
+
     public String convertDoubleToString(double valorDouble) {
         Double d = valorDouble;
         Locale ptBr = new Locale("pt", "BR");
