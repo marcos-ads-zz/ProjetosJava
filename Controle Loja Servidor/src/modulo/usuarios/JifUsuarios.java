@@ -14,16 +14,16 @@ import modulo.versao.Versao;
  * @author Marcos Junior
  */
 public final class JifUsuarios extends javax.swing.JInternalFrame {
-    
+
     private final UsuarioDAO DAOUSER;
     private CargosDAO DAOCAR;
     private List<Cargos> objCar;
-    
+
     private Usuario objUser;
     private Funcao fun;
     private int acao;
     private Versao ver;
-    
+
     public JifUsuarios() {
         initComponents();
         DAOUSER = new UsuarioDAO();
@@ -33,12 +33,12 @@ public final class JifUsuarios extends javax.swing.JInternalFrame {
         setTitle("Cadastro de Usuários: " + ver.getVersao());
         carregaCargos();
     }
-    
+
     public void setPosicao() {
         Dimension d = this.getDesktopPane().getSize();
         this.setLocation((d.width - this.getSize().width) / 2, (d.height - this.getSize().height) / 2);
     }
-    
+
     public void limparCampos() {
         jtId.setText("");
         jtMatricula.setText("");
@@ -50,7 +50,7 @@ public final class JifUsuarios extends javax.swing.JInternalFrame {
         jdDataDeNascimento.setText("");
         jcFuncoes.setSelectedIndex(0);
     }
-    
+
     public void Cancelar() {
         limparCampos();
         jtId.setEnabled(false);
@@ -60,7 +60,7 @@ public final class JifUsuarios extends javax.swing.JInternalFrame {
         jdDataDeNascimento.setEnabled(false);
         jtTelefone.setEnabled(false);
         jcFuncoes.setEnabled(false);
-        
+
         jbNovo.setEnabled(true);
         jbSalvar.setEnabled(false);
         jbEditar.setEnabled(false);
@@ -72,7 +72,7 @@ public final class JifUsuarios extends javax.swing.JInternalFrame {
         jtSenhaDeConfimacao.setEnabled(false);
         jbEditarSenha.setEnabled(false);
     }
-    
+
     public void Editar() {
         jtId.setEnabled(false);
         jtMatricula.setEnabled(false);
@@ -81,17 +81,17 @@ public final class JifUsuarios extends javax.swing.JInternalFrame {
         jtTelefone.setEnabled(true);
         jdDataDeNascimento.setEnabled(true);
         jcFuncoes.setEnabled(true);
-        
+
         jbNovo.setEnabled(false);
         jbSalvar.setEnabled(true);
         jbEditar.setEnabled(false);
-        
+
         jbPesquisar.setEnabled(false);
         jbCancelar.setEnabled(true);
-        
+
         acao = 2;
     }
-    
+
     public void Novo() {
         limparCampos();
         jtId.setEnabled(false);
@@ -102,7 +102,7 @@ public final class JifUsuarios extends javax.swing.JInternalFrame {
         jdDataDeNascimento.setEnabled(true);
         jcFuncoes.setEnabled(true);
         jcFuncoes.setSelectedIndex(0);
-        
+
         jbNovo.setEnabled(false);
         jbSalvar.setEnabled(true);
         jbEditar.setEnabled(false);
@@ -111,10 +111,10 @@ public final class JifUsuarios extends javax.swing.JInternalFrame {
         jbCancelar.setEnabled(true);
         jtSenhaPricipal.setEnabled(true);
         jtSenhaDeConfimacao.setEnabled(true);
-        
+
         acao = 1;
     }
-    
+
     public void Excluir() {
         try {
             if (jtMatricula.getText().equals("")) {
@@ -126,14 +126,14 @@ public final class JifUsuarios extends javax.swing.JInternalFrame {
                     preencheTabela();
                 } else {
                     JOptionPane.showMessageDialog(this, "Não Foi Possível Excluir o Registro");
-                    
+
                 }
             }
         } catch (Exception erro) {
             JOptionPane.showMessageDialog(this, "Erro: " + erro.getMessage());
         }
     }
-    
+
     public void EditarSenha() {
         jtId.setEnabled(false);
         jtMatricula.setEnabled(false);
@@ -142,26 +142,26 @@ public final class JifUsuarios extends javax.swing.JInternalFrame {
         jtTelefone.setEnabled(false);
         jdDataDeNascimento.setEnabled(false);
         jcFuncoes.setEnabled(false);
-        
+
         jtSenhaPricipal.setEnabled(true);
         jtSenhaDeConfimacao.setEnabled(true);
-        
+
         jbNovo.setEnabled(false);
         jbEditar.setEnabled(false);
         jbExcluir.setEnabled(false);
         jbPesquisar.setEnabled(false);
-        
+
         jbSalvar.setEnabled(true);
         jbCancelar.setEnabled(true);
         acao = 3;
     }
-    
+
     public void CarregaDadosDaTabela() {
         Object id0, matricula, nome_user, email, telefone, data_nascm, cargo;
-        
+
         try {
             if (jtTabela.getSelectedRow() != -1) {
-                
+
                 id0 = jtTabela.getValueAt(jtTabela.getSelectedRow(), 0);
                 if (id0 == null) {
                     jtId.setText("");
@@ -169,7 +169,7 @@ public final class JifUsuarios extends javax.swing.JInternalFrame {
                     String id = id0.toString();
                     jtId.setText(id);
                 }
-                
+
                 matricula = jtTabela.getValueAt(jtTabela.getSelectedRow(), 1);
                 if (matricula == null) {
                     jtMatricula.setText("");
@@ -177,7 +177,7 @@ public final class JifUsuarios extends javax.swing.JInternalFrame {
                     String mat = matricula.toString();
                     jtMatricula.setText(mat);
                 }
-                
+
                 nome_user = jtTabela.getValueAt(jtTabela.getSelectedRow(), 2);
                 if (nome_user == null) {
                     jtNome.setText("");
@@ -185,7 +185,7 @@ public final class JifUsuarios extends javax.swing.JInternalFrame {
                     String nom = nome_user.toString();
                     jtNome.setText(nom);
                 }
-                
+
                 email = jtTabela.getValueAt(jtTabela.getSelectedRow(), 3);
                 if (email == null) {
                     jtEmail.setText("");
@@ -193,7 +193,7 @@ public final class JifUsuarios extends javax.swing.JInternalFrame {
                     String mail = email.toString();
                     jtEmail.setText(mail);
                 }
-                
+
                 data_nascm = jtTabela.getValueAt(jtTabela.getSelectedRow(), 4);
                 if (data_nascm == null) {
                     jdDataDeNascimento.setText("");
@@ -201,7 +201,7 @@ public final class JifUsuarios extends javax.swing.JInternalFrame {
                     String dat = (String) data_nascm;
                     jdDataDeNascimento.setText(dat);
                 }
-                
+
                 telefone = jtTabela.getValueAt(jtTabela.getSelectedRow(), 5);
                 if (telefone == null) {
                     jtTelefone.setText("");
@@ -209,10 +209,10 @@ public final class JifUsuarios extends javax.swing.JInternalFrame {
                     String tel = telefone.toString();
                     jtTelefone.setText(tel);
                 }
-                
+
                 cargo = jtTabela.getValueAt(jtTabela.getSelectedRow(), 6);
                 jcFuncoes.setSelectedItem(cargo);
-                
+
                 jbNovo.setEnabled(false);
                 jbPesquisar.setEnabled(false);
                 jbEditar.setEnabled(true);
@@ -223,7 +223,7 @@ public final class JifUsuarios extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(this, "Erro na Tabela: " + e);
         }
     }
-    
+
     public void Salvar() {
         try {
             if (acao == 1) {
@@ -277,7 +277,7 @@ public final class JifUsuarios extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(this, "Erro ao Salvar: " + erro.getMessage());
         }
     }
-    
+
     public void Pesquisar() {
         try {
             if (jtMatricula.getText().equals("")) {
@@ -311,7 +311,7 @@ public final class JifUsuarios extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(this, "Erro: " + erro.getMessage());
         }
     }
-    
+
     public boolean validarCampos() {
         if (jtMatricula.getText().equals("")) {
             JOptionPane.showMessageDialog(this, "Preencha o Campo Matrícula!");
@@ -338,7 +338,7 @@ public final class JifUsuarios extends javax.swing.JInternalFrame {
             jdDataDeNascimento.requestFocus();
             return false;
         }
-        
+
         if (jcFuncoes.getSelectedIndex() == 0) {
             JOptionPane.showMessageDialog(this, "Selecione uma função!");
             jcFuncoes.requestFocus();
@@ -346,7 +346,7 @@ public final class JifUsuarios extends javax.swing.JInternalFrame {
         }
         return true;
     }
-    
+
     public boolean validarCamposSenha() {
         if (jtSenhaPricipal.getText().equals(jtSenhaDeConfimacao.getText())) {
             jtMatricula.requestFocus();
@@ -364,8 +364,8 @@ public final class JifUsuarios extends javax.swing.JInternalFrame {
         }
         return false;
     }
-    
-    public List<Cargos> carregaCargos() {
+
+    public void carregaCargos() {
         try {
             objCar = DAOCAR.Pesquisa();
         } catch (Exception ex) {
@@ -374,10 +374,8 @@ public final class JifUsuarios extends javax.swing.JInternalFrame {
         objCar.forEach((c) -> {
             jcFuncoes.addItem(c.getCargos());
         });
-        
-        return objCar;
     }
-    
+
     public boolean preencherObjetosInsert() throws ParseException {
         objUser = new Usuario();
         objUser.setNome(jtNome.getText());
@@ -389,7 +387,7 @@ public final class JifUsuarios extends javax.swing.JInternalFrame {
         objUser.setSenha(jtSenhaPricipal.getText());
         return true;
     }
-    
+
     public boolean preencherObjetosUpdate() throws ParseException {
         objUser = new Usuario();
         objUser.setId(Integer.parseInt(jtId.getText()));
@@ -402,7 +400,7 @@ public final class JifUsuarios extends javax.swing.JInternalFrame {
         objUser.setSenha(jtSenhaPricipal.getText());
         return true;
     }
-    
+
     public void preencheTabela() throws Exception {
         DefaultTableModel modelo = (DefaultTableModel) jtTabela.getModel();
         modelo.setNumRows(0);
@@ -415,7 +413,7 @@ public final class JifUsuarios extends javax.swing.JInternalFrame {
             });
         }
     }
-    
+
     public void preencheTabela2() throws Exception {
         DefaultTableModel modelo = (DefaultTableModel) jtTabela.getModel();
         modelo.setNumRows(0);
@@ -428,7 +426,7 @@ public final class JifUsuarios extends javax.swing.JInternalFrame {
             });
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {

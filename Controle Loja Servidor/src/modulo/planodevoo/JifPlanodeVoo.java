@@ -8,12 +8,12 @@ import modulo.metodos.Funcao;
  *
  * @author Marcos Junior
  */
-public final class JifPlanodeVooBalcao extends javax.swing.JInternalFrame {
+public final class JifPlanodeVoo extends javax.swing.JInternalFrame {
 
     private Versao ver;
     private Funcao fun;
 
-    public JifPlanodeVooBalcao() {
+    public JifPlanodeVoo() {
         initComponents();
         ver = new Versao();
         fun =  new Funcao();
@@ -424,11 +424,11 @@ public final class JifPlanodeVooBalcao extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "MATRÍCULA", "DATA", "PDV1", "CLI1", "PDV2", "CLI2", "PDV3", "CLI3", "PDV4", "CLI4"
+                "ID", "MATRÍCULA", "DATA", "TOTAL VENDA", "TOTAL CLI", "T.K.M"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false, false, false
+                false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {

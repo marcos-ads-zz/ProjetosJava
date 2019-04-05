@@ -450,7 +450,7 @@ public class ListaDeRupturaDAO {
         Conexao con = new Conexao();
         Funcao fun = new Funcao();
         int total = 0;
-        String SQL = "SELECT count(*) as qtd FROM relatorio.listaruptura WHERE date_cad between ? and ?";
+            String SQL = "SELECT count(*) as qtd FROM relatorio.listaruptura WHERE date_cad between ? and ?";
         PreparedStatement ps = con.getCONEXAO().prepareStatement(SQL);
         ps.setDate(1, fun.convertDateStringToDateSQL(dataInicio));
         ps.setDate(2, fun.convertDateStringToDateSQL(dataFinal));

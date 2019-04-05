@@ -348,6 +348,7 @@ public final class JifGeraRelatorios extends javax.swing.JInternalFrame {
 
         jbPesquisa.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
         jbPesquisa.setText("Imprimir a Pesquisa");
+        jbPesquisa.setEnabled(false);
         jbPesquisa.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jbPesquisaActionPerformed(evt);
@@ -358,6 +359,7 @@ public final class JifGeraRelatorios extends javax.swing.JInternalFrame {
         jbPesquisar.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
         jbPesquisar.setForeground(new java.awt.Color(255, 255, 255));
         jbPesquisar.setText("Pesquisar");
+        jbPesquisar.setEnabled(false);
         jbPesquisar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jbPesquisarActionPerformed(evt);
@@ -367,6 +369,8 @@ public final class JifGeraRelatorios extends javax.swing.JInternalFrame {
         jLabel6.setFont(new java.awt.Font("sansserif", 3, 14)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(255, 51, 0));
         jLabel6.setText("Ano do Gráfico");
+
+        jYearChooserAno.setEnabled(false);
 
         jlInicio.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jlInicio.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -382,12 +386,14 @@ public final class JifGeraRelatorios extends javax.swing.JInternalFrame {
 
         jListCampanhas.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
         jListCampanhas.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione Uma Campanha" }));
+        jListCampanhas.setEnabled(false);
 
         jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel9.setText("Campanha");
 
         jtMatricula.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
+        jtMatricula.setEnabled(false);
         jtMatricula.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jtMatriculaActionPerformed(evt);
@@ -403,11 +409,13 @@ public final class JifGeraRelatorios extends javax.swing.JInternalFrame {
         jrMatricula.setSelected(true);
         jrMatricula.setText("Pesquisar por matrícula");
         jrMatricula.setActionCommand("matricula");
+        jrMatricula.setEnabled(false);
 
         GrupoDeRadioButoes.add(jrObservacao);
         jrObservacao.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
         jrObservacao.setText("Pesquisar por Campanha");
         jrObservacao.setActionCommand("campanha");
+        jrObservacao.setEnabled(false);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
