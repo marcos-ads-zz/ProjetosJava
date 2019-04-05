@@ -42,7 +42,6 @@ import java.util.logging.Logger;
 import javax.swing.JLabel;
 import modulo.login.UserLogado;
 import modulo.faceamento.JifFaltas;
-import modulo.troca.JifTrocas;
 import modulo.usuarios.JifUsuarios;
 import modulo.faceamento.JifRelatorioFaltas;
 import modulo.versao.Versao;
@@ -93,7 +92,6 @@ public final class JfPrincipal extends javax.swing.JFrame {
     private JifProdutos jfPro = null;
     private JifRelatorioFaltas jfRel = null;
     private JifPainelFaltas jfPain = null;
-    private JifTrocas jfTroc = null;
     private JifSobre jfSob = null;
     private JifConfig jfConf = null;
     private JifClientes jfCli = null;
@@ -224,7 +222,6 @@ public final class JfPrincipal extends javax.swing.JFrame {
             //Gerente, Assistente, Farmaceutico, Aux Farmacia.
             jmEnviaEmail.setEnabled(g);//9 A 6
             jmProdutos.setEnabled(g);//9 A 6
-            jmRegistrarTrocas.setEnabled(g);//9 A 6
             jmRegistrosReforcoGeral.setEnabled(g);//9 A 6
             jmRelatorioDeFaltas.setEnabled(g);//9 A 6
 
@@ -367,14 +364,13 @@ public final class JfPrincipal extends javax.swing.JFrame {
         jmRelatorioProdutos = new javax.swing.JMenuItem();
         jmRelatorioClientes = new javax.swing.JMenuItem();
         jmpControleLoja = new javax.swing.JMenu();
-        jmAguaELuz = new javax.swing.JMenuItem();
         jmInventario = new javax.swing.JMenuItem();
+        jmAguaELuz = new javax.swing.JMenuItem();
         jmVasilhames = new javax.swing.JMenuItem();
         jmAlmoxarifado = new javax.swing.JMenuItem();
         jmIndisponiveis = new javax.swing.JMenuItem();
-        jmAvariasKibom = new javax.swing.JMenuItem();
         jmAvariasYork = new javax.swing.JMenuItem();
-        jmRegistrarTrocas = new javax.swing.JMenuItem();
+        jmAvariasKibom = new javax.swing.JMenuItem();
         jmpReforco = new javax.swing.JMenu();
         jmRegistrarFaltas = new javax.swing.JMenuItem();
         jmRelatorioDeFaltas = new javax.swing.JMenuItem();
@@ -575,15 +571,6 @@ public final class JfPrincipal extends javax.swing.JFrame {
         jmpControleLoja.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/chart_line_add.png"))); // NOI18N
         jmpControleLoja.setText("Controle Loja");
 
-        jmAguaELuz.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/lightning.png"))); // NOI18N
-        jmAguaELuz.setText("Água e Luz");
-        jmAguaELuz.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmAguaELuzActionPerformed(evt);
-            }
-        });
-        jmpControleLoja.add(jmAguaELuz);
-
         jmInventario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/calculator_edit.png"))); // NOI18N
         jmInventario.setText("Invetário");
         jmInventario.addActionListener(new java.awt.event.ActionListener() {
@@ -592,6 +579,15 @@ public final class JfPrincipal extends javax.swing.JFrame {
             }
         });
         jmpControleLoja.add(jmInventario);
+
+        jmAguaELuz.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/lightning.png"))); // NOI18N
+        jmAguaELuz.setText("Água e Luz");
+        jmAguaELuz.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmAguaELuzActionPerformed(evt);
+            }
+        });
+        jmpControleLoja.add(jmAguaELuz);
 
         jmVasilhames.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/bricks.png"))); // NOI18N
         jmVasilhames.setText("Vasilhames");
@@ -620,15 +616,6 @@ public final class JfPrincipal extends javax.swing.JFrame {
         });
         jmpControleLoja.add(jmIndisponiveis);
 
-        jmAvariasKibom.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/arrow_refresh.png"))); // NOI18N
-        jmAvariasKibom.setText("Avarias Kibom");
-        jmAvariasKibom.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmAvariasKibomActionPerformed(evt);
-            }
-        });
-        jmpControleLoja.add(jmAvariasKibom);
-
         jmAvariasYork.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/arrow_refresh.png"))); // NOI18N
         jmAvariasYork.setText("Avarias York");
         jmAvariasYork.addActionListener(new java.awt.event.ActionListener() {
@@ -638,14 +625,14 @@ public final class JfPrincipal extends javax.swing.JFrame {
         });
         jmpControleLoja.add(jmAvariasYork);
 
-        jmRegistrarTrocas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/arrow_refresh.png"))); // NOI18N
-        jmRegistrarTrocas.setText("Troca e Devolução");
-        jmRegistrarTrocas.addActionListener(new java.awt.event.ActionListener() {
+        jmAvariasKibom.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/arrow_refresh.png"))); // NOI18N
+        jmAvariasKibom.setText("Avarias Kibom");
+        jmAvariasKibom.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jmRegistrarTrocasActionPerformed(evt);
+                jmAvariasKibomActionPerformed(evt);
             }
         });
-        jmpControleLoja.add(jmRegistrarTrocas);
+        jmpControleLoja.add(jmAvariasKibom);
 
         jMenuBar1.add(jmpControleLoja);
 
@@ -1045,36 +1032,6 @@ public final class JfPrincipal extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Janela ja esta aberta!");
         }
     }//GEN-LAST:event_jmSobreActionPerformed
-
-    private void jmRegistrarTrocasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmRegistrarTrocasActionPerformed
-        if (jfTroc == null) {
-            jfTroc = new JifTrocas();
-            jDesktopPrincipal.add(jfTroc);
-            try {
-                jfTroc.setMaximum(true);
-
-            } catch (PropertyVetoException ex) {
-                Logger.getLogger(JfPrincipal.class
-                        .getName()).log(Level.SEVERE, null, ex);
-            }
-            jfTroc.setVisible(true);
-            jfTroc.setPosicao();
-        } else if (!jfTroc.isVisible()) {
-            jfTroc = new JifTrocas();
-            jDesktopPrincipal.add(jfTroc);
-            try {
-                jfTroc.setMaximum(true);
-
-            } catch (PropertyVetoException ex) {
-                Logger.getLogger(JfPrincipal.class
-                        .getName()).log(Level.SEVERE, null, ex);
-            }
-            jfTroc.setVisible(true);
-            jfTroc.setPosicao();
-        } else {
-            JOptionPane.showMessageDialog(this, "Janela ja esta aberta!");
-        }
-    }//GEN-LAST:event_jmRegistrarTrocasActionPerformed
 
     private void jmLogofActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmLogofActionPerformed
         LogofDoSistema();
@@ -1557,7 +1514,6 @@ public final class JfPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmPlanoDeVoo;
     private javax.swing.JMenuItem jmProdutos;
     private javax.swing.JMenuItem jmRegistrarFaltas;
-    private javax.swing.JMenuItem jmRegistrarTrocas;
     private javax.swing.JMenuItem jmRegistrodeVendasCampanhas;
     private javax.swing.JMenuItem jmRegistrosReforcoGeral;
     private javax.swing.JMenuItem jmRelatorioClientes;
