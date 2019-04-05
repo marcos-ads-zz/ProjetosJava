@@ -23,6 +23,7 @@ import modulo.entidades.Usuario;
 import modulo.versao.Versao;
 import javax.swing.ImageIcon;
 import javax.swing.JFormattedTextField;
+import javax.swing.table.DefaultTableModel;
 import modulo.camapanha.DAO.descricaoCampanhasDAO;
 import modulo.camapanha.DAO.registroCampanhaDAO;
 import modulo.camapanha.DAO.metasCampanhasDAO;
@@ -94,11 +95,12 @@ public final class JfPrincipal extends javax.swing.JFrame {
         fun = new Funcao();
         ver = new Versao();
         MD5 = new ConvertMD5();
+
         setTitle("Registro De Vendas: " + ver.getVersao());
         this.formatoHora = new SimpleDateFormat("EEEEEEEEEEEEEE, dd/MM/yyyy    HH:mm:ss");
         this.formatoDIA = new SimpleDateFormat("dd/MM/yyyy");
-        Thread relogioThred = new Thread(new JfPrincipal.clsDataHora());
-        relogioThred.start();
+//        Thread SomaCampos = new Thread(new JfPrincipal.clsSomaCampos());
+//        SomaCampos.start();
         VerificaAcesso();
         carregaLoja();
         carregaDataNoForm();
@@ -106,19 +108,13 @@ public final class JfPrincipal extends javax.swing.JFrame {
         listaCampanhasAtivas();
     }
 
-    //*************************Geral Todos**************************************
-    private void carregaDataNoForm() {
-        jtDataDoRegistroCampanha.setText(formatoDIA.format(new Date()));
-        jtDataDoRegistroVoo.setText(formatoDIA.format(new Date()));
-        jtDataDoRegistro.setText(formatoDIA.format(new Date()));
-    }
-
-    class clsDataHora implements Runnable {
+    class clsSomaCampos implements Runnable {
 
         @Override
         public void run() {
             while (true) {
-                somaValores();
+                //System.out.println("Teste Venda: " + jfVooVendaTotal.getText());
+                Teste();
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException ex) {
@@ -126,6 +122,21 @@ public final class JfPrincipal extends javax.swing.JFrame {
                 }
             }
         }
+    }
+
+    public void Teste() {
+        if ("".equals(jfVooVendaTotal.getText())) {
+            System.out.println("Modulo: Sem Valor");
+        } else {
+            System.out.println("Modulo: " + fun.convertToDouble(jfVooVendaTotal.getText()));
+        }
+    }
+
+    //*************************Geral Todos**************************************
+    private void carregaDataNoForm() {
+        jtDataDoRegistroCampanha.setText(formatoDIA.format(new Date()));
+        jtDataDoRegistroVoo.setText(formatoDIA.format(new Date()));
+        jtDataDoRegistro.setText(formatoDIA.format(new Date()));
     }
 
     private void carregaLoja() {
@@ -347,7 +358,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
         objCamp.setDesc_campanha(jcCampanhaObs.getSelectedItem().toString());
         objCamp.setData_registro(fun.converteDateStringEmSQL(jtDataDoRegistroCampanha.getText()));
         objCamp.setMatricula(fun.convertToInt(jtMatriculaCampanha.getText()));
-        objCamp.setUltimaChance(fun.getDoubledaString(jtQtdProdutoCampanha.getText()));
+        objCamp.setUltimaChance(fun.convertToDouble2(jtQtdProdutoCampanha.getText()));
         return objCamp != null;
     }
 
@@ -458,12 +469,10 @@ public final class JfPrincipal extends javax.swing.JFrame {
             jfVooCli2,
             jfVooCli3,
             jfVooCli4,
-            jfVooVendaTotal,
             jfVooVenda1,
             jfVooVenda2,
             jfVooVenda3,
-            jfVooVenda4,
-            jfVooCliTotal};
+            jfVooVenda4,};
 
     }
 
@@ -472,8 +481,10 @@ public final class JfPrincipal extends javax.swing.JFrame {
         for (JFormattedTextField voo : planoVoo) {
             if (voo.getText().equals("") || voo.getText().equals("0")) {
                 voo.setText("0");
+                //Seta Azul neste caso
                 voo.setBackground(new java.awt.Color(0, 0, 255));
             } else {
+                //Seta Branco neste caso
                 voo.setBackground(new java.awt.Color(255, 255, 255));
             }
         }
@@ -503,12 +514,14 @@ public final class JfPrincipal extends javax.swing.JFrame {
         int cont = 0;
         for (JFormattedTextField voo : planoVoo) {
             if (voo.getText().equals("")) {
+                //Seta Vermelho
                 voo.setBackground(new java.awt.Color(255, 0, 0));
                 cont++;
             } else {
                 if (!fun.testaNumerosDecimais(voo.getText())) {
                     voo.setText("");
                 }
+                //Seta Branco
                 voo.setBackground(new java.awt.Color(255, 255, 255));
             }
         }
@@ -561,8 +574,8 @@ public final class JfPrincipal extends javax.swing.JFrame {
         }
     }
 
-    //*************************Fim**********************************************
-    //*************************Ruptura******************************************
+//*************************Fim**********************************************
+//*************************Ruptura******************************************
     private void pesquisaProdutoNoBDRuptura() {
         try {
             if (DAOPRO.CheckSelect(Integer.parseInt(jtCod_Interno.getText()))) {
@@ -789,9 +802,11 @@ public final class JfPrincipal extends javax.swing.JFrame {
             try {
                 if (!nome.equals(obs)) {
                     jLabelAvisos.setText("PREMIAÇÃO: " + CADCAMP_DAO.TabelaPesquisaObs(nome).getObs());
+
                 }
             } catch (Exception ex) {
-                Logger.getLogger(JfPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(JfPrincipal.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -870,7 +885,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
         jbPlanogramas = new javax.swing.JButton();
         jbEducaFarma = new javax.swing.JButton();
         jbSobre = new javax.swing.JButton();
-        jbPopular = new javax.swing.JButton();
+        jbMetas = new javax.swing.JButton();
         jbEditarPlanoDeVoo = new javax.swing.JButton();
         jbImprimePDF = new javax.swing.JButton();
         jbParcialCampanhas = new javax.swing.JButton();
@@ -1590,7 +1605,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
         jbGraficos.setBackground(new java.awt.Color(0, 153, 153));
         jbGraficos.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
         jbGraficos.setForeground(new java.awt.Color(0, 0, 102));
-        jbGraficos.setText("Gráficos");
+        jbGraficos.setText("Campanhas");
         jbGraficos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jbGraficosActionPerformed(evt);
@@ -1610,7 +1625,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
         jbDetalhamento.setBackground(new java.awt.Color(0, 153, 153));
         jbDetalhamento.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
         jbDetalhamento.setForeground(new java.awt.Color(0, 0, 102));
-        jbDetalhamento.setText("Detalhamento");
+        jbDetalhamento.setText("*****");
         jbDetalhamento.setEnabled(false);
         jbDetalhamento.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1650,14 +1665,14 @@ public final class JfPrincipal extends javax.swing.JFrame {
             }
         });
 
-        jbPopular.setBackground(new java.awt.Color(0, 153, 153));
-        jbPopular.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
-        jbPopular.setForeground(new java.awt.Color(0, 0, 102));
-        jbPopular.setText("Popular");
-        jbPopular.setEnabled(false);
-        jbPopular.addActionListener(new java.awt.event.ActionListener() {
+        jbMetas.setBackground(new java.awt.Color(0, 153, 153));
+        jbMetas.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
+        jbMetas.setForeground(new java.awt.Color(0, 0, 102));
+        jbMetas.setText("Metas");
+        jbMetas.setEnabled(false);
+        jbMetas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jbPopularActionPerformed(evt);
+                jbMetasActionPerformed(evt);
             }
         });
 
@@ -1665,7 +1680,6 @@ public final class JfPrincipal extends javax.swing.JFrame {
         jbEditarPlanoDeVoo.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
         jbEditarPlanoDeVoo.setForeground(new java.awt.Color(0, 0, 102));
         jbEditarPlanoDeVoo.setText("Plano de Voo");
-        jbEditarPlanoDeVoo.setEnabled(false);
         jbEditarPlanoDeVoo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jbEditarPlanoDeVooActionPerformed(evt);
@@ -1685,7 +1699,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
         jbParcialCampanhas.setBackground(new java.awt.Color(0, 153, 153));
         jbParcialCampanhas.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
         jbParcialCampanhas.setForeground(new java.awt.Color(0, 0, 102));
-        jbParcialCampanhas.setText("Parcial Camp.");
+        jbParcialCampanhas.setText("*****");
         jbParcialCampanhas.setEnabled(false);
         jbParcialCampanhas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1701,7 +1715,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel4UtilidadesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jbGraficos, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jbPopular, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jbMetas, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jbPlanogramas, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jbEducaFarma, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
@@ -1731,7 +1745,7 @@ public final class JfPrincipal extends javax.swing.JFrame {
                     .addComponent(jbDetalhamento, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4UtilidadesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jbPopular)
+                    .addComponent(jbMetas)
                     .addComponent(jbSobre, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jbEditarPlanoDeVoo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1782,10 +1796,12 @@ public final class JfPrincipal extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
                 }
             }
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(JfSobre.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(JfSobre.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         java.awt.EventQueue.invokeLater(() -> {
             new JfSobre().setVisible(true);
@@ -1798,10 +1814,12 @@ public final class JfPrincipal extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
                 }
             }
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(JfEducaFarma.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(JfEducaFarma.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         java.awt.EventQueue.invokeLater(() -> {
             new JfEducaFarma().setVisible(true);
@@ -1814,10 +1832,12 @@ public final class JfPrincipal extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
                 }
             }
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(JfPlanogramas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(JfPlanogramas.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         java.awt.EventQueue.invokeLater(() -> {
             new JfPlanogramas().setVisible(true);
@@ -1838,10 +1858,12 @@ public final class JfPrincipal extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
                 }
             }
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(JfPainel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(JfPainel.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
 
         java.awt.EventQueue.invokeLater(() -> {
@@ -1851,38 +1873,47 @@ public final class JfPrincipal extends javax.swing.JFrame {
 
     private void jtDataDoRegistroVooActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtDataDoRegistroVooActionPerformed
         jbSalvarVoo.requestFocus();
+        somaValores();
     }//GEN-LAST:event_jtDataDoRegistroVooActionPerformed
 
     private void jfVooCli4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jfVooCli4ActionPerformed
         jtDataDoRegistroVoo.requestFocus();
+        somaValores();
     }//GEN-LAST:event_jfVooCli4ActionPerformed
 
     private void jfVooCli3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jfVooCli3ActionPerformed
         jfVooVenda4.requestFocus();
+        somaValores();
     }//GEN-LAST:event_jfVooCli3ActionPerformed
 
     private void jfVooCli2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jfVooCli2ActionPerformed
         jfVooVenda3.requestFocus();
+        somaValores();
     }//GEN-LAST:event_jfVooCli2ActionPerformed
 
     private void jfVooCli1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jfVooCli1ActionPerformed
         jfVooVenda2.requestFocus();
+        somaValores();
     }//GEN-LAST:event_jfVooCli1ActionPerformed
 
     private void jfVooVenda3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jfVooVenda3ActionPerformed
         jfVooCli3.requestFocus();
+        somaValores();
     }//GEN-LAST:event_jfVooVenda3ActionPerformed
 
     private void jfVooVenda4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jfVooVenda4ActionPerformed
         jfVooCli4.requestFocus();
+        somaValores();
     }//GEN-LAST:event_jfVooVenda4ActionPerformed
 
     private void jfVooVenda2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jfVooVenda2ActionPerformed
         jfVooCli2.requestFocus();
+        somaValores();
     }//GEN-LAST:event_jfVooVenda2ActionPerformed
 
     private void jfVooVenda1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jfVooVenda1ActionPerformed
         jfVooCli1.requestFocus();
+        somaValores();
     }//GEN-LAST:event_jfVooVenda1ActionPerformed
 
     private void jbCancelarVooActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbCancelarVooActionPerformed
@@ -2060,9 +2091,9 @@ public final class JfPrincipal extends javax.swing.JFrame {
         jtDescricaoItem.setText("");
     }//GEN-LAST:event_jtCod_InternoMouseClicked
 
-    private void jbPopularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbPopularActionPerformed
+    private void jbMetasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbMetasActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jbPopularActionPerformed
+    }//GEN-LAST:event_jbMetasActionPerformed
 
     private void jbEditarPlanoDeVooActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbEditarPlanoDeVooActionPerformed
         // TODO add your handling code here:
@@ -2074,10 +2105,12 @@ public final class JfPrincipal extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
                 }
             }
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(JTelaPrintPDF.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(JTelaPrintPDF.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         java.awt.EventQueue.invokeLater(() -> {
             new JTelaPrintPDF().setVisible(true);
@@ -2116,9 +2149,9 @@ public final class JfPrincipal extends javax.swing.JFrame {
     private javax.swing.JButton jbEducaFarma;
     private javax.swing.JButton jbGraficos;
     private javax.swing.JButton jbImprimePDF;
+    private javax.swing.JButton jbMetas;
     private javax.swing.JButton jbParcialCampanhas;
     private javax.swing.JButton jbPlanogramas;
-    private javax.swing.JButton jbPopular;
     private javax.swing.JButton jbSalvarCampanha;
     private javax.swing.JButton jbSalvarRuptura;
     private javax.swing.JButton jbSalvarVoo;

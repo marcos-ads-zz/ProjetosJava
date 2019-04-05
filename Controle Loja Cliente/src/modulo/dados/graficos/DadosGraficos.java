@@ -58,7 +58,7 @@ public class DadosGraficos {
         caty.setValue(nov, "Novembro", "Nov (" + nov + ")");
         caty.setValue(dez, "Dezembro", "Dez (" + dez + ")");
 
-        JFreeChart grafico = ChartFactory.createBarChart3D("Acompanhamento de Faltas do Ano de " + ano,
+        JFreeChart grafico = ChartFactory.createStackedBarChart3D("Acompanhamento de Faltas do Ano de " + ano,
                 "Mês", "Quantidade de Faltas",
                 caty, PlotOrientation.VERTICAL,
                 true,
@@ -122,7 +122,7 @@ public class DadosGraficos {
             );
         }
         //Exibe
-        JFreeChart grafico = ChartFactory.createBarChart3D("Acompanhamento Venda de Power Vita: " + fun.atualDate(),
+        JFreeChart grafico = ChartFactory.createStackedBarChart3D("Acompanhamento Venda de Power Vita: " + fun.atualDate(),
                 "Colaborador", "Power Vita",
                 caty, PlotOrientation.HORIZONTAL,
                 true,
@@ -142,21 +142,19 @@ public class DadosGraficos {
         funcionarios = u.ListaFuncionario(cargo);
         camp = g.TabelaPesquisaCampanhas(fun.primeiroDiaMesAtual(), fun.ultimoDiaMesAtual());
         //Usuários + Quantidades
-        //Associa quantidade com os Balconistas
+        //Associa quantidade com os Balconistas 
         if ("TODAS".equals(campanha)) {
             for (Campanha descr : camp) {
-                if (!"POWER VITA".equals(descr.getDesc_campanha()) & !"GNANO".equals(descr.getDesc_campanha())) {
-                    caty.setValue(
-                            g.TabelaPesquisaCampanhasQtdS(descr.getDesc_campanha(),
-                                    fun.primeiroDiaMesAtual(),
-                                    fun.ultimoDiaMesAtual()),
-                            descr.getDesc_campanha(),
-                            descr.getDesc_campanha() + " (" + g.TabelaPesquisaCampanhasQtdS(
-                            descr.getDesc_campanha(),
-                            fun.primeiroDiaMesAtual(),
-                            fun.ultimoDiaMesAtual()) + ")"
-                    );
-                }
+                caty.setValue(
+                        g.TabelaPesquisaCampanhasQtdS(descr.getDesc_campanha(),
+                                fun.primeiroDiaMesAtual(),
+                                fun.ultimoDiaMesAtual()),
+                        descr.getDesc_campanha(),
+                        descr.getDesc_campanha() + " (" + g.TabelaPesquisaCampanhasQtdS(
+                        descr.getDesc_campanha(),
+                        fun.primeiroDiaMesAtual(),
+                        fun.ultimoDiaMesAtual()) + ")"
+                );
                 tipo = "Camapanhas Ativas";
             }
         } else {

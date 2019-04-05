@@ -98,7 +98,7 @@ public class Funcao {
         return und;
     }
 
-    public Double getDoubledaString(String valorString) {
+    public Double convertToDouble2(String valorString) {
         String valor = valorString;
         Double valorDouble = Double.parseDouble(valor.replaceAll("\\.", "").replace(",", "."));
         return valorDouble;
@@ -210,6 +210,7 @@ public class Funcao {
     public boolean testaNumerosDecimais(String letras) {
         boolean teste = false;
         String replaceAll = letras.replaceAll(",", "");
+        replaceAll = replaceAll.replaceAll("\\.", "");
         for (int i = 0; i < replaceAll.length(); i++) {
             if (Character.isDigit(replaceAll.charAt(i)) == true) {
                 teste = true;

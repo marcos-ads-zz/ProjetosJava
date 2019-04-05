@@ -1212,7 +1212,7 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="jbGraficos" alignment="0" min="-2" pref="130" max="-2" attributes="0"/>
-                              <Component id="jbPopular" alignment="0" min="-2" pref="130" max="-2" attributes="0"/>
+                              <Component id="jbMetas" alignment="0" min="-2" pref="130" max="-2" attributes="0"/>
                               <Component id="jbPlanogramas" alignment="0" min="-2" pref="130" max="-2" attributes="0"/>
                               <Component id="jbEducaFarma" alignment="0" min="-2" pref="130" max="-2" attributes="0"/>
                           </Group>
@@ -1252,7 +1252,7 @@
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="jbPopular" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jbMetas" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jbSobre" alignment="3" max="32767" attributes="0"/>
                               <Component id="jbEditarPlanoDeVoo" alignment="3" max="32767" attributes="0"/>
                           </Group>
@@ -1283,7 +1283,7 @@
                     <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="66" green="0" red="0" type="rgb"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="Gr&#xe1;ficos"/>
+                    <Property name="text" type="java.lang.String" value="Campanhas"/>
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbGraficosActionPerformed"/>
@@ -1317,7 +1317,7 @@
                     <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="66" green="0" red="0" type="rgb"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="Detalhamento"/>
+                    <Property name="text" type="java.lang.String" value="*****"/>
                     <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
                   <Events>
@@ -1377,7 +1377,7 @@
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbSobreActionPerformed"/>
                   </Events>
                 </Component>
-                <Component class="javax.swing.JButton" name="jbPopular">
+                <Component class="javax.swing.JButton" name="jbMetas">
                   <Properties>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="99" green="99" red="0" type="rgb"/>
@@ -1388,11 +1388,11 @@
                     <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="66" green="0" red="0" type="rgb"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="Popular"/>
+                    <Property name="text" type="java.lang.String" value="Metas"/>
                     <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbPopularActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbMetasActionPerformed"/>
                   </Events>
                 </Component>
                 <Component class="javax.swing.JButton" name="jbEditarPlanoDeVoo">
@@ -1407,7 +1407,6 @@
                       <Color blue="66" green="0" red="0" type="rgb"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Plano de Voo"/>
-                    <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbEditarPlanoDeVooActionPerformed"/>
@@ -1441,7 +1440,7 @@
                     <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="66" green="0" red="0" type="rgb"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="Parcial Camp."/>
+                    <Property name="text" type="java.lang.String" value="*****"/>
                     <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
                   <Events>
