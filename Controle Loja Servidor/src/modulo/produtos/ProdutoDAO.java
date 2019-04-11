@@ -31,7 +31,12 @@ public class ProdutoDAO {
 
     public boolean Update(Produto objFun) throws Exception {
         con = new Conexao();
-        String SQL = "UPDATE relatorios.relatorio.produto set cod_ean = ?, descricao = ?, obs = ? WHERE cod_interno = ?";
+        String SQL = "UPDATE relatorios.relatorio.produto "
+                + "set "
+                + "cod_ean = ?, "
+                + "descricao = ?, "
+                + "obs = ? "
+                + "WHERE cod_interno = ?";
         PreparedStatement ps = con.getCONEXAO().prepareStatement(SQL);
         ps.setString(1, objFun.getCod_produto());
         ps.setString(2, objFun.getDescricao().toUpperCase());

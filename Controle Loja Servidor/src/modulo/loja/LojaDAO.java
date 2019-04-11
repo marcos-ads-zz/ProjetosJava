@@ -49,7 +49,11 @@ public class LojaDAO {
 
     public boolean Update(Loja objFun) throws Exception {
         con = new Conexao();
-        String SQL = "UPDATE relatorios.relatorio.loja set nome_loja = ?, gerente = ?, numero_loja = ? WHERE idloja = ?";
+        String SQL = "UPDATE relatorios.relatorio.loja set "
+                + "nome_loja = ?, "
+                + "gerente = ?, "
+                + "numero_loja = ? "
+                + "WHERE idloja = ?";
         PreparedStatement ps = con.getCONEXAO().prepareStatement(SQL);
         ps.setString(1, objFun.getNome_loja().toUpperCase());
         ps.setString(2, objFun.getGerente_loja().toUpperCase());
