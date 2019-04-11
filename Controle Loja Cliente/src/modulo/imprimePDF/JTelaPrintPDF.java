@@ -198,7 +198,6 @@ public final class JTelaPrintPDF extends javax.swing.JFrame {
         setAlwaysOnTop(true);
         setFocusable(false);
         setIconImage(new ImageIcon(getClass().getResource("/icons/asterisk_orange.png")).getImage());
-        setResizable(false);
 
         jTImpressoraSelecionada.setEditable(false);
         jTImpressoraSelecionada.setBackground(new java.awt.Color(153, 153, 153));

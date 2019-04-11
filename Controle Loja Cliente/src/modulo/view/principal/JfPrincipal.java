@@ -38,6 +38,7 @@ import modulo.configuracoes.JfConfig;
 import modulo.imprimePDF.JTelaPrintPDF;
 import modulo.metodos.ConvertMD5;
 import modulo.metodos.SegurancaFuncoes;
+import modulo.planodevoo.JfPlanoDeVoo;
 import modulo.view.painel.JfEducaFarma;
 import modulo.view.painel.JfPainel;
 import modulo.view.painel.JfPlanogramas;
@@ -551,11 +552,16 @@ public final class JfPrincipal extends javax.swing.JFrame {
                 if (verificaMatriculaAntesDeSalvar()) {
                     if (setZeroNosCamposLimposVoo()) {
                         if (carregaDadosNaVariavelVoo()) {
-                            if (DAOVOO.Insert(objVoo)) {
-                                JOptionPane.showMessageDialog(this, "Salvo com Sucesso!");
-                                limparCampos();
+                            if (DAOVOO.ChekRegistro(fun.convertToInt(jtMatriculaVoo.getText()),
+                                    fun.convertDateStringToDateSQL(jtDataDoRegistroVoo.getText()))) {
+                                if (DAOVOO.Insert(objVoo)) {
+                                    JOptionPane.showMessageDialog(this, "Salvo com Sucesso!");
+                                    limparCampos();
+                                } else {
+                                    JOptionPane.showMessageDialog(this, "Não foi possível salvar!");
+                                }
                             } else {
-                                JOptionPane.showMessageDialog(this, "Não foi possível salvar!");
+                                JOptionPane.showMessageDialog(this, "Matricula ja salvaou dados nesta data!");
                             }
                         }
                     } else {
@@ -2096,7 +2102,20 @@ public final class JfPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jbMetasActionPerformed
 
     private void jbEditarPlanoDeVooActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbEditarPlanoDeVooActionPerformed
-        // TODO add your handling code here:
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(JfPlanoDeVoo.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        java.awt.EventQueue.invokeLater(() -> {
+            new JfPlanoDeVoo().setVisible(true);
+        });
     }//GEN-LAST:event_jbEditarPlanoDeVooActionPerformed
 
     private void jbImprimePDFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbImprimePDFActionPerformed

@@ -1,17 +1,376 @@
 package modulo.planodevoo;
 
+import java.awt.event.KeyEvent;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFormattedTextField;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import modulo.DAO.LojaDAO;
+import javax.swing.ImageIcon;
+import modulo.DAO.SegurancaDAO;
+import modulo.DAO.UsuarioDAO;
+import modulo.camapanha.DAO.PlanoVooDAO;
+import modulo.entidades.CampanhasPlanoDeVoo;
+import modulo.entidades.Loja;
+import modulo.entidades.Usuario;
+import modulo.metodos.ConvertMD5;
+import modulo.metodos.Funcao;
+import modulo.metodos.SegurancaFuncoes;
+import modulo.versao.Versao;
+
 /**
  *
  * @author Marcos Junior
  */
 public class JfPlanoDeVoo extends javax.swing.JFrame {
 
-    /** Creates new form JfPlanoDeVoo */
+    private Funcao fun;
+    private JFormattedTextField[] planoVoo;
+    private PlanoVooDAO DAOVOO;
+    private UsuarioDAO DAOUSER;
+    private Usuario objUSER;
+    private LojaDAO DAOLOJA;
+    private DateFormat formatoHora;
+    private DateFormat formatoDIA;
+    private Versao ver;
+    private CampanhasPlanoDeVoo objVoo;
+    private SegurancaDAO SEGDAO;
+    private SegurancaFuncoes segu;
+    private ConvertMD5 MD5;
+    private int numeroLoja = 1;
+
+    /**
+     * Creates new form JfPlanoDeVoo
+     */
     public JfPlanoDeVoo() {
         initComponents();
+        DAOUSER = new UsuarioDAO();
+        DAOLOJA = new LojaDAO();
+        DAOVOO = new PlanoVooDAO();
+        SEGDAO = new SegurancaDAO();
+        segu = new SegurancaFuncoes();
+        fun = new Funcao();
+        ver = new Versao();
+        MD5 = new ConvertMD5();
+        this.formatoHora = new SimpleDateFormat("EEEEEEEEEEEEEE, dd/MM/yyyy    HH:mm:ss");
+        this.formatoDIA = new SimpleDateFormat("dd/MM/yyyy");
+        criarUmVetorDeCampos();
+        carregaLoja();
+        jtDataAtual.setText(formatoDIA.format(new Date()));
+        setTitle(ver.getNomesys() + " - Plano de Voo Colaboradores " + ver.getVersao());
+
     }
 
-      @SuppressWarnings("unchecked")
+    private void carregaLoja() {
+
+        try {
+            Loja f = DAOLOJA.PesquisaNumeroLoja(numeroLoja);
+            String nl = Integer.toString(f.getNumero_loja());
+            jtNumeroLoja.setText(nl);
+            jlTituloPlanoDeVoo.setText("Plano de Voo!");
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Erro ao Carregar Dados Loja. " + ex.getMessage());
+            //jTabbedPane1.setVisible(false);
+        }
+    }
+
+    private void criarUmVetorDeCampos() {//Função Secundária
+        planoVoo = new JFormattedTextField[]{
+            jfVooCliPDV1,
+            jfVooCliPDV2,
+            jfVooCliPDV3,
+            jfVooCliPDV4,
+            jfVendaPDV1,
+            jfVendaPDV2,
+            jfVendaPDV3,
+            jfVendaPDV4,};
+
+    }
+
+    private boolean HabilitaDesabilita(int valor) {
+        boolean check = true;
+
+        for (JFormattedTextField voo : planoVoo) {
+            if (valor == 1) {
+                voo.setEnabled(true);
+                jbPesquisarDadosUser.setText("Salvar");
+                jbEditarVoo.setEnabled(false);
+
+            } else if (valor == 0) {
+                voo.setEnabled(false);
+                jbPesquisarDadosUser.setText("Pesquisar");
+                jbEditarVoo.setEnabled(true);
+            }
+        }
+        return check;
+    }
+
+    private boolean setZeroNosCamposLimposVoo() {
+        boolean check = true;
+        for (JFormattedTextField voo : planoVoo) {
+            if (voo.getText().equals("") || voo.getText().equals("0")) {
+                voo.setText("0");
+                //Seta Azul neste caso
+                voo.setBackground(new java.awt.Color(0, 0, 255));
+            } else {
+                //Seta Branco neste caso
+                voo.setBackground(new java.awt.Color(255, 255, 255));
+            }
+        }
+        return check;
+    }
+
+    private boolean validaCamposVoo() {
+        boolean check;
+        int cont = 0;
+        for (JFormattedTextField voo : planoVoo) {
+            if (voo.getText().equals("")) {
+                //Seta Vermelho
+                voo.setBackground(new java.awt.Color(255, 0, 0));
+                cont++;
+            } else {
+                if (!fun.testaNumerosDecimais(voo.getText())) {
+                    voo.setText("");
+                }
+                //Seta Branco
+                voo.setBackground(new java.awt.Color(255, 255, 255));
+            }
+        }
+        check = cont == 0;
+        return check;
+    }
+
+    private void somaValores() {
+        double somadb;
+        int somait;
+        double db1 = fun.convertToDouble(jfVendaPDV1.getText());
+        double db2 = fun.convertToDouble(jfVendaPDV2.getText());
+        double db3 = fun.convertToDouble(jfVendaPDV3.getText());
+        double db4 = fun.convertToDouble(jfVendaPDV4.getText());
+        somadb = db1 + db2 + db3 + db4;
+        int it1 = fun.convertToInt(jfVooCliPDV1.getText());
+        int it2 = fun.convertToInt(jfVooCliPDV2.getText());
+        int it3 = fun.convertToInt(jfVooCliPDV3.getText());
+        int it4 = fun.convertToInt(jfVooCliPDV4.getText());
+        somait = it1 + it2 + it3 + it4;
+
+        jfVooVendaTotal.setText(fun.convertDoubleToString(somadb));
+        jfVooCliTotal.setText(Integer.toString(somait));
+
+    }
+
+    private void limparCampos() {
+        int v = jTabbedPane1.getSelectedIndex();
+
+        switch (v) {
+            case 0: {
+                //Grafico
+
+                break;
+            }
+            case 1: {
+                //Plano de Voo
+                jfVooCliPDV1.setText("");
+                jfVooCliPDV2.setText("");
+                jfVooCliPDV3.setText("");
+                jfVooCliPDV4.setText("");
+                jfVooVendaTotal.setText("");
+                jfVendaPDV1.setText("");
+                jfVendaPDV2.setText("");
+                jfVendaPDV3.setText("");
+                jfVendaPDV4.setText("");
+                jfVooCliTotal.setText("");
+                HabilitaDesabilita(0);
+                jtDataAtual.setText(formatoDIA.format(new Date()));
+//                try {
+//                    PesquisaPlanoDeVoo();
+//                } catch (Exception ex) {
+//                    Logger.getLogger(JfPlanoDeVoo.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+                break;
+            }
+            case 2: {
+                //Metas Plano de Voo
+
+                break;
+            }
+            default:
+                break;
+        }
+    }
+
+    public boolean pesquisarUsuarioNoBanco() {
+        int v = jTabbedPane1.getSelectedIndex();
+        boolean chek = false;
+        switch (v) {
+            case 0: {
+                //Grafico
+                break;
+            }
+            case 1: {
+                //Plano de Voo
+                chek = metodoDeBusca(jtMatriculaVoo.getText(), jtNomeUsuario, jtMatriculaVoo);
+                break;
+            }
+            case 2: {
+                //Meta
+                break;
+            }
+            default:
+                break;
+        }
+        return chek;
+    }
+
+    private boolean metodoDeBusca(String valor, JTextField NomeUser, JTextField campo) {
+        boolean chek = false;
+        try {
+            if (fun.testaNumerosInteiros(valor)) {
+                objUSER = DAOUSER.PesquisaMatriculaR(Integer.parseInt(valor));
+                if (objUSER == null) {
+                    NomeUser.setText("Não localizado!");
+                    campo.requestFocus();
+                    chek = false;
+                } else {
+                    NomeUser.setText(objUSER.getNome());
+                    chek = true;
+                }
+            } else {
+                NomeUser.setText("Não localizado!");
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Falha ao buscar: " + ex);
+        }
+        return chek;
+    }
+
+    private boolean verificaMatriculaAntesDeSalvar() {
+        int v = jTabbedPane1.getSelectedIndex();
+        boolean check = false;
+        try {
+            switch (v) {
+                case 0: {
+                    //Grafico
+
+                    break;
+                }
+                case 1: {
+                    //Plano de Voo
+                    if (!jtMatriculaVoo.getText().equals("")) {
+                        check = DAOUSER.CheckSelect(fun.convertToInt(jtMatriculaVoo.getText()));
+                    }
+                    break;
+                }
+                case 2: {
+                    //Metas
+                }
+                default:
+                    break;
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Falha ao verificaMatriculaAntesDeSalvar: " + ex);
+        }
+        return check;
+    }
+
+    private void carregaCampos() throws Exception {
+        Date dataSetada = jDateChooser.getDate();
+        CampanhasPlanoDeVoo objVooLocal;
+        objVooLocal = DAOVOO.PesquisarUserIndividual(fun.convertToInt(jtMatriculaVoo.getText()),
+                fun.convertDateStringToDateSQL(formatoDIA.format(dataSetada)));
+        
+       
+        jfVooCliPDV1.setText(String.valueOf(objVooLocal.getCli1()));
+        jfVooCliPDV2.setText(String.valueOf(objVooLocal.getCli2()));
+        jfVooCliPDV3.setText(String.valueOf(objVooLocal.getCli3()));
+        jfVooCliPDV4.setText(String.valueOf(objVooLocal.getCli4()));
+        jfVooCliTotal.setText(String.valueOf(objVooLocal.getTotalcli()));
+        
+        jfVendaPDV1.setText(String.valueOf(objVooLocal.getPdv1()));
+        
+        System.out.println("Teste Valor: " + String.valueOf(objVooLocal.getPdv1()));
+        System.out.println("Teste Valor: " + objVooLocal.getPdv1());
+        
+        jfVendaPDV2.setText(fun.SubPontoPorVirgula(String.valueOf(objVooLocal.getPdv2())));
+        jfVendaPDV3.setText(fun.SubPontoPorVirgula(String.valueOf(objVooLocal.getPdv3())));
+        jfVendaPDV4.setText(fun.SubPontoPorVirgula(String.valueOf(objVooLocal.getPdv4())));
+        jfVooVendaTotal.setText(String.valueOf(objVooLocal.getTotalpdvs()));
+
+        jbEditarVoo.setEnabled(true);
+    }
+
+    private boolean carregaDadosNaVariavelVoo() throws ParseException {//Função Secundária
+        objVoo = new CampanhasPlanoDeVoo();
+        objVoo.setCli1(fun.convertToInt(jfVooCliPDV1.getText()));
+        objVoo.setCli2(fun.convertToInt(jfVooCliPDV2.getText()));
+        objVoo.setCli3(fun.convertToInt(jfVooCliPDV3.getText()));
+        objVoo.setCli4(fun.convertToInt(jfVooCliPDV4.getText()));
+        objVoo.setTotalcli(fun.convertToInt(jfVooCliTotal.getText()));
+        objVoo.setPdv1(fun.convertToDouble(jfVendaPDV1.getText()));
+        objVoo.setPdv2(fun.convertToDouble(jfVendaPDV2.getText()));
+        objVoo.setPdv3(fun.convertToDouble(jfVendaPDV3.getText()));
+        objVoo.setPdv4(fun.convertToDouble(jfVendaPDV4.getText()));
+        objVoo.setTotalpdvs(fun.convertToDouble(jfVooVendaTotal.getText()));
+        objVoo.setMatricula(fun.convertToInt(jtMatriculaVoo.getText()));
+        objVoo.setData_registro(fun.converteDateStringEmSQL(jtDataAtual.getText()));
+
+        return objVoo != null;
+    }
+
+    private void salvarPlanoDeVoo() {//Função Principal
+        try {
+            if (validaCamposVoo()) {
+                if (verificaMatriculaAntesDeSalvar()) {
+                    if (setZeroNosCamposLimposVoo()) {
+                        if (carregaDadosNaVariavelVoo()) {
+                            if (DAOVOO.Update(objVoo)) {
+                                JOptionPane.showMessageDialog(this, "Alterado com Sucesso!");
+                                limparCampos();
+                            } else {
+                                JOptionPane.showMessageDialog(this, "Não foi possível alterar!");
+                            }
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Não pode alterar se todos os campos forem zero!");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this, "Matrícula Incorreta!");
+                    jtMatriculaVoo.requestFocus();
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Campos não validados!");
+            }
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Falha ao salvar dados: " + ex);
+        }
+    }
+
+    private void verificaOpcaoSelecionada(KeyEvent ke, String testAbaSelecionada) {
+//        if (ke.getKeyCode() == KeyEvent.VK_ENTER & "obs".equals(test)) {
+//            jtQTD_Perdida.requestFocus();
+//        }
+//        if (ke.getKeyCode() == KeyEvent.VK_TAB || ke.getKeyCode() == KeyEvent.VK_ENTER & "matri".equals(test)) {
+//            jtCod_Interno.requestFocus();
+//        }
+//        if (ke.getKeyCode() == KeyEvent.VK_TAB || ke.getKeyCode() == KeyEvent.VK_ENTER & "matriCamp".equals(test)) {
+//            jtQtdProdutoCampanha.requestFocus();
+//        }
+        if (ke.getKeyCode() == KeyEvent.VK_TAB || ke.getKeyCode() == KeyEvent.VK_ENTER & "matriVoo".equals(testAbaSelecionada)) {
+            jDateChooser.requestFocus();
+        }
+//        if (ke.getKeyCode() == KeyEvent.VK_TAB || ke.getKeyCode() == KeyEvent.VK_ENTER & "obsCamp".equals(test)) {
+//            jbSalvarCampanha.requestFocus();
+//        }
+    }
+
+    @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -19,27 +378,27 @@ public class JfPlanoDeVoo extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jPanel3PlanoDeVoo = new javax.swing.JPanel();
-        jtNomeUsuarioV = new javax.swing.JTextField();
+        jtNomeUsuario = new javax.swing.JTextField();
         jtMatriculaVoo = new javax.swing.JTextField();
         jlMat26 = new javax.swing.JLabel();
-        jbSalvarVoo = new javax.swing.JButton();
-        jbCancelarVoo = new javax.swing.JButton();
-        jtLoja5 = new javax.swing.JTextField();
+        jbPesquisarDadosUser = new javax.swing.JButton();
+        jbLimparVoo = new javax.swing.JButton();
+        jtNumeroLoja = new javax.swing.JTextField();
         jlMat28 = new javax.swing.JLabel();
         jlMat29 = new javax.swing.JLabel();
-        jfVooVenda1 = new javax.swing.JFormattedTextField();
-        jfVooVenda2 = new javax.swing.JFormattedTextField();
-        jfVooVenda4 = new javax.swing.JFormattedTextField();
-        jfVooVenda3 = new javax.swing.JFormattedTextField();
-        jfVooCli1 = new javax.swing.JFormattedTextField();
-        jfVooCli2 = new javax.swing.JFormattedTextField();
-        jfVooCli3 = new javax.swing.JFormattedTextField();
-        jfVooCli4 = new javax.swing.JFormattedTextField();
+        jfVendaPDV1 = new javax.swing.JFormattedTextField();
+        jfVendaPDV2 = new javax.swing.JFormattedTextField();
+        jfVendaPDV4 = new javax.swing.JFormattedTextField();
+        jfVendaPDV3 = new javax.swing.JFormattedTextField();
+        jfVooCliPDV1 = new javax.swing.JFormattedTextField();
+        jfVooCliPDV2 = new javax.swing.JFormattedTextField();
+        jfVooCliPDV3 = new javax.swing.JFormattedTextField();
+        jfVooCliPDV4 = new javax.swing.JFormattedTextField();
         jfVooVendaTotal = new javax.swing.JFormattedTextField();
         jfVooCliTotal = new javax.swing.JFormattedTextField();
-        jtDataDoRegistroVoo = new javax.swing.JFormattedTextField();
-        jbSalvarVoo1 = new javax.swing.JButton();
-        jDateChooser1 = new com.toedter.calendar.JDateChooser();
+        jtDataAtual = new javax.swing.JFormattedTextField();
+        jbEditarVoo = new javax.swing.JButton();
+        jDateChooser = new com.toedter.calendar.JDateChooser();
         jlMat30 = new javax.swing.JLabel();
         jfVooVenda5 = new javax.swing.JFormattedTextField();
         jlTituloPlanoDeVoo = new javax.swing.JLabel();
@@ -49,10 +408,12 @@ public class JfPlanoDeVoo extends javax.swing.JFrame {
         jfVooCli5 = new javax.swing.JFormattedTextField();
         jlTituloPlanoDeVoo1 = new javax.swing.JLabel();
         jlTituloPlanoDeVoo2 = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setAlwaysOnTop(true);
-        setFocusable(false);
+        setExtendedState(6);
+        setIconImage(new ImageIcon(getClass().getResource("/icons/asterisk_orange.png")).getImage());
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -69,11 +430,11 @@ public class JfPlanoDeVoo extends javax.swing.JFrame {
 
         jPanel3PlanoDeVoo.setBackground(new java.awt.Color(0, 153, 153));
 
-        jtNomeUsuarioV.setEditable(false);
-        jtNomeUsuarioV.setBackground(new java.awt.Color(102, 255, 153));
-        jtNomeUsuarioV.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
-        jtNomeUsuarioV.setForeground(new java.awt.Color(255, 0, 0));
-        jtNomeUsuarioV.setDisabledTextColor(new java.awt.Color(255, 153, 51));
+        jtNomeUsuario.setEditable(false);
+        jtNomeUsuario.setBackground(new java.awt.Color(102, 255, 153));
+        jtNomeUsuario.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        jtNomeUsuario.setForeground(new java.awt.Color(255, 0, 0));
+        jtNomeUsuario.setDisabledTextColor(new java.awt.Color(255, 153, 51));
 
         jtMatriculaVoo.setBackground(new java.awt.Color(255, 255, 102));
         jtMatriculaVoo.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
@@ -99,37 +460,37 @@ public class JfPlanoDeVoo extends javax.swing.JFrame {
         jlMat26.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jlMat26.setText("Matrícula");
 
-        jbSalvarVoo.setBackground(new java.awt.Color(0, 0, 102));
-        jbSalvarVoo.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
-        jbSalvarVoo.setForeground(new java.awt.Color(255, 255, 255));
-        jbSalvarVoo.setText("Pesquisar");
-        jbSalvarVoo.addActionListener(new java.awt.event.ActionListener() {
+        jbPesquisarDadosUser.setBackground(new java.awt.Color(0, 0, 102));
+        jbPesquisarDadosUser.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        jbPesquisarDadosUser.setForeground(new java.awt.Color(255, 255, 255));
+        jbPesquisarDadosUser.setText("Pesquisar");
+        jbPesquisarDadosUser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jbSalvarVooActionPerformed(evt);
+                jbPesquisarDadosUserActionPerformed(evt);
             }
         });
-        jbSalvarVoo.addKeyListener(new java.awt.event.KeyAdapter() {
+        jbPesquisarDadosUser.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
-                jbSalvarVooKeyPressed(evt);
+                jbPesquisarDadosUserKeyPressed(evt);
             }
         });
 
-        jbCancelarVoo.setBackground(new java.awt.Color(204, 0, 0));
-        jbCancelarVoo.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
-        jbCancelarVoo.setForeground(new java.awt.Color(255, 255, 255));
-        jbCancelarVoo.setText("Limpar");
-        jbCancelarVoo.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jbCancelarVoo.addActionListener(new java.awt.event.ActionListener() {
+        jbLimparVoo.setBackground(new java.awt.Color(204, 0, 0));
+        jbLimparVoo.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        jbLimparVoo.setForeground(new java.awt.Color(255, 255, 255));
+        jbLimparVoo.setText("Limpar");
+        jbLimparVoo.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jbLimparVoo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jbCancelarVooActionPerformed(evt);
+                jbLimparVooActionPerformed(evt);
             }
         });
 
-        jtLoja5.setEditable(false);
-        jtLoja5.setBackground(new java.awt.Color(255, 153, 102));
-        jtLoja5.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
-        jtLoja5.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jtLoja5.setDisabledTextColor(new java.awt.Color(255, 153, 51));
+        jtNumeroLoja.setEditable(false);
+        jtNumeroLoja.setBackground(new java.awt.Color(255, 153, 102));
+        jtNumeroLoja.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        jtNumeroLoja.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jtNumeroLoja.setDisabledTextColor(new java.awt.Color(255, 153, 51));
 
         jlMat28.setBackground(new java.awt.Color(153, 255, 0));
         jlMat28.setFont(new java.awt.Font("Consolas", 1, 12)); // NOI18N
@@ -143,91 +504,99 @@ public class JfPlanoDeVoo extends javax.swing.JFrame {
         jlMat29.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jlMat29.setText("Cliente");
 
-        jfVooVenda1.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
-        jfVooVenda1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jfVooVenda1.setFocusLostBehavior(javax.swing.JFormattedTextField.PERSIST);
-        jfVooVenda1.setMinimumSize(new java.awt.Dimension(12, 26));
-        jfVooVenda1.setPreferredSize(new java.awt.Dimension(12, 26));
-        jfVooVenda1.addActionListener(new java.awt.event.ActionListener() {
+        jfVendaPDV1.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
+        jfVendaPDV1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jfVendaPDV1.setEnabled(false);
+        jfVendaPDV1.setFocusLostBehavior(javax.swing.JFormattedTextField.PERSIST);
+        jfVendaPDV1.setMinimumSize(new java.awt.Dimension(12, 26));
+        jfVendaPDV1.setPreferredSize(new java.awt.Dimension(12, 26));
+        jfVendaPDV1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jfVooVenda1ActionPerformed(evt);
+                jfVendaPDV1ActionPerformed(evt);
             }
         });
 
-        jfVooVenda2.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
-        jfVooVenda2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jfVooVenda2.setFocusLostBehavior(javax.swing.JFormattedTextField.PERSIST);
-        jfVooVenda2.setMinimumSize(new java.awt.Dimension(12, 26));
-        jfVooVenda2.setPreferredSize(new java.awt.Dimension(12, 26));
-        jfVooVenda2.addActionListener(new java.awt.event.ActionListener() {
+        jfVendaPDV2.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
+        jfVendaPDV2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jfVendaPDV2.setEnabled(false);
+        jfVendaPDV2.setFocusLostBehavior(javax.swing.JFormattedTextField.PERSIST);
+        jfVendaPDV2.setMinimumSize(new java.awt.Dimension(12, 26));
+        jfVendaPDV2.setPreferredSize(new java.awt.Dimension(12, 26));
+        jfVendaPDV2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jfVooVenda2ActionPerformed(evt);
+                jfVendaPDV2ActionPerformed(evt);
             }
         });
 
-        jfVooVenda4.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
-        jfVooVenda4.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jfVooVenda4.setFocusLostBehavior(javax.swing.JFormattedTextField.PERSIST);
-        jfVooVenda4.setMinimumSize(new java.awt.Dimension(12, 26));
-        jfVooVenda4.setPreferredSize(new java.awt.Dimension(12, 26));
-        jfVooVenda4.addActionListener(new java.awt.event.ActionListener() {
+        jfVendaPDV4.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
+        jfVendaPDV4.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jfVendaPDV4.setEnabled(false);
+        jfVendaPDV4.setFocusLostBehavior(javax.swing.JFormattedTextField.PERSIST);
+        jfVendaPDV4.setMinimumSize(new java.awt.Dimension(12, 26));
+        jfVendaPDV4.setPreferredSize(new java.awt.Dimension(12, 26));
+        jfVendaPDV4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jfVooVenda4ActionPerformed(evt);
+                jfVendaPDV4ActionPerformed(evt);
             }
         });
 
-        jfVooVenda3.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
-        jfVooVenda3.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jfVooVenda3.setFocusLostBehavior(javax.swing.JFormattedTextField.PERSIST);
-        jfVooVenda3.setMinimumSize(new java.awt.Dimension(12, 26));
-        jfVooVenda3.setPreferredSize(new java.awt.Dimension(12, 26));
-        jfVooVenda3.addActionListener(new java.awt.event.ActionListener() {
+        jfVendaPDV3.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
+        jfVendaPDV3.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jfVendaPDV3.setEnabled(false);
+        jfVendaPDV3.setFocusLostBehavior(javax.swing.JFormattedTextField.PERSIST);
+        jfVendaPDV3.setMinimumSize(new java.awt.Dimension(12, 26));
+        jfVendaPDV3.setPreferredSize(new java.awt.Dimension(12, 26));
+        jfVendaPDV3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jfVooVenda3ActionPerformed(evt);
+                jfVendaPDV3ActionPerformed(evt);
             }
         });
 
-        jfVooCli1.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
-        jfVooCli1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jfVooCli1.setFocusLostBehavior(javax.swing.JFormattedTextField.PERSIST);
-        jfVooCli1.setMinimumSize(new java.awt.Dimension(12, 26));
-        jfVooCli1.setPreferredSize(new java.awt.Dimension(12, 26));
-        jfVooCli1.addActionListener(new java.awt.event.ActionListener() {
+        jfVooCliPDV1.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
+        jfVooCliPDV1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jfVooCliPDV1.setEnabled(false);
+        jfVooCliPDV1.setFocusLostBehavior(javax.swing.JFormattedTextField.PERSIST);
+        jfVooCliPDV1.setMinimumSize(new java.awt.Dimension(12, 26));
+        jfVooCliPDV1.setPreferredSize(new java.awt.Dimension(12, 26));
+        jfVooCliPDV1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jfVooCli1ActionPerformed(evt);
+                jfVooCliPDV1ActionPerformed(evt);
             }
         });
 
-        jfVooCli2.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
-        jfVooCli2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jfVooCli2.setFocusLostBehavior(javax.swing.JFormattedTextField.PERSIST);
-        jfVooCli2.setMinimumSize(new java.awt.Dimension(12, 26));
-        jfVooCli2.setPreferredSize(new java.awt.Dimension(12, 26));
-        jfVooCli2.addActionListener(new java.awt.event.ActionListener() {
+        jfVooCliPDV2.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
+        jfVooCliPDV2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jfVooCliPDV2.setEnabled(false);
+        jfVooCliPDV2.setFocusLostBehavior(javax.swing.JFormattedTextField.PERSIST);
+        jfVooCliPDV2.setMinimumSize(new java.awt.Dimension(12, 26));
+        jfVooCliPDV2.setPreferredSize(new java.awt.Dimension(12, 26));
+        jfVooCliPDV2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jfVooCli2ActionPerformed(evt);
+                jfVooCliPDV2ActionPerformed(evt);
             }
         });
 
-        jfVooCli3.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
-        jfVooCli3.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jfVooCli3.setFocusLostBehavior(javax.swing.JFormattedTextField.PERSIST);
-        jfVooCli3.setMinimumSize(new java.awt.Dimension(12, 26));
-        jfVooCli3.setPreferredSize(new java.awt.Dimension(12, 26));
-        jfVooCli3.addActionListener(new java.awt.event.ActionListener() {
+        jfVooCliPDV3.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
+        jfVooCliPDV3.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jfVooCliPDV3.setEnabled(false);
+        jfVooCliPDV3.setFocusLostBehavior(javax.swing.JFormattedTextField.PERSIST);
+        jfVooCliPDV3.setMinimumSize(new java.awt.Dimension(12, 26));
+        jfVooCliPDV3.setPreferredSize(new java.awt.Dimension(12, 26));
+        jfVooCliPDV3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jfVooCli3ActionPerformed(evt);
+                jfVooCliPDV3ActionPerformed(evt);
             }
         });
 
-        jfVooCli4.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
-        jfVooCli4.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jfVooCli4.setFocusLostBehavior(javax.swing.JFormattedTextField.PERSIST);
-        jfVooCli4.setMinimumSize(new java.awt.Dimension(12, 26));
-        jfVooCli4.setPreferredSize(new java.awt.Dimension(12, 26));
-        jfVooCli4.addActionListener(new java.awt.event.ActionListener() {
+        jfVooCliPDV4.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
+        jfVooCliPDV4.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jfVooCliPDV4.setEnabled(false);
+        jfVooCliPDV4.setFocusLostBehavior(javax.swing.JFormattedTextField.PERSIST);
+        jfVooCliPDV4.setMinimumSize(new java.awt.Dimension(12, 26));
+        jfVooCliPDV4.setPreferredSize(new java.awt.Dimension(12, 26));
+        jfVooCliPDV4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jfVooCli4ActionPerformed(evt);
+                jfVooCliPDV4ActionPerformed(evt);
             }
         });
 
@@ -248,32 +617,33 @@ public class JfPlanoDeVoo extends javax.swing.JFrame {
         jfVooCliTotal.setPreferredSize(new java.awt.Dimension(12, 26));
 
         try {
-            jtDataDoRegistroVoo.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("##/##/####")));
+            jtDataAtual.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("##/##/####")));
         } catch (java.text.ParseException ex) {
             ex.printStackTrace();
         }
-        jtDataDoRegistroVoo.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jtDataDoRegistroVoo.setFocusLostBehavior(javax.swing.JFormattedTextField.PERSIST);
-        jtDataDoRegistroVoo.setMinimumSize(new java.awt.Dimension(12, 26));
-        jtDataDoRegistroVoo.setPreferredSize(new java.awt.Dimension(127, 26));
-        jtDataDoRegistroVoo.addActionListener(new java.awt.event.ActionListener() {
+        jtDataAtual.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jtDataAtual.setFocusLostBehavior(javax.swing.JFormattedTextField.PERSIST);
+        jtDataAtual.setMinimumSize(new java.awt.Dimension(12, 26));
+        jtDataAtual.setPreferredSize(new java.awt.Dimension(127, 26));
+        jtDataAtual.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jtDataDoRegistroVooActionPerformed(evt);
+                jtDataAtualActionPerformed(evt);
             }
         });
 
-        jbSalvarVoo1.setBackground(new java.awt.Color(0, 0, 102));
-        jbSalvarVoo1.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
-        jbSalvarVoo1.setForeground(new java.awt.Color(255, 255, 255));
-        jbSalvarVoo1.setText("Alterar");
-        jbSalvarVoo1.addActionListener(new java.awt.event.ActionListener() {
+        jbEditarVoo.setBackground(new java.awt.Color(0, 0, 102));
+        jbEditarVoo.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        jbEditarVoo.setForeground(new java.awt.Color(255, 255, 255));
+        jbEditarVoo.setText("Alterar");
+        jbEditarVoo.setEnabled(false);
+        jbEditarVoo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jbSalvarVoo1ActionPerformed(evt);
+                jbEditarVooActionPerformed(evt);
             }
         });
-        jbSalvarVoo1.addKeyListener(new java.awt.event.KeyAdapter() {
+        jbEditarVoo.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
-                jbSalvarVoo1KeyPressed(evt);
+                jbEditarVooKeyPressed(evt);
             }
         });
 
@@ -374,22 +744,22 @@ public class JfPlanoDeVoo extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jtMatriculaVoo, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jtNomeUsuarioV, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jtNomeUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jDateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jbSalvarVoo)
+                        .addComponent(jbPesquisarDadosUser)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jbSalvarVoo1)
+                        .addComponent(jbEditarVoo)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jbCancelarVoo)
+                        .addComponent(jbLimparVoo)
                         .addGap(0, 10, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3PlanoDeVooLayout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jtLoja5, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jtNumeroLoja, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jtDataDoRegistroVoo, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jtDataAtual, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanel3PlanoDeVooLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -398,20 +768,20 @@ public class JfPlanoDeVoo extends javax.swing.JFrame {
                     .addComponent(jlMat29))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3PlanoDeVooLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jfVooVenda1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jfVooCli1, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jfVendaPDV1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jfVooCliPDV1, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3PlanoDeVooLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jfVooCli2, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jfVooVenda2, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jfVooCliPDV2, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jfVendaPDV2, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3PlanoDeVooLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jfVooCli3, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jfVooVenda3, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jfVooCliPDV3, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jfVendaPDV3, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3PlanoDeVooLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jfVooVenda4, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jfVooCli4, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jfVendaPDV4, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jfVooCliPDV4, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3PlanoDeVooLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jfVooCliTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -426,43 +796,41 @@ public class JfPlanoDeVoo extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3PlanoDeVooLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel3PlanoDeVooLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jtNomeUsuarioV, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jtNomeUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jtMatriculaVoo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jlMat26, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jDateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel3PlanoDeVooLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jbSalvarVoo)
-                        .addComponent(jbSalvarVoo1)
-                        .addComponent(jbCancelarVoo)))
+                        .addComponent(jbPesquisarDadosUser)
+                        .addComponent(jbEditarVoo)
+                        .addComponent(jbLimparVoo)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3PlanoDeVooLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3PlanoDeVooLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addGroup(jPanel3PlanoDeVooLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel3PlanoDeVooLayout.createSequentialGroup()
                                 .addGroup(jPanel3PlanoDeVooLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jfVooVenda1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jfVendaPDV1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jlMat28, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel3PlanoDeVooLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jfVooCli1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jfVooCliPDV1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jlMat29, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(jPanel3PlanoDeVooLayout.createSequentialGroup()
-                                .addComponent(jfVooVenda2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jfVendaPDV2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jfVooCli2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(jfVooCliPDV2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGroup(jPanel3PlanoDeVooLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel3PlanoDeVooLayout.createSequentialGroup()
-                                .addComponent(jfVooVenda3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(32, 32, 32))
+                            .addComponent(jfVendaPDV3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel3PlanoDeVooLayout.createSequentialGroup()
                                 .addGap(32, 32, 32)
-                                .addComponent(jfVooCli3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addComponent(jfVooVenda4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jfVooCliPDV3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addComponent(jfVendaPDV4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jfVooVendaTotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel3PlanoDeVooLayout.createSequentialGroup()
                         .addGap(32, 32, 32)
                         .addGroup(jPanel3PlanoDeVooLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jfVooCli4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jfVooCliPDV4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jfVooCliTotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jlTituloPlanoDeVoo2)
@@ -482,8 +850,8 @@ public class JfPlanoDeVoo extends javax.swing.JFrame {
                 .addComponent(jlTituloPlanoDeVoo1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 62, Short.MAX_VALUE)
                 .addGroup(jPanel3PlanoDeVooLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jtLoja5, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jtDataDoRegistroVoo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jtNumeroLoja, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jtDataAtual, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -499,6 +867,19 @@ public class JfPlanoDeVoo extends javax.swing.JFrame {
         );
 
         jTabbedPane1.addTab("Plano de Voo Individual", jPanel2);
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 904, Short.MAX_VALUE)
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 447, Short.MAX_VALUE)
+        );
+
+        jTabbedPane1.addTab("Metas Colaboradores", jPanel3);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -523,7 +904,7 @@ public class JfPlanoDeVoo extends javax.swing.JFrame {
 
     private void jtMatriculaVooMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtMatriculaVooMouseClicked
         jtMatriculaVoo.setText("");
-        jtNomeUsuarioV.setText("");
+        jtNomeUsuario.setText("");
     }//GEN-LAST:event_jtMatriculaVooMouseClicked
 
     private void jtMatriculaVooKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtMatriculaVooKeyPressed
@@ -534,80 +915,89 @@ public class JfPlanoDeVoo extends javax.swing.JFrame {
         pesquisarUsuarioNoBanco();
     }//GEN-LAST:event_jtMatriculaVooKeyReleased
 
-    private void jbSalvarVooActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbSalvarVooActionPerformed
-        try {
-            salvarPlanoDeVoo();
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Falha: " + ex);
-        }
-    }//GEN-LAST:event_jbSalvarVooActionPerformed
-
-    private void jbSalvarVooKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jbSalvarVooKeyPressed
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+    private void jbPesquisarDadosUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbPesquisarDadosUserActionPerformed
+        if ("Pesquisar".equals(jbPesquisarDadosUser.getText())) {
+            try {
+                carregaCampos();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Falha: " + ex);
+            }
+        } else if ("Salvar".equals(jbPesquisarDadosUser.getText())) {
             try {
                 salvarPlanoDeVoo();
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Falha: " + ex);
             }
         }
-    }//GEN-LAST:event_jbSalvarVooKeyPressed
 
-    private void jbCancelarVooActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbCancelarVooActionPerformed
+    }//GEN-LAST:event_jbPesquisarDadosUserActionPerformed
+
+    private void jbPesquisarDadosUserKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jbPesquisarDadosUserKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            try {
+                //salvarPlanoDeVoo();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Falha: " + ex);
+            }
+        }
+    }//GEN-LAST:event_jbPesquisarDadosUserKeyPressed
+
+    private void jbLimparVooActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbLimparVooActionPerformed
         limparCampos();
-    }//GEN-LAST:event_jbCancelarVooActionPerformed
+    }//GEN-LAST:event_jbLimparVooActionPerformed
 
-    private void jfVooVenda1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jfVooVenda1ActionPerformed
-        jfVooCli1.requestFocus();
+    private void jfVendaPDV1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jfVendaPDV1ActionPerformed
+        jfVooCliPDV1.requestFocus();
         somaValores();
-    }//GEN-LAST:event_jfVooVenda1ActionPerformed
+    }//GEN-LAST:event_jfVendaPDV1ActionPerformed
 
-    private void jfVooVenda2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jfVooVenda2ActionPerformed
-        jfVooCli2.requestFocus();
+    private void jfVendaPDV2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jfVendaPDV2ActionPerformed
+        jfVooCliPDV2.requestFocus();
         somaValores();
-    }//GEN-LAST:event_jfVooVenda2ActionPerformed
+    }//GEN-LAST:event_jfVendaPDV2ActionPerformed
 
-    private void jfVooVenda4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jfVooVenda4ActionPerformed
-        jfVooCli4.requestFocus();
+    private void jfVendaPDV4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jfVendaPDV4ActionPerformed
+        jfVooCliPDV4.requestFocus();
         somaValores();
-    }//GEN-LAST:event_jfVooVenda4ActionPerformed
+    }//GEN-LAST:event_jfVendaPDV4ActionPerformed
 
-    private void jfVooVenda3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jfVooVenda3ActionPerformed
-        jfVooCli3.requestFocus();
+    private void jfVendaPDV3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jfVendaPDV3ActionPerformed
+        jfVooCliPDV3.requestFocus();
         somaValores();
-    }//GEN-LAST:event_jfVooVenda3ActionPerformed
+    }//GEN-LAST:event_jfVendaPDV3ActionPerformed
 
-    private void jfVooCli1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jfVooCli1ActionPerformed
-        jfVooVenda2.requestFocus();
+    private void jfVooCliPDV1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jfVooCliPDV1ActionPerformed
+        jfVendaPDV2.requestFocus();
         somaValores();
-    }//GEN-LAST:event_jfVooCli1ActionPerformed
+    }//GEN-LAST:event_jfVooCliPDV1ActionPerformed
 
-    private void jfVooCli2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jfVooCli2ActionPerformed
-        jfVooVenda3.requestFocus();
+    private void jfVooCliPDV2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jfVooCliPDV2ActionPerformed
+        jfVendaPDV3.requestFocus();
         somaValores();
-    }//GEN-LAST:event_jfVooCli2ActionPerformed
+    }//GEN-LAST:event_jfVooCliPDV2ActionPerformed
 
-    private void jfVooCli3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jfVooCli3ActionPerformed
-        jfVooVenda4.requestFocus();
+    private void jfVooCliPDV3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jfVooCliPDV3ActionPerformed
+        jfVendaPDV4.requestFocus();
         somaValores();
-    }//GEN-LAST:event_jfVooCli3ActionPerformed
+    }//GEN-LAST:event_jfVooCliPDV3ActionPerformed
 
-    private void jfVooCli4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jfVooCli4ActionPerformed
-        jtDataDoRegistroVoo.requestFocus();
+    private void jfVooCliPDV4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jfVooCliPDV4ActionPerformed
+        jtDataAtual.requestFocus();
         somaValores();
-    }//GEN-LAST:event_jfVooCli4ActionPerformed
+    }//GEN-LAST:event_jfVooCliPDV4ActionPerformed
 
-    private void jtDataDoRegistroVooActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtDataDoRegistroVooActionPerformed
-        jbSalvarVoo.requestFocus();
+    private void jtDataAtualActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtDataAtualActionPerformed
+        jbPesquisarDadosUser.requestFocus();
         somaValores();
-    }//GEN-LAST:event_jtDataDoRegistroVooActionPerformed
+    }//GEN-LAST:event_jtDataAtualActionPerformed
 
-    private void jbSalvarVoo1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbSalvarVoo1ActionPerformed
+    private void jbEditarVooActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbEditarVooActionPerformed
+        HabilitaDesabilita(1);
+    }//GEN-LAST:event_jbEditarVooActionPerformed
+
+    private void jbEditarVooKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jbEditarVooKeyPressed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jbSalvarVoo1ActionPerformed
-
-    private void jbSalvarVoo1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jbSalvarVoo1KeyPressed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jbSalvarVoo1KeyPressed
+    }//GEN-LAST:event_jbEditarVooKeyPressed
 
     private void jfVooVenda5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jfVooVenda5ActionPerformed
         // TODO add your handling code here:
@@ -621,26 +1011,27 @@ public class JfPlanoDeVoo extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jfVooCli5ActionPerformed
 
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.toedter.calendar.JDateChooser jDateChooser1;
+    private com.toedter.calendar.JDateChooser jDateChooser;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel3PlanoDeVoo;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JButton jbCancelarVoo;
-    private javax.swing.JButton jbSalvarVoo;
-    private javax.swing.JButton jbSalvarVoo1;
-    private javax.swing.JFormattedTextField jfVooCli1;
-    private javax.swing.JFormattedTextField jfVooCli2;
-    private javax.swing.JFormattedTextField jfVooCli3;
-    private javax.swing.JFormattedTextField jfVooCli4;
+    private javax.swing.JButton jbEditarVoo;
+    private javax.swing.JButton jbLimparVoo;
+    private javax.swing.JButton jbPesquisarDadosUser;
+    private javax.swing.JFormattedTextField jfVendaPDV1;
+    private javax.swing.JFormattedTextField jfVendaPDV2;
+    private javax.swing.JFormattedTextField jfVendaPDV3;
+    private javax.swing.JFormattedTextField jfVendaPDV4;
     private javax.swing.JFormattedTextField jfVooCli5;
+    private javax.swing.JFormattedTextField jfVooCliPDV1;
+    private javax.swing.JFormattedTextField jfVooCliPDV2;
+    private javax.swing.JFormattedTextField jfVooCliPDV3;
+    private javax.swing.JFormattedTextField jfVooCliPDV4;
     private javax.swing.JFormattedTextField jfVooCliTotal;
-    private javax.swing.JFormattedTextField jfVooVenda1;
-    private javax.swing.JFormattedTextField jfVooVenda2;
-    private javax.swing.JFormattedTextField jfVooVenda3;
-    private javax.swing.JFormattedTextField jfVooVenda4;
     private javax.swing.JFormattedTextField jfVooVenda5;
     private javax.swing.JFormattedTextField jfVooVenda6;
     private javax.swing.JFormattedTextField jfVooVendaTotal;
@@ -653,10 +1044,10 @@ public class JfPlanoDeVoo extends javax.swing.JFrame {
     private javax.swing.JLabel jlTituloPlanoDeVoo;
     private javax.swing.JLabel jlTituloPlanoDeVoo1;
     private javax.swing.JLabel jlTituloPlanoDeVoo2;
-    private javax.swing.JFormattedTextField jtDataDoRegistroVoo;
-    private javax.swing.JTextField jtLoja5;
+    private javax.swing.JFormattedTextField jtDataAtual;
     private javax.swing.JTextField jtMatriculaVoo;
-    private javax.swing.JTextField jtNomeUsuarioV;
+    private javax.swing.JTextField jtNomeUsuario;
+    private javax.swing.JTextField jtNumeroLoja;
     // End of variables declaration//GEN-END:variables
 
 }

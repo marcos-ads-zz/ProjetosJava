@@ -222,6 +222,13 @@ public class Funcao {
         return teste;
     }
 
+    public String SubPontoPorVirgula(String letras) {
+        boolean teste = false;
+        String replaceAll = letras.replaceAll("\\.", ",");
+        
+        return replaceAll;
+    }
+
     public java.sql.Date convertDateStringToDateSQL(String dateString) throws ParseException {
         String dataString = dateString;
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");

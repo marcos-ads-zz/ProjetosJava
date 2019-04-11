@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
+<Form version="1.5" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="2"/>
     <Property name="alwaysOnTop" type="boolean" value="true"/>
-    <Property name="focusable" type="boolean" value="false"/>
+    <Property name="extendedState" type="int" value="6"/>
+    <Property name="iconImage" type="java.awt.Image" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+      <Connection code="new ImageIcon(getClass().getResource(&quot;/icons/asterisk_orange.png&quot;)).getImage()" type="code"/>
+    </Property>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
@@ -129,15 +132,15 @@
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="jtMatriculaVoo" min="-2" pref="75" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jtNomeUsuarioV" min="-2" pref="320" max="-2" attributes="0"/>
+                                  <Component id="jtNomeUsuario" min="-2" pref="320" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jDateChooser1" min="-2" pref="150" max="-2" attributes="0"/>
+                                  <Component id="jDateChooser" min="-2" pref="150" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jbSalvarVoo" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jbPesquisarDadosUser" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jbSalvarVoo1" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jbEditarVoo" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jbCancelarVoo" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jbLimparVoo" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace min="0" pref="10" max="32767" attributes="0"/>
                               </Group>
                           </Group>
@@ -145,9 +148,9 @@
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                          <Component id="jtLoja5" min="-2" pref="39" max="-2" attributes="0"/>
+                          <Component id="jtNumeroLoja" min="-2" pref="39" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jtDataDoRegistroVoo" min="-2" pref="186" max="-2" attributes="0"/>
+                          <Component id="jtDataAtual" min="-2" pref="186" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
@@ -158,23 +161,23 @@
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="jfVooVenda1" alignment="0" max="32767" attributes="0"/>
-                              <Component id="jfVooCli1" alignment="0" min="-2" pref="75" max="-2" attributes="0"/>
+                              <Component id="jfVendaPDV1" alignment="0" max="32767" attributes="0"/>
+                              <Component id="jfVooCliPDV1" alignment="0" min="-2" pref="75" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jfVooCli2" alignment="0" min="-2" pref="75" max="-2" attributes="0"/>
-                              <Component id="jfVooVenda2" alignment="0" min="-2" pref="75" max="-2" attributes="0"/>
+                              <Component id="jfVooCliPDV2" alignment="0" min="-2" pref="75" max="-2" attributes="0"/>
+                              <Component id="jfVendaPDV2" alignment="0" min="-2" pref="75" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jfVooCli3" min="-2" pref="75" max="-2" attributes="0"/>
-                              <Component id="jfVooVenda3" min="-2" pref="75" max="-2" attributes="0"/>
+                              <Component id="jfVooCliPDV3" min="-2" pref="75" max="-2" attributes="0"/>
+                              <Component id="jfVendaPDV3" min="-2" pref="75" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jfVooVenda4" alignment="0" min="-2" pref="75" max="-2" attributes="0"/>
-                              <Component id="jfVooCli4" alignment="0" min="-2" pref="75" max="-2" attributes="0"/>
+                              <Component id="jfVendaPDV4" alignment="0" min="-2" pref="75" max="-2" attributes="0"/>
+                              <Component id="jfVooCliPDV4" alignment="0" min="-2" pref="75" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
@@ -193,15 +196,15 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" attributes="0">
                               <Group type="103" alignment="1" groupAlignment="3" attributes="0">
-                                  <Component id="jtNomeUsuarioV" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jtNomeUsuario" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jtMatriculaVoo" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jlMat26" alignment="3" min="-2" pref="18" max="-2" attributes="0"/>
                               </Group>
-                              <Component id="jDateChooser1" min="-2" max="-2" attributes="0"/>
+                              <Component id="jDateChooser" min="-2" max="-2" attributes="0"/>
                               <Group type="103" alignment="1" groupAlignment="3" attributes="0">
-                                  <Component id="jbSalvarVoo" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jbSalvarVoo1" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jbCancelarVoo" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jbPesquisarDadosUser" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jbEditarVoo" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jbLimparVoo" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
@@ -210,38 +213,35 @@
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Group type="102" attributes="0">
                                           <Group type="103" groupAlignment="3" attributes="0">
-                                              <Component id="jfVooVenda1" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jfVendaPDV1" alignment="3" min="-2" max="-2" attributes="0"/>
                                               <Component id="jlMat28" alignment="3" min="-2" pref="18" max="-2" attributes="0"/>
                                           </Group>
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="3" attributes="0">
-                                              <Component id="jfVooCli1" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jfVooCliPDV1" alignment="3" min="-2" max="-2" attributes="0"/>
                                               <Component id="jlMat29" alignment="3" min="-2" pref="18" max="-2" attributes="0"/>
                                           </Group>
                                       </Group>
                                       <Group type="102" alignment="0" attributes="0">
-                                          <Component id="jfVooVenda2" min="-2" max="-2" attributes="0"/>
+                                          <Component id="jfVendaPDV2" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="jfVooCli2" min="-2" max="-2" attributes="0"/>
+                                          <Component id="jfVooCliPDV2" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <Component id="jfVooVenda3" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace min="32" pref="32" max="-2" attributes="0"/>
-                                      </Group>
+                                      <Component id="jfVendaPDV3" alignment="0" min="-2" max="-2" attributes="0"/>
                                       <Group type="102" alignment="0" attributes="0">
                                           <EmptySpace min="32" pref="32" max="-2" attributes="0"/>
-                                          <Component id="jfVooCli3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="jfVooCliPDV3" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                               </Group>
-                              <Component id="jfVooVenda4" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="jfVendaPDV4" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="jfVooVendaTotal" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Group type="102" attributes="0">
                                   <EmptySpace min="32" pref="32" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="jfVooCli4" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jfVooCliPDV4" alignment="0" min="-2" max="-2" attributes="0"/>
                                       <Component id="jfVooCliTotal" alignment="0" min="-2" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
@@ -264,8 +264,8 @@
                           <Component id="jlTituloPlanoDeVoo1" min="-2" max="-2" attributes="0"/>
                           <EmptySpace pref="62" max="32767" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="jtLoja5" alignment="3" min="-2" pref="26" max="-2" attributes="0"/>
-                              <Component id="jtDataDoRegistroVoo" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jtNumeroLoja" alignment="3" min="-2" pref="26" max="-2" attributes="0"/>
+                              <Component id="jtDataAtual" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
@@ -273,7 +273,7 @@
                 </DimensionLayout>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JTextField" name="jtNomeUsuarioV">
+                <Component class="javax.swing.JTextField" name="jtNomeUsuario">
                   <Properties>
                     <Property name="editable" type="boolean" value="false"/>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
@@ -324,7 +324,7 @@
                     <Property name="text" type="java.lang.String" value="Matr&#xed;cula"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JButton" name="jbSalvarVoo">
+                <Component class="javax.swing.JButton" name="jbPesquisarDadosUser">
                   <Properties>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="66" green="0" red="0" type="rgb"/>
@@ -338,11 +338,11 @@
                     <Property name="text" type="java.lang.String" value="Pesquisar"/>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbSalvarVooActionPerformed"/>
-                    <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="jbSalvarVooKeyPressed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbPesquisarDadosUserActionPerformed"/>
+                    <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="jbPesquisarDadosUserKeyPressed"/>
                   </Events>
                 </Component>
-                <Component class="javax.swing.JButton" name="jbCancelarVoo">
+                <Component class="javax.swing.JButton" name="jbLimparVoo">
                   <Properties>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="0" green="0" red="cc" type="rgb"/>
@@ -357,10 +357,10 @@
                     <Property name="horizontalTextPosition" type="int" value="0"/>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbCancelarVooActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbLimparVooActionPerformed"/>
                   </Events>
                 </Component>
-                <Component class="javax.swing.JTextField" name="jtLoja5">
+                <Component class="javax.swing.JTextField" name="jtNumeroLoja">
                   <Properties>
                     <Property name="editable" type="boolean" value="false"/>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
@@ -405,12 +405,13 @@
                     <Property name="text" type="java.lang.String" value="Cliente"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JFormattedTextField" name="jfVooVenda1">
+                <Component class="javax.swing.JFormattedTextField" name="jfVendaPDV1">
                   <Properties>
                     <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.editors.AbstractFormatterFactoryEditor">
-                      <Format format="#,##0.00" subtype="-1" type="0"/>
+                      <Format format="#0.00" subtype="-1" type="0"/>
                     </Property>
                     <Property name="horizontalAlignment" type="int" value="0"/>
+                    <Property name="enabled" type="boolean" value="false"/>
                     <Property name="focusLostBehavior" type="int" value="3"/>
                     <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[12, 26]"/>
@@ -420,15 +421,16 @@
                     </Property>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jfVooVenda1ActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jfVendaPDV1ActionPerformed"/>
                   </Events>
                 </Component>
-                <Component class="javax.swing.JFormattedTextField" name="jfVooVenda2">
+                <Component class="javax.swing.JFormattedTextField" name="jfVendaPDV2">
                   <Properties>
                     <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.editors.AbstractFormatterFactoryEditor">
-                      <Format format="#,##0.00" subtype="-1" type="0"/>
+                      <Format format="#0.00" subtype="-1" type="0"/>
                     </Property>
                     <Property name="horizontalAlignment" type="int" value="0"/>
+                    <Property name="enabled" type="boolean" value="false"/>
                     <Property name="focusLostBehavior" type="int" value="3"/>
                     <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[12, 26]"/>
@@ -438,15 +440,16 @@
                     </Property>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jfVooVenda2ActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jfVendaPDV2ActionPerformed"/>
                   </Events>
                 </Component>
-                <Component class="javax.swing.JFormattedTextField" name="jfVooVenda4">
+                <Component class="javax.swing.JFormattedTextField" name="jfVendaPDV4">
                   <Properties>
                     <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.editors.AbstractFormatterFactoryEditor">
-                      <Format format="#,##0.00" subtype="-1" type="0"/>
+                      <Format format="#0.00" subtype="-1" type="0"/>
                     </Property>
                     <Property name="horizontalAlignment" type="int" value="0"/>
+                    <Property name="enabled" type="boolean" value="false"/>
                     <Property name="focusLostBehavior" type="int" value="3"/>
                     <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[12, 26]"/>
@@ -456,15 +459,16 @@
                     </Property>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jfVooVenda4ActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jfVendaPDV4ActionPerformed"/>
                   </Events>
                 </Component>
-                <Component class="javax.swing.JFormattedTextField" name="jfVooVenda3">
+                <Component class="javax.swing.JFormattedTextField" name="jfVendaPDV3">
                   <Properties>
                     <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.editors.AbstractFormatterFactoryEditor">
-                      <Format format="#,##0.00" subtype="-1" type="0"/>
+                      <Format format="#0.00" subtype="-1" type="0"/>
                     </Property>
                     <Property name="horizontalAlignment" type="int" value="0"/>
+                    <Property name="enabled" type="boolean" value="false"/>
                     <Property name="focusLostBehavior" type="int" value="3"/>
                     <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[12, 26]"/>
@@ -474,15 +478,16 @@
                     </Property>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jfVooVenda3ActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jfVendaPDV3ActionPerformed"/>
                   </Events>
                 </Component>
-                <Component class="javax.swing.JFormattedTextField" name="jfVooCli1">
+                <Component class="javax.swing.JFormattedTextField" name="jfVooCliPDV1">
                   <Properties>
                     <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.editors.AbstractFormatterFactoryEditor">
                       <Format format="#0" subtype="-1" type="0"/>
                     </Property>
                     <Property name="horizontalAlignment" type="int" value="0"/>
+                    <Property name="enabled" type="boolean" value="false"/>
                     <Property name="focusLostBehavior" type="int" value="3"/>
                     <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[12, 26]"/>
@@ -492,15 +497,16 @@
                     </Property>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jfVooCli1ActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jfVooCliPDV1ActionPerformed"/>
                   </Events>
                 </Component>
-                <Component class="javax.swing.JFormattedTextField" name="jfVooCli2">
+                <Component class="javax.swing.JFormattedTextField" name="jfVooCliPDV2">
                   <Properties>
                     <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.editors.AbstractFormatterFactoryEditor">
                       <Format format="#0" subtype="-1" type="0"/>
                     </Property>
                     <Property name="horizontalAlignment" type="int" value="0"/>
+                    <Property name="enabled" type="boolean" value="false"/>
                     <Property name="focusLostBehavior" type="int" value="3"/>
                     <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[12, 26]"/>
@@ -510,15 +516,16 @@
                     </Property>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jfVooCli2ActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jfVooCliPDV2ActionPerformed"/>
                   </Events>
                 </Component>
-                <Component class="javax.swing.JFormattedTextField" name="jfVooCli3">
+                <Component class="javax.swing.JFormattedTextField" name="jfVooCliPDV3">
                   <Properties>
                     <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.editors.AbstractFormatterFactoryEditor">
                       <Format format="#0" subtype="-1" type="0"/>
                     </Property>
                     <Property name="horizontalAlignment" type="int" value="0"/>
+                    <Property name="enabled" type="boolean" value="false"/>
                     <Property name="focusLostBehavior" type="int" value="3"/>
                     <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[12, 26]"/>
@@ -528,15 +535,16 @@
                     </Property>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jfVooCli3ActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jfVooCliPDV3ActionPerformed"/>
                   </Events>
                 </Component>
-                <Component class="javax.swing.JFormattedTextField" name="jfVooCli4">
+                <Component class="javax.swing.JFormattedTextField" name="jfVooCliPDV4">
                   <Properties>
                     <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.editors.AbstractFormatterFactoryEditor">
                       <Format format="#0" subtype="-1" type="0"/>
                     </Property>
                     <Property name="horizontalAlignment" type="int" value="0"/>
+                    <Property name="enabled" type="boolean" value="false"/>
                     <Property name="focusLostBehavior" type="int" value="3"/>
                     <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[12, 26]"/>
@@ -546,7 +554,7 @@
                     </Property>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jfVooCli4ActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jfVooCliPDV4ActionPerformed"/>
                   </Events>
                 </Component>
                 <Component class="javax.swing.JFormattedTextField" name="jfVooVendaTotal">
@@ -587,7 +595,7 @@
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JFormattedTextField" name="jtDataDoRegistroVoo">
+                <Component class="javax.swing.JFormattedTextField" name="jtDataAtual">
                   <Properties>
                     <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.editors.AbstractFormatterFactoryEditor" preCode="try {" postCode="} catch (java.text.ParseException ex) {&#xa;ex.printStackTrace();&#xa;}">
                       <Format format="##/##/####" subtype="-1" type="5"/>
@@ -602,10 +610,10 @@
                     </Property>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jtDataDoRegistroVooActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jtDataAtualActionPerformed"/>
                   </Events>
                 </Component>
-                <Component class="javax.swing.JButton" name="jbSalvarVoo1">
+                <Component class="javax.swing.JButton" name="jbEditarVoo">
                   <Properties>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="66" green="0" red="0" type="rgb"/>
@@ -617,13 +625,14 @@
                       <Color blue="ff" green="ff" red="ff" type="rgb"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Alterar"/>
+                    <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbSalvarVoo1ActionPerformed"/>
-                    <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="jbSalvarVoo1KeyPressed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbEditarVooActionPerformed"/>
+                    <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="jbEditarVooKeyPressed"/>
                   </Events>
                 </Component>
-                <Component class="com.toedter.calendar.JDateChooser" name="jDateChooser1">
+                <Component class="com.toedter.calendar.JDateChooser" name="jDateChooser">
                 </Component>
                 <Component class="javax.swing.JLabel" name="jlMat30">
                   <Properties>
@@ -772,6 +781,28 @@
               </SubComponents>
             </Container>
           </SubComponents>
+        </Container>
+        <Container class="javax.swing.JPanel" name="jPanel3">
+          <Constraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+              <JTabbedPaneConstraints tabName="Metas Colaboradores">
+                <Property name="tabTitle" type="java.lang.String" value="Metas Colaboradores"/>
+              </JTabbedPaneConstraints>
+            </Constraint>
+          </Constraints>
+
+          <Layout>
+            <DimensionLayout dim="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <EmptySpace min="0" pref="904" max="32767" attributes="0"/>
+              </Group>
+            </DimensionLayout>
+            <DimensionLayout dim="1">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <EmptySpace min="0" pref="447" max="32767" attributes="0"/>
+              </Group>
+            </DimensionLayout>
+          </Layout>
         </Container>
       </SubComponents>
     </Container>
